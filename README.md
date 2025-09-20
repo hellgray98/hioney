@@ -1,6 +1,6 @@
 <div align="center">
 
-# 💰 Hioney Finance
+# 💰 Hioney
 
 ### 🎯 Ứng dụng quản lý tài chính cá nhân thông minh
 
@@ -17,7 +17,7 @@
 
 ## 🚀 **Tổng quan**
 
-**Hioney Finance** là một ứng dụng quản lý tài chính cá nhân hiện đại, được thiết kế với giao diện đẹp mắt và trải nghiệm người dùng tối ưu. Ứng dụng giúp bạn theo dõi thu chi, quản lý ngân sách, và đạt được các mục tiêu tài chính một cách hiệu quả.
+**Hioney** là một ứng dụng quản lý tài chính cá nhân hiện đại, được thiết kế với giao diện đẹp mắt và trải nghiệm người dùng tối ưu. Ứng dụng giúp bạn theo dõi thu chi, quản lý ngân sách, và đạt được các mục tiêu tài chính một cách hiệu quả.
 
 ---
 
@@ -106,7 +106,7 @@
 ### **Cài đặt**
 ```bash
 # Clone repository
-git clone <your-repo-url>
+git clone https://github.com/hellgray98/hioney
 cd hioney
 
 # Cài đặt dependencies
@@ -212,32 +212,12 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ---
 
-## 👨‍💻 **Tác giả**
-
-**Hioney Team**
-- 💼 **Portfolio**: [Your Portfolio]
-- 📧 **Email**: [your-email@example.com]
-- 🐦 **Twitter**: [@your-twitter]
-- 💼 **LinkedIn**: [Your LinkedIn]
-
----
-
-## 🙏 **Lời cảm ơn**
-
-- ⚛️ **React Team** - Framework tuyệt vời
-- ⚡ **Vite Team** - Build tool siêu nhanh
-- 🎨 **TailwindCSS** - CSS framework hiện đại
-- 📊 **Recharts** - Thư viện biểu đồ đẹp
-- 🌟 **Community** - Cộng đồng open source
-
----
-
 <div align="center">
 
 ### ⭐ **Nếu bạn thích dự án này, hãy cho chúng tôi một star!** ⭐
 
 **Made with ❤️ by Hioney Team**
 
-[⬆ Back to Top](#-hioney-finance)
+[⬆ Back to Top](#-hioney)
 
 </div>

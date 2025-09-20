@@ -124,6 +124,49 @@ npm run preview  # Preview production build
 npm run lint     # Chạy ESLint
 ```
 
+## 🌐 **Deploy lên Vercel**
+
+### **Cách 1: Deploy từ GitHub (Khuyến nghị)**
+
+1. **Push code lên GitHub:**
+```bash
+git init
+git add .
+git commit -m "Initial commit"
+git branch -M main
+git remote add origin https://github.com/yourusername/hioney.git
+git push -u origin main
+```
+
+2. **Deploy trên Vercel:**
+   - Truy cập [vercel.com](https://vercel.com)
+   - Đăng nhập bằng GitHub
+   - Click "New Project"
+   - Import repository `hioney`
+   - Vercel sẽ tự động detect Vite và deploy
+
+### **Cách 2: Deploy bằng Vercel CLI**
+
+```bash
+# Cài đặt Vercel CLI
+npm i -g vercel
+
+# Deploy
+vercel
+
+# Deploy production
+vercel --prod
+```
+
+### **Cấu hình Vercel**
+- **Framework Preset**: Vite
+- **Build Command**: `npm run build`
+- **Output Directory**: `dist`
+- **Install Command**: `npm install`
+
+### **Environment Variables**
+Không cần environment variables cho ứng dụng này vì sử dụng localStorage.
+
 ---
 
 ## 📱 **Screenshots**

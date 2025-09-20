@@ -145,28 +145,6 @@ npm run lint     # Chạy ESLint
 
 ---
 
-## 🎨 **Design System**
-
-### **Color Palette**
-- 🔵 **Primary**: Blue-600 (#2563EB)
-- 🟢 **Success**: Emerald-600 (#059669)
-- 🔴 **Danger**: Red-500 (#EF4444)
-- 🟡 **Warning**: Yellow-500 (#EAB308)
-- 🟣 **Info**: Indigo-600 (#4F46E5)
-
-### **Typography**
-- **Font**: Roboto (Google Fonts)
-- **Weights**: 400 (Regular), 700 (Bold)
-- **Responsive**: text-sm → text-2xl
-
-### **Spacing & Layout**
-- **Container**: max-w-7xl
-- **Padding**: px-4 sm:px-6 lg:px-8
-- **Gaps**: gap-4 lg:gap-6
-- **Border Radius**: rounded-2xl
-
----
-
 ## 💾 **Lưu trữ dữ liệu**
 
 - 🏠 **LocalStorage**: Dữ liệu được lưu trữ trên trình duyệt

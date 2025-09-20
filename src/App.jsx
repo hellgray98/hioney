@@ -1,4 +1,4 @@
-import PersonalFinanceApp from "./PersonalFinanceApp";
+import PersonalFinanceApp from "./PersonalFinanceAppNew";
 
 function App() {
   return <PersonalFinanceApp />;

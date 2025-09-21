@@ -30,8 +30,8 @@ dist-ssr
 .env.test.local
 .env.production.local
 
-# Firebase config with secrets
-src/firebase/config.js
+# Firebase config with secrets (commented out for Vercel deployment)
+# src/firebase/config.js
 firebase-config.js
 firebase.json
 .firebaserc

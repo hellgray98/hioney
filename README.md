@@ -5,9 +5,10 @@
 ### 🎯 Ứng dụng quản lý tài chính cá nhân thông minh
 
 [![React](https://img.shields.io/badge/React-19.1.1-61DAFB?style=for-the-badge&logo=react&logoColor=white)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Vite](https://img.shields.io/badge/Vite-7.1.6-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.4.17-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![Recharts](https://img.shields.io/badge/Recharts-3.2.1-FF6B6B?style=for-the-badge&logo=chart.js&logoColor=white)](https://recharts.org/)
+[![Jest](https://img.shields.io/badge/Jest-29.0+-C21325?style=for-the-badge&logo=jest&logoColor=white)](https://jestjs.io/)
 
 ---
 
@@ -34,6 +35,8 @@
 - 🎨 **Modern card design** với shadow và border radius
 - 🌈 **Color-coded categories** dễ nhận biết
 - 📊 **Interactive charts** với Recharts
+- 🌙 **Dark/Light mode** với auto-detect
+- 🔒 **Data encryption** cho bảo mật
 
 ---
 
@@ -44,6 +47,7 @@
 - 🔍 Tìm kiếm thông minh theo ghi chú và danh mục
 - 📅 Quản lý theo ngày tháng
 - 🏷️ Phân loại theo danh mục chi tiết
+- ✅ **Form validation** mạnh mẽ
 
 ### 📊 **Dashboard thông minh**
 - 💰 **Tổng quan tài chính**: Thu nhập, chi tiêu, số dư
@@ -74,11 +78,22 @@
 - 📈 **Line Chart**: Xu hướng thu chi theo tháng
 - 🎨 Màu sắc đẹp mắt và tương tác
 
+### 🏦 **Quản lý tài khoản ngân hàng**
+- 💳 Quản lý nhiều tài khoản ngân hàng
+- 💰 Theo dõi số dư theo thời gian thực
+- 🏛️ Phân loại theo loại tài khoản
+
+### 📋 **Quản lý hóa đơn**
+- 📅 Nhắc nhở hóa đơn sắp đến hạn
+- ✅ Theo dõi trạng thái thanh toán
+- 🔔 Thông báo tự động
+
 ### ⚙️ **Cài đặt & Quản lý**
 - 💾 **Auto-save**: Tự động lưu dữ liệu
 - 📥 **Export data**: Xuất dữ liệu JSON
 - 🗑️ **Reset data**: Xóa toàn bộ dữ liệu
 - 📊 **Thống kê**: Thông tin ứng dụng và dữ liệu
+- 🔒 **Data encryption**: Mã hóa dữ liệu nhạy cảm
 
 ---
 
@@ -86,21 +101,36 @@
 
 ### **Frontend Stack**
 - ⚛️ **React 19.1.1** - UI Framework hiện đại
+- 🔷 **TypeScript** - Type safety và developer experience
 - ⚡ **Vite 7.1.6** - Build tool siêu nhanh
 - 🎨 **TailwindCSS 3.4.17** - Utility-first CSS
 - 📊 **Recharts 3.2.1** - Thư viện biểu đồ React
 
-### **Development Tools**
-- 🔍 **ESLint** - Code quality
-- 🎯 **PostCSS** - CSS processing
-- 🔧 **Autoprefixer** - CSS compatibility
+### **Testing & Quality**
+- 🧪 **Jest** - Unit testing framework
+- 🔍 **React Testing Library** - Component testing
+- 📊 **Coverage reports** - Test coverage tracking
+- 🔍 **ESLint** - Code quality và linting
+- 🎯 **TypeScript** - Type checking
+
+### **PWA & Performance**
+- 📱 **PWA Support** - Progressive Web App
+- 🔄 **Service Worker** - Offline support
+- ⚡ **React.memo** - Performance optimization
+- 🎨 **Custom hooks** - State management
+
+### **Security & Data**
+- 🔒 **Data encryption** - Mã hóa dữ liệu nhạy cảm
+- ✅ **Input validation** - Form validation mạnh mẽ
+- 🛡️ **Error boundaries** - Error handling
+- 🔐 **Data integrity** - Hash validation
 
 ---
 
 ## 🚀 **Cài đặt & Chạy**
 
 ### **Yêu cầu hệ thống**
-- Node.js >= 16.0.0
+- Node.js >= 18.0.0
 - npm >= 8.0.0
 
 ### **Cài đặt**
@@ -118,11 +148,89 @@ npm run dev
 
 ### **Scripts có sẵn**
 ```bash
-npm run dev      # Chạy development server
-npm run build    # Build production
-npm run preview  # Preview production build
-npm run lint     # Chạy ESLint
+# Development
+npm run dev              # Chạy development server
+npm run build            # Build production
+npm run preview          # Preview production build
+
+# Testing
+npm run test             # Chạy tests
+npm run test:watch       # Chạy tests với watch mode
+npm run test:coverage    # Chạy tests với coverage report
+
+# Code Quality
+npm run lint             # Chạy ESLint
+npm run type-check       # TypeScript type checking
 ```
+
+---
+
+## 🧪 **Testing**
+
+Dự án sử dụng Jest và React Testing Library cho testing:
+
+```bash
+# Chạy tất cả tests
+npm run test
+
+# Chạy tests với watch mode
+npm run test:watch
+
+# Tạo coverage report
+npm run test:coverage
+```
+
+### **Test Coverage**
+- ✅ Helper functions (100%)
+- ✅ Validation functions (100%)
+- ✅ Storage utilities
+- ✅ Component tests
+- ✅ Hook tests
+
+---
+
+## 🔒 **Bảo mật**
+
+### **Data Encryption**
+- Dữ liệu nhạy cảm được mã hóa trước khi lưu vào localStorage
+- Hash validation để kiểm tra tính toàn vẹn dữ liệu
+- Fallback mechanism cho backward compatibility
+
+### **Input Validation**
+- Validation mạnh mẽ cho tất cả form inputs
+- Sanitization dữ liệu đầu vào
+- Error handling toàn diện
+
+---
+
+## 📱 **PWA Features**
+
+### **Service Worker**
+- Offline support
+- Auto-update notifications
+- Install prompts
+
+### **Manifest**
+- App icons (192x192, 512x512)
+- Theme colors
+- Display mode: standalone
+
+---
+
+## 🎨 **Theme System**
+
+### **Dark/Light Mode**
+- Tự động detect system preference
+- Manual toggle
+- Smooth transitions
+- Persistent settings
+
+### **Responsive Design**
+- Mobile-first approach
+- Breakpoints: xs, sm, md, lg, xl
+- Touch-friendly interface
+
+---
 
 ## 🌐 **Deploy lên Vercel**
 
@@ -164,9 +272,6 @@ vercel --prod
 - **Output Directory**: `dist`
 - **Install Command**: `npm install`
 
-### **Environment Variables**
-Không cần environment variables cho ứng dụng này vì sử dụng localStorage.
-
 ---
 
 ## 📱 **Screenshots**
@@ -175,11 +280,13 @@ Không cần environment variables cho ứng dụng này vì sử dụng localSt
 - Tổng quan tài chính với 4 cards chính
 - Xu hướng tháng và mục tiêu nhanh
 - Giao diện responsive đẹp mắt
+- Dark/Light mode toggle
 
 ### 💸 **Giao dịch**
 - Bảng giao dịch với tìm kiếm
 - Form thêm/sửa giao dịch modal
 - Phân loại thu chi rõ ràng
+- Validation mạnh mẽ
 
 ### 📊 **Biểu đồ**
 - Pie chart chi tiêu theo danh mục
@@ -194,24 +301,28 @@ Không cần environment variables cho ứng dụng này vì sử dụng localSt
 - 🔄 **Auto-save**: Tự động lưu khi có thay đổi
 - 📥 **Export**: Xuất dữ liệu JSON để backup
 - 🔒 **Privacy**: Dữ liệu không được gửi lên server
+- 🛡️ **Encryption**: Mã hóa dữ liệu nhạy cảm
 
 ---
 
 ## 🚀 **Roadmap**
 
-### **Version 2.0** (Planned)
-- [ ] 🔐 **Authentication** - Đăng nhập/đăng ký
+### **Version 2.0** (In Progress)
+- [x] 🔐 **TypeScript** - Type safety
+- [x] 🌙 **Dark Mode** - Theme system
+- [x] 🧪 **Testing** - Unit tests với Jest
+- [x] 🔒 **Data Encryption** - Bảo mật dữ liệu
+- [x] ✅ **Form Validation** - Validation mạnh mẽ
+- [x] 🛡️ **Error Boundaries** - Error handling
 - [ ] ☁️ **Cloud Sync** - Đồng bộ dữ liệu
-- [ ] 📱 **PWA** - Progressive Web App
-- [ ] 🔔 **Notifications** - Thông báo nhắc nhở
-- [ ] 📊 **Advanced Analytics** - Phân tích nâng cao
-- [ ] 🎯 **Goal Templates** - Mẫu mục tiêu có sẵn
+- [ ] 🔔 **Push Notifications** - Thông báo nhắc nhở
 
 ### **Version 3.0** (Future)
 - [ ] 🤖 **AI Insights** - Gợi ý thông minh
 - [ ] 📈 **Investment Tracking** - Theo dõi đầu tư
 - [ ] 🏦 **Bank Integration** - Kết nối ngân hàng
 - [ ] 👥 **Family Sharing** - Chia sẻ gia đình
+- [ ] 📱 **Mobile App** - React Native
 
 ---
 
@@ -224,6 +335,12 @@ Chúng tôi hoan nghênh mọi đóng góp! Hãy:
 3. 💾 **Commit** changes (`git commit -m 'Add some AmazingFeature'`)
 4. 📤 **Push** to branch (`git push origin feature/AmazingFeature`)
 5. 🔄 **Open** Pull Request
+
+### **Development Guidelines**
+- Sử dụng TypeScript cho tất cả files mới
+- Viết tests cho functions và components
+- Tuân thủ ESLint rules
+- Cập nhật documentation khi cần
 
 ---
 

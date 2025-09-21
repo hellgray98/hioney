@@ -5,26 +5,24 @@ import { CHART_COLORS } from '../constants';
 
 const Charts = ({ pieData, lineData }) => {
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Biểu đồ phân tích</h1>
-          <p className="text-gray-600 mt-1">Thống kê chi tiết về tài chính</p>
-        </div>
+    <div className="space-y-8">
+      {/* Header - Minimalist */}
+      <div className="text-center py-8">
+        <h1 className="text-3xl font-light text-gray-900 dark:text-gray-100 mb-2">
+          Thống kê & Phân tích
+        </h1>
+        <p className="text-gray-500 dark:text-gray-400 text-sm">
+          Biểu đồ và thống kê chi tiết về tài chính
+        </p>
       </div>
       
-      <div className="grid grid-cols-1 gap-6">
-        {/* Pie Chart */}
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 bg-gradient-to-br from-purple-400 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-              <span className="text-white text-lg">🥧</span>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900">Chi tiêu theo danh mục</h3>
-              <p className="text-sm text-gray-500">Phân bổ chi tiêu tháng này</p>
-            </div>
+      {/* Charts Container with Horizontal Scroll */}
+      <div className="space-y-6">
+        {/* Pie Chart - Minimalist */}
+        <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 border border-gray-100 dark:border-gray-700">
+          <div className="text-center mb-6">
+            <h3 className="text-lg font-light text-gray-900 dark:text-gray-100 mb-2">Chi tiêu theo danh mục</h3>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Phân bổ chi tiêu tháng này</p>
           </div>
           <div className="h-80">
             <ResponsiveContainer width="100%" height="100%">
@@ -47,16 +45,11 @@ const Charts = ({ pieData, lineData }) => {
           </div>
         </div>
 
-        {/* Line Chart */}
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
-              <span className="text-white text-lg">📈</span>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900">Xu hướng thu chi</h3>
-              <p className="text-sm text-gray-500">Biến động theo tháng</p>
-            </div>
+        {/* Line Chart - Minimalist */}
+        <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 border border-gray-100 dark:border-gray-700">
+          <div className="text-center mb-6">
+            <h3 className="text-lg font-light text-gray-900 dark:text-gray-100 mb-2">Xu hướng thu chi</h3>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Biến động theo tháng</p>
           </div>
           <div className="h-80">
             <ResponsiveContainer width="100%" height="100%">

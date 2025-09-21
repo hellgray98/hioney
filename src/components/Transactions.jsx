@@ -69,51 +69,53 @@ const Transactions = ({
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Giao dịch</h1>
-          <p className="text-gray-600 mt-1">Quản lý thu chi hàng ngày</p>
-        </div>
+    <div className="space-y-8">
+      {/* Header - Minimalist */}
+      <div className="text-center py-8">
+        <h1 className="text-3xl font-light text-gray-900 dark:text-gray-100 mb-2">
+          Giao dịch
+        </h1>
+        <p className="text-gray-500 dark:text-gray-400 text-sm">
+          Quản lý thu chi hàng ngày
+        </p>
+      </div>
 
-        {/* Search and Filters */}
-        <div className="space-y-3">
-          {/* Search Bar */}
-          <div className="relative">
-            <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            <input
-              className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-              placeholder="Tìm kiếm giao dịch..."
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-            />
-          </div>
+      {/* Search and Filters - Minimalist */}
+      <div className="space-y-4">
+        {/* Search Bar */}
+        <div className="relative">
+          <svg className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input
+            className="w-full pl-12 pr-4 py-4 border border-gray-200 dark:border-gray-600 rounded-2xl focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-100 focus:border-transparent transition-all bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+            placeholder="Tìm kiếm giao dịch..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+        </div>
+        
+        {/* Filters */}
+        <div className="flex gap-3">
+          <select
+            value={filterType}
+            onChange={(e) => setFilterType(e.target.value)}
+            className="flex-1 px-4 py-3 text-sm border border-gray-200 dark:border-gray-600 rounded-2xl focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-100 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+          >
+            <option value="all">Tất cả</option>
+            <option value="income">Thu nhập</option>
+            <option value="expense">Chi tiêu</option>
+          </select>
           
-          {/* Filters - Stack on mobile */}
-          <div className="flex flex-col xs:flex-row gap-2">
-            <select
-              value={filterType}
-              onChange={(e) => setFilterType(e.target.value)}
-              className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-            >
-              <option value="all">Tất cả</option>
-              <option value="income">Thu nhập</option>
-              <option value="expense">Chi tiêu</option>
-            </select>
-            
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-            >
-              <option value="date">Ngày</option>
-              <option value="amount">Số tiền</option>
-              <option value="category">Danh mục</option>
-            </select>
-          </div>
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className="flex-1 px-4 py-3 text-sm border border-gray-200 dark:border-gray-600 rounded-2xl focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-100 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+          >
+            <option value="date">Ngày</option>
+            <option value="amount">Số tiền</option>
+            <option value="category">Danh mục</option>
+          </select>
         </div>
       </div>
 

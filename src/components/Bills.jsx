@@ -43,68 +43,81 @@ const Bills = ({
   const unpaidAmount = state.bills.filter(b => !b.isPaid).reduce((sum, b) => sum + b.amount, 0);
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h2 className="text-xl font-bold text-gray-900">Hóa đơn</h2>
-          <p className="text-sm text-gray-600 mt-1">Quản lý hóa đơn</p>
-        </div>
-        <div className="flex gap-3">
+    <div className="space-y-8">
+      {/* Header - Minimalist */}
+      <div className="text-center py-8">
+        <h1 className="text-3xl font-light text-gray-900 dark:text-gray-100 mb-2">
+          Hóa đơn
+        </h1>
+        <p className="text-gray-500 dark:text-gray-400 text-sm">
+          Quản lý hóa đơn và thanh toán
+        </p>
+      </div>
+
+      {/* Search and Filters - Minimalist */}
+      <div className="space-y-4">
+        {/* Search Bar */}
+        <div className="relative">
+          <svg className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
           <input
-            className="flex-1 sm:w-64 input-field"
+            className="w-full pl-12 pr-4 py-4 border border-gray-200 dark:border-gray-600 rounded-2xl focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-100 focus:border-transparent transition-all bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
             placeholder="Tìm kiếm hóa đơn..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
         </div>
+        
+        {/* Filters */}
+        <div className="flex gap-3">
+          <select
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            className="flex-1 px-4 py-3 text-sm border border-gray-200 dark:border-gray-600 rounded-2xl focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-100 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+          >
+            <option value="all">Tất cả</option>
+            <option value="unpaid">Chưa thanh toán</option>
+            <option value="paid">Đã thanh toán</option>
+            <option value="upcoming">Sắp đến hạn</option>
+          </select>
+        </div>
       </div>
 
-      {/* Bills Overview */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="card p-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
-              <span className="text-xl">📋</span>
-            </div>
-            <div>
-              <div className="text-sm text-gray-500">Tổng hóa đơn</div>
-              <div className="text-lg font-bold text-gray-900">{totalBills}</div>
+      {/* Bills Overview - Minimalist */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 border border-gray-100 dark:border-gray-700">
+          <div className="text-center">
+            <div className="text-sm text-gray-500 dark:text-gray-400 mb-2">Tổng hóa đơn</div>
+            <div className="text-3xl font-light text-gray-900 dark:text-gray-100">
+              {totalBills}
             </div>
           </div>
         </div>
         
-        <div className="card p-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center">
-              <span className="text-xl">✅</span>
-            </div>
-            <div>
-              <div className="text-sm text-gray-500">Đã thanh toán</div>
-              <div className="text-lg font-bold text-emerald-600">{paidBills}</div>
+        <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 border border-gray-100 dark:border-gray-700">
+          <div className="text-center">
+            <div className="text-sm text-gray-500 dark:text-gray-400 mb-2 break-words">Đã thanh toán</div>
+            <div className="text-3xl font-light text-emerald-600">
+              {paidBills}
             </div>
           </div>
         </div>
         
-        <div className="card p-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center">
-              <span className="text-xl">⏰</span>
-            </div>
-            <div>
-              <div className="text-sm text-gray-500">Chưa thanh toán</div>
-              <div className="text-lg font-bold text-red-600">{unpaidBills}</div>
+        <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 border border-gray-100 dark:border-gray-700">
+          <div className="text-center">
+            <div className="text-sm text-gray-500 dark:text-gray-400 mb-2 break-words">Chưa thanh toán</div>
+            <div className="text-3xl font-light text-red-600">
+              {unpaidBills}
             </div>
           </div>
         </div>
         
-        <div className="card p-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-yellow-100 rounded-xl flex items-center justify-center">
-              <span className="text-xl">🔔</span>
-            </div>
-            <div>
-              <div className="text-sm text-gray-500">Sắp đến hạn</div>
-              <div className="text-lg font-bold text-yellow-600">{upcomingBills}</div>
+        <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 border border-gray-100 dark:border-gray-700">
+          <div className="text-center">
+            <div className="text-sm text-gray-500 dark:text-gray-400 mb-2">Sắp đến hạn</div>
+            <div className="text-3xl font-light text-yellow-600">
+              {upcomingBills}
             </div>
           </div>
         </div>

@@ -18,6 +18,7 @@ import Bills from './components/Bills';
 import Debts from './components/Debts';
 import Goals from './components/Goals';
 import Banking from './components/Banking';
+import Wallets from './components/Wallets';
 
 // Import actual components
 import Notifications from './components/Notifications';
@@ -72,6 +73,12 @@ export default function PersonalFinanceApp() {
       } else {
         financeData.addBankAccount(formData);
       }
+    } else if (tab === "wallets") {
+      if (editingItem) {
+        financeData.updateWallet(editingItem.id, formData);
+      } else {
+        financeData.addWallet(formData);
+      }
     }
     setShowAddForm(false);
     setEditingItem(null);
@@ -92,6 +99,7 @@ export default function PersonalFinanceApp() {
       else if (tab === "goals") financeData.deleteGoal(id);
       else if (tab === "bills") financeData.deleteBill(id);
       else if (tab === "banking") financeData.deleteBankAccount(id);
+      else if (tab === "wallets") financeData.deleteWallet(id);
     }
   };
 
@@ -219,20 +227,45 @@ export default function PersonalFinanceApp() {
             handleDelete={handleDelete}
           />
         );
-               case "notifications":
-                 return <Notifications state={financeData.state} />;
-               case "settings":
-                 return <Settings state={financeData.state} />;
+      case "wallets":
+        return (
+          <Wallets
+            state={financeData.state}
+            addWallet={financeData.addWallet}
+            updateWallet={financeData.updateWallet}
+            deleteWallet={financeData.deleteWallet}
+            showAddForm={showAddForm}
+            setShowAddForm={setShowAddForm}
+            editingItem={editingItem}
+            setEditingItem={setEditingItem}
+            formData={formData}
+            setFormData={setFormData}
+            handleFormSubmit={handleFormSubmit}
+            handleEdit={handleEdit}
+            handleDelete={handleDelete}
+          />
+        );
+      case "notifications":
+        return (
+          <Notifications 
+            state={financeData.state} 
+            markNotificationAsRead={financeData.markNotificationAsRead}
+            deleteNotification={financeData.deleteNotification}
+            markAllAsRead={financeData.markAllNotificationsAsRead}
+          />
+        );
+      case "settings":
+        return <Settings state={financeData.state} />;
       default:
         return <Dashboard analytics={analytics} state={financeData.state} />;
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900">
-      <Header />
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 theme-transition">
+      <Header setTab={setTab} state={financeData.state} />
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 pb-28 sm:pb-32">
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 pt-20 pb-32">
         {renderTabContent()}
       </main>
 

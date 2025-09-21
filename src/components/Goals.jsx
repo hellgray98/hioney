@@ -30,15 +30,26 @@ const Goals = ({
   const notStartedGoals = state.goals.filter(g => g.saved === 0).length;
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h2 className="text-xl font-bold text-gray-900">Mục tiêu tài chính</h2>
-          <p className="text-sm text-gray-600 mt-1">Theo dõi mục tiêu</p>
-        </div>
-        <div className="flex gap-3">
+    <div className="space-y-8">
+      {/* Header - Minimalist */}
+      <div className="text-center py-8">
+        <h1 className="text-3xl font-light text-gray-900 dark:text-gray-100 mb-2">
+          Mục tiêu tài chính
+        </h1>
+        <p className="text-gray-500 dark:text-gray-400 text-sm">
+          Theo dõi và đạt được mục tiêu
+        </p>
+      </div>
+
+      {/* Search and Filters - Minimalist */}
+      <div className="space-y-4">
+        {/* Search Bar */}
+        <div className="relative">
+          <svg className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
           <input
-            className="flex-1 sm:w-64 input-field"
+            className="w-full pl-12 pr-4 py-4 border border-gray-200 dark:border-gray-600 rounded-2xl focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-100 focus:border-transparent transition-all bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
             placeholder="Tìm kiếm mục tiêu..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -46,74 +57,62 @@ const Goals = ({
         </div>
       </div>
 
-      {/* Goals Overview */}
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <div className="card p-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
-              <span className="text-xl">🎯</span>
-            </div>
-            <div>
-              <div className="text-sm text-gray-500">Tổng mục tiêu</div>
-              <div className="text-lg font-bold text-blue-600">{fmt(totalTarget)}</div>
+      {/* Goals Overview - Minimalist */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 border border-gray-100 dark:border-gray-700">
+          <div className="text-center">
+            <div className="text-sm text-gray-500 dark:text-gray-400 mb-2">Tổng mục tiêu</div>
+            <div className="text-3xl font-light text-gray-900 dark:text-gray-100">
+              {fmt(totalTarget)}
             </div>
           </div>
         </div>
         
-        <div className="card p-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center">
-              <span className="text-xl">💰</span>
-            </div>
-            <div>
-              <div className="text-sm text-gray-500">Đã tiết kiệm</div>
-              <div className="text-lg font-bold text-emerald-600">{fmt(totalSaved)}</div>
+        <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 border border-gray-100 dark:border-gray-700">
+          <div className="text-center">
+            <div className="text-sm text-gray-500 dark:text-gray-400 mb-2 break-words">Đã tiết kiệm</div>
+            <div className="text-3xl font-light text-emerald-600">
+              {fmt(totalSaved)}
             </div>
           </div>
         </div>
         
-        <div className="card p-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
-              <span className="text-xl">📊</span>
-            </div>
-            <div>
-              <div className="text-sm text-gray-500">Tiến độ tổng</div>
-              <div className="text-lg font-bold text-purple-600">{overallProgress.toFixed(1)}%</div>
+        <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 border border-gray-100 dark:border-gray-700">
+          <div className="text-center">
+            <div className="text-sm text-gray-500 dark:text-gray-400 mb-2 break-words">Tiến độ tổng</div>
+            <div className="text-3xl font-light text-blue-600">
+              {overallProgress.toFixed(1)}%
             </div>
           </div>
         </div>
         
-        <div className="card p-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-yellow-100 rounded-xl flex items-center justify-center">
-              <span className="text-xl">✅</span>
-            </div>
-            <div>
-              <div className="text-sm text-gray-500">Đã hoàn thành</div>
-              <div className="text-lg font-bold text-yellow-600">{completedGoals}</div>
+        <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 border border-gray-100 dark:border-gray-700">
+          <div className="text-center">
+            <div className="text-sm text-gray-500 dark:text-gray-400 mb-2 break-words">Đã hoàn thành</div>
+            <div className="text-3xl font-light text-yellow-600">
+              {completedGoals}
             </div>
           </div>
         </div>
       </div>
 
-      {/* Overall Progress */}
-      <div className="card p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-900">Tiến độ tổng thể</h3>
-          <span className="text-sm text-gray-500">
-            {fmt(totalSaved)} / {fmt(totalTarget)}
-          </span>
+      {/* Overall Progress - Minimalist */}
+      <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 border border-gray-100 dark:border-gray-700">
+        <div className="text-center mb-6">
+          <h3 className="text-lg font-light text-gray-900 dark:text-gray-100 mb-2">Tiến độ tổng thể</h3>
+          <div className="text-2xl font-light text-gray-900 dark:text-gray-100">
+            {overallProgress.toFixed(1)}% hoàn thành
+          </div>
         </div>
-        <div className="w-full bg-gray-200 rounded-full h-3">
+        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
           <div 
             className="bg-gradient-to-r from-blue-500 to-emerald-500 h-3 rounded-full transition-all duration-500"
             style={{width: `${Math.min(overallProgress, 100)}%`}}
           ></div>
         </div>
-        <div className="flex justify-between text-sm text-gray-500 mt-2">
+        <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400 mt-3">
           <span>Còn lại: {fmt(totalRemaining)}</span>
-          <span>{overallProgress.toFixed(1)}% hoàn thành</span>
+          <span>{fmt(totalSaved)} / {fmt(totalTarget)}</span>
         </div>
       </div>
 

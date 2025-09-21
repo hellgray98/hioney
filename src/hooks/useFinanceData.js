@@ -142,6 +142,50 @@ export const useFinanceData = () => {
     }));
   };
 
+  const addWallet = (wallet) => {
+    setState(prev => ({
+      ...prev,
+      wallets: [...prev.wallets, { ...wallet, id: uid() }]
+    }));
+  };
+
+  const updateWallet = (id, updates) => {
+    setState(prev => ({
+      ...prev,
+      wallets: prev.wallets.map(w => w.id === id ? { ...w, ...updates } : w)
+    }));
+  };
+
+  const deleteWallet = (id) => {
+    setState(prev => ({
+      ...prev,
+      wallets: prev.wallets.filter(w => w.id !== id)
+    }));
+  };
+
+  const markNotificationAsRead = (id) => {
+    setState(prev => ({
+      ...prev,
+      notifications: prev.notifications.map(n => 
+        n.id === id ? { ...n, read: true } : n
+      )
+    }));
+  };
+
+  const deleteNotification = (id) => {
+    setState(prev => ({
+      ...prev,
+      notifications: prev.notifications.filter(n => n.id !== id)
+    }));
+  };
+
+  const markAllNotificationsAsRead = () => {
+    setState(prev => ({
+      ...prev,
+      notifications: prev.notifications.map(n => ({ ...n, read: true }))
+    }));
+  };
+
   return {
     state,
     setState,
@@ -169,6 +213,15 @@ export const useFinanceData = () => {
     addBankAccount,
     updateBankAccount,
     deleteBankAccount,
+    // Wallet methods
+    addWallet,
+    updateWallet,
+    deleteWallet,
+    // Notification methods
+    markNotificationAsRead,
+    deleteNotification,
+    markAllNotificationsAsRead,
   };
 };
+
 

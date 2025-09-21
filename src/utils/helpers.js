@@ -50,3 +50,4 @@ export const getSavingsRateColor = (rate) => {
   return 'text-red-600';
 };
 
+

@@ -24,14 +24,13 @@ export const DEFAULT_CATEGORIES = [
 // Main navigation tabs (always visible)
 export const MAIN_TABS = [
   { id: "dashboard", label: "Tổng quan", icon: "📊" },
-  { id: "transactions", label: "Giao dịch", icon: "💸" },
-  { id: "analytics", label: "Phân tích", icon: "📈" },
-  { id: "more", label: "Thêm", icon: "⋯" }
+  { id: "wallets", label: "Ví", icon: "💼" },
+  { id: "transactions", label: "Giao dịch", icon: "💸" }
 ];
 
 // Secondary tabs (in dropdown menu)
 export const SECONDARY_TABS = [
-  { id: "charts", label: "Biểu đồ", icon: "📊" },
+  { id: "analytics", label: "Phân tích", icon: "📈" },
   { id: "budgets", label: "Ngân sách", icon: "🧾" },
   { id: "bills", label: "Hóa đơn", icon: "📋" },
   { id: "debts", label: "Nợ/Thẻ", icon: "💳" },

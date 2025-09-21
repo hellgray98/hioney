@@ -17,27 +17,24 @@ const FormModal = ({
   const catLabel = (id) => state.categories.find(c => c.id === id)?.label || id;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl border border-gray-100">
-        <div className="flex items-center justify-between mb-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/20 backdrop-blur-sm">
+      <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 w-full max-w-md max-h-[90vh] overflow-y-auto shadow-xl border border-gray-100 dark:border-gray-700">
+        <div className="flex items-center justify-between mb-8">
           <div>
-            <h3 className="text-xl font-bold text-gray-900">
+            <h3 className="text-2xl font-light text-gray-900 dark:text-gray-100">
               {editingItem ? 'Sửa' : 'Thêm'} {tab === 'transactions' ? 'giao dịch' : 
                tab === 'budgets' ? 'ngân sách' : 
                tab === 'debts' ? 'nợ' : 
                tab === 'goals' ? 'mục tiêu' :
                tab === 'bills' ? 'hóa đơn' : 'tài khoản'}
             </h3>
-            <p className="text-sm text-gray-500 mt-1">
-              {editingItem ? 'Cập nhật thông tin' : 'Thêm mới vào hệ thống'}
-            </p>
           </div>
           <button
             onClick={() => {
               setShowAddForm(false);
               setEditingItem(null);
             }}
-            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -45,20 +42,37 @@ const FormModal = ({
           </button>
         </div>
         
-        <form onSubmit={handleFormSubmit} className="space-y-4">
+        <form onSubmit={handleFormSubmit} className="space-y-6">
           {tab === "transactions" && (
             <>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Loại</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Loại</label>
                 <select
                   value={formData.type || ''}
                   onChange={(e) => setFormData({...formData, type: e.target.value})}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-2xl focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-100 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                   required
                 >
                   <option value="">Chọn loại</option>
                   <option value="income">Thu nhập</option>
                   <option value="expense">Chi tiêu</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Ví/Tài khoản</label>
+                <select
+                  value={formData.walletId || ''}
+                  onChange={(e) => setFormData({...formData, walletId: e.target.value})}
+                  className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-2xl focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-100 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  required
+                >
+                  <option value="">Chọn ví</option>
+                  {state.wallets.map(wallet => (
+                    <option key={wallet.id} value={wallet.id}>
+                      {wallet.name} ({fmt(wallet.balance)})
+                    </option>
+                  ))}
                 </select>
               </div>
               
@@ -265,6 +279,51 @@ const FormModal = ({
             </>
           )}
 
+          {tab === "wallets" && (
+            <>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Tên ví</label>
+                <input
+                  type="text"
+                  value={formData.name || ''}
+                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-2xl focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-100 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  placeholder="Ví tiền mặt, Tài khoản chính..."
+                  required
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Loại ví</label>
+                <select
+                  value={formData.type || ''}
+                  onChange={(e) => setFormData({...formData, type: e.target.value})}
+                  className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-2xl focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-100 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  required
+                >
+                  <option value="">Chọn loại ví</option>
+                  <option value="cash">💵 Tiền mặt</option>
+                  <option value="bank">🏦 Tài khoản ngân hàng</option>
+                  <option value="credit">💳 Thẻ tín dụng</option>
+                  <option value="savings">💰 Tài khoản tiết kiệm</option>
+                  <option value="investment">📈 Tài khoản đầu tư</option>
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Số dư hiện tại</label>
+                <input
+                  type="number"
+                  value={formData.balance || ''}
+                  onChange={(e) => setFormData({...formData, balance: parseInt(e.target.value) || 0})}
+                  className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-2xl focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-100 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  placeholder="0"
+                  required
+                />
+              </div>
+            </>
+          )}
+
           {tab === "banking" && (
             <>
               <div>
@@ -316,7 +375,7 @@ const FormModal = ({
             </>
           )}
 
-          <div className="flex gap-3 pt-4">
+          <div className="flex gap-4 pt-6">
             <button
               type="button"
               onClick={() => {
@@ -324,13 +383,13 @@ const FormModal = ({
                 setEditingItem(null);
                 setFormData({});
               }}
-              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              className="flex-1 px-6 py-3 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium"
             >
               Hủy
             </button>
             <button
               type="submit"
-              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              className="flex-1 px-6 py-3 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 rounded-2xl hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors font-medium"
             >
               {editingItem ? 'Cập nhật' : 'Thêm'}
             </button>

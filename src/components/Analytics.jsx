@@ -4,23 +4,22 @@ import { fmt, getSavingsRateColor } from '../utils/helpers';
 
 const Analytics = ({ spendingTrends, categoryAnalysis, state, monthExpenseByCat }) => {
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">Phân tích nâng cao</h1>
-        <p className="text-gray-600 mt-1">Thống kê chi tiết và xu hướng tài chính</p>
+    <div className="space-y-8">
+      {/* Header - Minimalist */}
+      <div className="text-center py-8">
+        <h1 className="text-3xl font-light text-gray-900 dark:text-gray-100 mb-2">
+          Phân tích nâng cao
+        </h1>
+        <p className="text-gray-500 dark:text-gray-400 text-sm">
+          Thống kê chi tiết và xu hướng tài chính
+        </p>
       </div>
       
-      {/* Spending Trends */}
-      <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
-            <span className="text-white text-lg">📊</span>
-          </div>
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900">Xu hướng chi tiêu 6 tháng</h3>
-            <p className="text-sm text-gray-500">Biến động thu chi và tiết kiệm</p>
-          </div>
+      {/* Spending Trends - Minimalist */}
+      <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 border border-gray-100 dark:border-gray-700">
+        <div className="text-center mb-6">
+          <h3 className="text-lg font-light text-gray-900 dark:text-gray-100 mb-2">Xu hướng chi tiêu 6 tháng</h3>
+          <p className="text-sm text-gray-500 dark:text-gray-400">Biến động thu chi và tiết kiệm</p>
         </div>
         <div className="h-80">
           <ResponsiveContainer width="100%" height="100%">
@@ -46,20 +45,21 @@ const Analytics = ({ spendingTrends, categoryAnalysis, state, monthExpenseByCat 
         </div>
       </div>
 
-      {/* Category Analysis */}
-      <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-        <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-          <span>📈</span> So sánh chi tiêu theo danh mục
-        </h3>
-        <div className="space-y-4">
+      {/* Category Analysis - Minimalist */}
+      <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 border border-gray-100 dark:border-gray-700">
+        <div className="text-center mb-6">
+          <h3 className="text-lg font-light text-gray-900 dark:text-gray-100 mb-2">So sánh chi tiêu theo danh mục</h3>
+          <p className="text-sm text-gray-500 dark:text-gray-400">Phân tích chi tiết theo từng danh mục</p>
+        </div>
+        <div className="space-y-6">
           {categoryAnalysis.map(category => (
-            <div key={category.category} className="border-b border-gray-100 pb-4 last:border-b-0">
-              <h4 className="font-medium text-gray-900 mb-2">{category.categoryLabel}</h4>
+            <div key={category.category} className="bg-gray-50 dark:bg-gray-700 rounded-2xl p-4">
+              <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-4 text-center">{category.categoryLabel}</h4>
               <div className="grid grid-cols-3 gap-4 text-sm">
                 {Object.entries(category.months).map(([month, amount]) => (
                   <div key={month} className="text-center">
-                    <div className="text-gray-500">{month}</div>
-                    <div className="font-semibold text-red-600">{fmt(amount)}</div>
+                    <div className="text-gray-500 dark:text-gray-400 mb-1">{month}</div>
+                    <div className="font-medium text-red-600 dark:text-red-400">{fmt(amount)}</div>
                   </div>
                 ))}
               </div>
@@ -68,47 +68,49 @@ const Analytics = ({ spendingTrends, categoryAnalysis, state, monthExpenseByCat 
         </div>
       </div>
 
-      {/* Savings Rate */}
+      {/* Savings Rate & Statistics - Minimalist */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-            <span>💰</span> Tỷ lệ tiết kiệm
-          </h3>
-          <div className="space-y-3">
+        <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 border border-gray-100 dark:border-gray-700">
+          <div className="text-center mb-6">
+            <h3 className="text-lg font-light text-gray-900 dark:text-gray-100 mb-2">Tỷ lệ tiết kiệm</h3>
+            <p className="text-sm text-gray-500 dark:text-gray-400">3 tháng gần nhất</p>
+          </div>
+          <div className="space-y-4">
             {spendingTrends.slice(-3).map(trend => (
-              <div key={trend.month} className="flex justify-between items-center">
-                <span className="text-sm text-gray-600">{trend.month}</span>
+              <div key={trend.month} className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-2xl">
+                <span className="text-sm text-gray-600 dark:text-gray-400">{trend.month}</span>
                 <div className="text-right">
-                  <div className={`font-semibold ${getSavingsRateColor(trend.savingsRate)}`}>
+                  <div className={`font-medium ${getSavingsRateColor(trend.savingsRate)}`}>
                     {trend.savingsRate.toFixed(1)}%
                   </div>
-                  <div className="text-xs text-gray-500">{fmt(trend.savings)}</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">{fmt(trend.savings)}</div>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-            <span>📊</span> Thống kê tổng quan
-          </h3>
-          <div className="space-y-3">
-            <div className="flex justify-between">
-              <span className="text-gray-600">Tổng giao dịch:</span>
-              <span className="font-semibold">{state.transactions.length}</span>
+        <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 border border-gray-100 dark:border-gray-700">
+          <div className="text-center mb-6">
+            <h3 className="text-lg font-light text-gray-900 dark:text-gray-100 mb-2">Thống kê tổng quan</h3>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Tổng hợp dữ liệu</p>
+          </div>
+          <div className="space-y-4">
+            <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-2xl">
+              <span className="text-gray-600 dark:text-gray-400">Tổng giao dịch:</span>
+              <span className="font-medium text-gray-900 dark:text-gray-100">{state.transactions.length}</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">Danh mục chi tiêu:</span>
-              <span className="font-semibold">{Object.keys(monthExpenseByCat).length}</span>
+            <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-2xl">
+              <span className="text-gray-600 dark:text-gray-400">Danh mục chi tiêu:</span>
+              <span className="font-medium text-gray-900 dark:text-gray-100">{Object.keys(monthExpenseByCat).length}</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">Ngân sách đang theo dõi:</span>
-              <span className="font-semibold">{state.budgets.length}</span>
+            <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-2xl">
+              <span className="text-gray-600 dark:text-gray-400">Ngân sách đang theo dõi:</span>
+              <span className="font-medium text-gray-900 dark:text-gray-100">{state.budgets.length}</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">Mục tiêu tài chính:</span>
-              <span className="font-semibold">{state.goals.length}</span>
+            <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-2xl">
+              <span className="text-gray-600 dark:text-gray-400">Mục tiêu tài chính:</span>
+              <span className="font-medium text-gray-900 dark:text-gray-100">{state.goals.length}</span>
             </div>
           </div>
         </div>

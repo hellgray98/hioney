@@ -30,5 +30,27 @@ dist-ssr
 .env.test.local
 .env.production.local
 
+# Firebase config with secrets
+src/firebase/config.js
+firebase-config.js
+firebase.json
+.firebaserc
+
+# API Keys and Secrets
+*.key
+*.pem
+secrets/
+config/secrets/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs and temporary files
+*.tmp
+*.temp
+.cache/
+
 # Vercel
 .vercel

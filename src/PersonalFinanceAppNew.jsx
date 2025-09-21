@@ -23,9 +23,9 @@ import Goals from './components/Goals';
 import Banking from './components/Banking';
 import Wallets from './components/Wallets';
 import Login from './components/Login';
-import CloudSync from './components/CloudSync';
 import AuthGuard from './components/AuthGuard';
 import AdminDashboardPage from './components/AdminDashboardPage';
+import AutoSyncStatus from './components/AutoSyncStatus';
 
 // Import actual components
 import Notifications from './components/Notifications';
@@ -40,22 +40,8 @@ export default function PersonalFinanceApp() {
   // Custom hooks
   const financeData = useFinanceData();
   const analytics = useAnalytics(financeData.state);
-  const { user, syncDataToFirebase, loadDataFromFirebase } = useFirebaseSync();
+  const { user } = useFirebaseSync();
   const { userRole, isAdmin, isUser } = useUserRole(user);
-
-  // Cloud sync handlers
-  const handleDataSync = async (syncFunction) => {
-    if (syncFunction) {
-      return await syncFunction(financeData.state);
-    }
-    return false;
-  };
-
-  const handleDataLoad = (cloudData) => {
-    if (cloudData) {
-      financeData.loadUserData(cloudData);
-    }
-  };
 
   // Form handlers
   const handleFormSubmit = (e) => {
@@ -286,10 +272,6 @@ export default function PersonalFinanceApp() {
               onLogout={() => {}} 
               user={user} 
             />
-            <CloudSync 
-              onDataSync={handleDataSync}
-              onDataLoad={handleDataLoad}
-            />
           </div>
         );
       case "admin":
@@ -320,10 +302,11 @@ export default function PersonalFinanceApp() {
           state={financeData.state}
         />
 
-        <Navigation tab={tab} setTab={setTab} showAddForm={showAddForm} setShowAddForm={setShowAddForm} />
-        <PWAStatus />
-      </div>
-    </AuthGuard>
-  );
-}
+            <Navigation tab={tab} setTab={setTab} showAddForm={showAddForm} setShowAddForm={setShowAddForm} />
+            <PWAStatus />
+            <AutoSyncStatus />
+          </div>
+        </AuthGuard>
+      );
+    }
 

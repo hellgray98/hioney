@@ -4,16 +4,61 @@ import { useState, useEffect, useMemo } from 'react';
 import { loadState, saveState } from '../utils/storage';
 import { migrateState } from '../utils/seedData';
 import { uid } from '../utils/helpers';
+import { useFirebaseSync } from './useFirebaseSync';
 
 export const useFinanceData = () => {
+  const { user, syncDataToFirebase, loadDataFromFirebase } = useFirebaseSync();
   const [state, setState] = useState(() => {
     const loadedState = loadState();
     return migrateState(loadedState);
   });
 
+  // Auto-save to localStorage (backup)
   useEffect(() => {
     saveState(state);
   }, [state]);
+
+  // Auto-sync to Firebase when user is logged in
+  useEffect(() => {
+    if (user && state) {
+      const syncData = async () => {
+        try {
+          await syncDataToFirebase(state);
+        } catch (error) {
+          console.error('Auto-sync failed:', error);
+        }
+      };
+      syncData();
+    }
+  }, [state, user, syncDataToFirebase]);
+
+  // Load data from Firebase when user logs in
+  useEffect(() => {
+    if (user) {
+      const loadData = async () => {
+        try {
+          const cloudData = await loadDataFromFirebase();
+          if (cloudData) {
+            const userData = {
+              wallets: cloudData.wallets || [],
+              transactions: cloudData.transactions || [],
+              budgets: cloudData.budgets || [],
+              debts: cloudData.debts || [],
+              goals: cloudData.goals || [],
+              bills: cloudData.bills || [],
+              bankAccounts: cloudData.bankAccounts || [],
+              notifications: cloudData.notifications || [],
+              settings: cloudData.settings || state.settings
+            };
+            setState(userData);
+          }
+        } catch (error) {
+          console.error('Auto-load failed:', error);
+        }
+      };
+      loadData();
+    }
+  }, [user, loadDataFromFirebase]);
 
   // Helper functions
   const addTransaction = (transaction) => {
@@ -186,28 +231,10 @@ export const useFinanceData = () => {
     }));
   };
 
-  // Load user-specific data from cloud
-  const loadUserData = (cloudData) => {
-    if (cloudData) {
-      const userData = {
-        wallets: cloudData.wallets || [],
-        transactions: cloudData.transactions || [],
-        budgets: cloudData.budgets || [],
-        debts: cloudData.debts || [],
-        goals: cloudData.goals || [],
-        bills: cloudData.bills || [],
-        bankAccounts: cloudData.bankAccounts || [],
-        notifications: cloudData.notifications || [],
-        settings: cloudData.settings || state.settings
-      };
-      setState(userData);
-    }
-  };
 
   return {
     state,
     setState,
-    loadUserData,
     // Transaction methods
     addTransaction,
     updateTransaction,

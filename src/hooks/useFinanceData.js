@@ -186,9 +186,28 @@ export const useFinanceData = () => {
     }));
   };
 
+  // Load user-specific data from cloud
+  const loadUserData = (cloudData) => {
+    if (cloudData) {
+      const userData = {
+        wallets: cloudData.wallets || [],
+        transactions: cloudData.transactions || [],
+        budgets: cloudData.budgets || [],
+        debts: cloudData.debts || [],
+        goals: cloudData.goals || [],
+        bills: cloudData.bills || [],
+        bankAccounts: cloudData.bankAccounts || [],
+        notifications: cloudData.notifications || [],
+        settings: cloudData.settings || state.settings
+      };
+      setState(userData);
+    }
+  };
+
   return {
     state,
     setState,
+    loadUserData,
     // Transaction methods
     addTransaction,
     updateTransaction,

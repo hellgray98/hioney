@@ -1,30 +1,12 @@
 import React, { useState } from 'react';
 import RetroLogo from './RetroLogo';
-import { useTheme } from '../hooks/useTheme';
 
-const Header = ({ setTab, state }) => {
-  const { theme, setTheme, isDark } = useTheme();
+const Header = ({ setTab, state, user, userRole }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   
   // Count unread notifications
   const unreadCount = state?.notifications?.filter(n => !n.read).length || 0;
   const displayCount = unreadCount > 99 ? '99+' : unreadCount.toString();
-
-  const toggleTheme = () => {
-    if (theme === 'light') {
-      setTheme('dark');
-    } else if (theme === 'dark') {
-      setTheme('auto');
-    } else {
-      setTheme('light');
-    }
-  };
-
-  const getThemeIcon = () => {
-    if (theme === 'light') return '☀️';
-    if (theme === 'dark') return '🌙';
-    return '🌓';
-  };
 
   return (
     <header className="fixed top-0 left-0 right-0 z-40 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-100 dark:border-gray-800 theme-transition">
@@ -49,6 +31,17 @@ const Header = ({ setTab, state }) => {
               )}
             </button>
 
+            {/* Admin Dashboard Button */}
+            {userRole === 'admin' && (
+              <button
+                onClick={() => setTab('admin')}
+                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
+                title="Admin Dashboard"
+              >
+                <span className="text-lg">👑</span>
+              </button>
+            )}
+
             {/* Settings Button */}
             <button
               onClick={() => setTab('settings')}
@@ -58,14 +51,34 @@ const Header = ({ setTab, state }) => {
               <span className="text-lg">⚙️</span>
             </button>
 
-            {/* Theme Toggle - Minimalist */}
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
-              title={`Chuyển sang ${theme === 'light' ? 'dark' : theme === 'dark' ? 'auto' : 'light'} mode`}
-            >
-              <span className="text-lg">{getThemeIcon()}</span>
-            </button>
+            {/* User Info */}
+            {user && (
+              <div className="flex items-center gap-2 ml-2 pl-2 border-l border-gray-200 dark:border-gray-700">
+                {user.photoURL ? (
+                  <img 
+                    src={user.photoURL} 
+                    alt="Avatar" 
+                    className="w-8 h-8 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                    <span className="text-white text-sm font-medium">
+                      {user.email?.charAt(0).toUpperCase()}
+                    </span>
+                  </div>
+                )}
+                <div className="hidden sm:block">
+                  <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                    {user.displayName || user.email}
+                  </p>
+                  {userRole && (
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      {userRole === 'admin' ? '👑 Admin' : '👤 User'}
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

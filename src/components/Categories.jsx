@@ -143,13 +143,13 @@ const Categories = () => {
             {/* Icon Selection */}
             <div>
               <label className="block text-sm font-medium mb-2">Biểu tượng</label>
-              <div className="grid grid-cols-10 gap-2">
+              <div className="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-10 gap-2">
                 {icons.map(icon => (
                   <button
                     key={icon}
                     type="button"
                     onClick={() => setFormData({...formData, icon})}
-                    className={`w-10 h-10 rounded-lg border-2 transition-colors ${
+                    className={`w-10 h-10 rounded-lg border-2 transition-colors flex items-center justify-center ${
                       formData.icon === icon
                         ? 'border-blue-500 bg-blue-100'
                         : theme === 'dark'
@@ -166,7 +166,7 @@ const Categories = () => {
             {/* Color Selection */}
             <div>
               <label className="block text-sm font-medium mb-2">Màu sắc</label>
-              <div className="grid grid-cols-10 gap-2">
+              <div className="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-10 gap-2">
                 {colors.map(color => (
                   <button
                     key={color}

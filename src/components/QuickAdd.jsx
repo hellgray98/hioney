@@ -140,11 +140,17 @@ const QuickAdd = ({ onClose }) => {
               type="datetime-local"
               value={formData.date}
               onChange={(e) => setFormData({...formData, date: e.target.value})}
-              className={`w-full px-4 py-3 rounded-lg border transition-colors ${
+              className={`w-full px-4 py-3 rounded-lg border transition-colors text-base ${
                 theme === 'dark'
                   ? 'bg-gray-700 border-gray-600 text-white'
                   : 'bg-white border-gray-300 text-gray-900'
               }`}
+              style={{
+                fontSize: '16px', // Prevent zoom on iOS
+                minHeight: '48px',
+                maxWidth: '100%',
+                boxSizing: 'border-box'
+              }}
             />
           </div>
 

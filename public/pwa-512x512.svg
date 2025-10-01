@@ -1,0 +1,73 @@
+<svg viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background with Retro Pattern -->
+  <defs>
+    <linearGradient id="retroGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stopColor="#8B5CF6" />
+      <stop offset="30%" stopColor="#3B82F6" />
+      <stop offset="70%" stopColor="#1D4ED8" />
+      <stop offset="100%" stopColor="#1E40AF" />
+    </linearGradient>
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stopColor="#FCD34D" />
+      <stop offset="50%" stopColor="#F59E0B" />
+      <stop offset="100%" stopColor="#D97706" />
+    </linearGradient>
+    <pattern id="retroPattern" x="0" y="0" width="85" height="85" patternUnits="userSpaceOnUse">
+      <rect width="85" height="85" fill="rgba(255,255,255,0.05)" />
+      <circle cx="42.5" cy="42.5" r="10" fill="rgba(255,255,255,0.1)" />
+    </pattern>
+  </defs>
+  
+  <!-- Outer Hexagon - Retro Style -->
+  <path
+    d="M256 21 L448 128 L448 384 L256 491 L64 384 L64 128 Z"
+    fill="url(#retroGradient)"
+    stroke="url(#goldGradient)"
+    stroke-width="21"
+  />
+  
+  <!-- Inner Hexagon -->
+  <path
+    d="M256 64 L405 149 L405 363 L256 448 L107 363 L107 149 Z"
+    fill="url(#retroPattern)"
+    stroke="rgba(255,255,255,0.2)"
+    stroke-width="10"
+  />
+  
+  <!-- Letter H - Retro Stylized -->
+  <g stroke="white" stroke-width="26" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Left vertical -->
+    <path d="M192 149 L192 363" />
+    <!-- Right vertical -->
+    <path d="M320 149 L320 363" />
+    <!-- Horizontal bar -->
+    <path d="M192 256 L320 256" />
+  </g>
+  
+  <!-- Decorative Elements - Retro Style -->
+  <!-- Corner Stars -->
+  <g fill="url(#goldGradient)">
+    <!-- Top -->
+    <path d="M256 85 L267 128 L309 128 L276 149 L287 191 L256 170 L225 191 L236 149 L203 128 L245 128 Z" />
+    <!-- Bottom -->
+    <path d="M256 427 L267 384 L309 384 L276 363 L287 321 L256 342 L225 321 L236 363 L203 384 L245 384 Z" />
+    <!-- Left -->
+    <path d="M128 256 L170 245 L170 203 L191 236 L233 225 L212 256 L233 287 L191 276 L170 309 L170 267 Z" />
+    <!-- Right -->
+    <path d="M384 256 L342 245 L342 203 L321 236 L279 225 L300 256 L279 287 L321 276 L342 309 L342 267 Z" />
+  </g>
+  
+  <!-- Center Diamond -->
+  <path
+    d="M256 213 L299 256 L256 299 L213 256 Z"
+    fill="url(#goldGradient)"
+    opacity="0.8"
+  />
+  
+  <!-- Inner Diamond -->
+  <path
+    d="M256 234 L277 256 L256 278 L235 256 Z"
+    fill="white"
+    opacity="0.9"
+  />
+</svg>

@@ -1,0 +1,73 @@
+<svg viewBox="0 0 192 192" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background with Retro Pattern -->
+  <defs>
+    <linearGradient id="retroGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stopColor="#8B5CF6" />
+      <stop offset="30%" stopColor="#3B82F6" />
+      <stop offset="70%" stopColor="#1D4ED8" />
+      <stop offset="100%" stopColor="#1E40AF" />
+    </linearGradient>
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stopColor="#FCD34D" />
+      <stop offset="50%" stopColor="#F59E0B" />
+      <stop offset="100%" stopColor="#D97706" />
+    </linearGradient>
+    <pattern id="retroPattern" x="0" y="0" width="32" height="32" patternUnits="userSpaceOnUse">
+      <rect width="32" height="32" fill="rgba(255,255,255,0.05)" />
+      <circle cx="16" cy="16" r="4" fill="rgba(255,255,255,0.1)" />
+    </pattern>
+  </defs>
+  
+  <!-- Outer Hexagon - Retro Style -->
+  <path
+    d="M96 8 L168 48 L168 144 L96 184 L24 144 L24 48 Z"
+    fill="url(#retroGradient)"
+    stroke="url(#goldGradient)"
+    stroke-width="8"
+  />
+  
+  <!-- Inner Hexagon -->
+  <path
+    d="M96 24 L152 56 L152 136 L96 168 L40 136 L40 56 Z"
+    fill="url(#retroPattern)"
+    stroke="rgba(255,255,255,0.2)"
+    stroke-width="4"
+  />
+  
+  <!-- Letter H - Retro Stylized -->
+  <g stroke="white" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Left vertical -->
+    <path d="M72 56 L72 136" />
+    <!-- Right vertical -->
+    <path d="M120 56 L120 136" />
+    <!-- Horizontal bar -->
+    <path d="M72 96 L120 96" />
+  </g>
+  
+  <!-- Decorative Elements - Retro Style -->
+  <!-- Corner Stars -->
+  <g fill="url(#goldGradient)">
+    <!-- Top -->
+    <path d="M96 32 L100 48 L116 48 L104 56 L108 72 L96 64 L84 72 L88 56 L76 48 L92 48 Z" />
+    <!-- Bottom -->
+    <path d="M96 160 L100 144 L116 144 L104 136 L108 120 L96 128 L84 120 L88 136 L76 144 L92 144 Z" />
+    <!-- Left -->
+    <path d="M48 96 L64 92 L64 76 L72 88 L88 84 L80 96 L88 108 L72 104 L64 116 L64 100 Z" />
+    <!-- Right -->
+    <path d="M144 96 L128 92 L128 76 L120 88 L104 84 L112 96 L104 108 L120 104 L128 116 L128 100 Z" />
+  </g>
+  
+  <!-- Center Diamond -->
+  <path
+    d="M96 80 L112 96 L96 112 L80 96 Z"
+    fill="url(#goldGradient)"
+    opacity="0.8"
+  />
+  
+  <!-- Inner Diamond -->
+  <path
+    d="M96 88 L104 96 L96 104 L88 96 Z"
+    fill="white"
+    opacity="0.9"
+  />
+</svg>

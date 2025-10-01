@@ -276,11 +276,17 @@ const Transactions = () => {
                             type="datetime-local"
                             value={editForm.date}
                             onChange={(e) => setEditForm({...editForm, date: e.target.value})}
-                            className={`w-full px-3 py-2 rounded-lg border transition-colors ${
+                            className={`w-full px-3 py-2 rounded-lg border transition-colors text-sm ${
                               theme === 'dark'
                                 ? 'bg-gray-600 border-gray-500 text-white'
                                 : 'bg-white border-gray-300 text-gray-900'
                             }`}
+                            style={{
+                              fontSize: '14px', // Prevent zoom on iOS
+                              minHeight: '40px',
+                              maxWidth: '100%',
+                              boxSizing: 'border-box'
+                            }}
                           />
                         </div>
                     <div>

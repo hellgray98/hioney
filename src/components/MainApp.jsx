@@ -53,7 +53,7 @@ const MainApp = () => {
       {/* Quick Add Button */}
       <button
         onClick={() => setShowQuickAdd(true)}
-        className={`fixed bottom-20 right-4 w-14 h-14 bg-blue-500 hover:bg-blue-600 text-white rounded-full shadow-lg flex items-center justify-center text-2xl transition-all duration-300 ${
+        className={`fixed bottom-20 right-4 w-14 h-14 bg-blue-500 hover:bg-blue-600 text-white rounded-full shadow-lg flex items-center justify-center text-2xl transition-all duration-300 btn-animate bounce-in ${
           isMobileMenuOpen ? 'z-10 opacity-30 scale-90' : 'z-40 opacity-100 scale-100'
         }`}
       >

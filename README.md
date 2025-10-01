@@ -5,10 +5,9 @@
 ### 🎯 Ứng dụng quản lý tài chính cá nhân thông minh
 
 [![React](https://img.shields.io/badge/React-19.1.1-61DAFB?style=for-the-badge&logo=react&logoColor=white)](https://reactjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Vite](https://img.shields.io/badge/Vite-7.1.6-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.4.17-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![Jest](https://img.shields.io/badge/Jest-29.0+-C21325?style=for-the-badge&logo=jest&logoColor=white)](https://jestjs.io/)
+[![PWA](https://img.shields.io/badge/PWA-Enabled-4285F4?style=for-the-badge&logo=pwa&logoColor=white)](https://web.dev/progressive-web-apps/)
 
 ---
 
@@ -18,7 +17,7 @@
 
 ## 🚀 **Tổng quan**
 
-**Hioney** là một ứng dụng quản lý tài chính cá nhân hiện đại, được thiết kế với giao diện đẹp mắt và trải nghiệm người dùng tối ưu. Ứng dụng giúp bạn theo dõi thu chi, quản lý ngân sách, và đạt được các mục tiêu tài chính một cách hiệu quả.
+**Hioney** là một ứng dụng quản lý tài chính cá nhân hiện đại với giao diện đẹp mắt, animations mượt mà và trải nghiệm người dùng tối ưu. Ứng dụng được thiết kế responsive hoàn hảo cho mọi thiết bị và hỗ trợ PWA để cài đặt như một ứng dụng native.
 
 ---
 
@@ -30,70 +29,50 @@
 - **Desktop-optimized**: Trải nghiệm đầy đủ trên máy tính
 
 ### 🎯 **UI/UX Features**
-- ✨ **Gradient backgrounds** với màu sắc hài hòa
-- 🎭 **Smooth animations** và hover effects
-- 🎨 **Modern card design** với shadow và border radius
-- 🌈 **Color-coded categories** dễ nhận biết
-- 📊 **Interactive charts** với Recharts
-- 🌙 **Dark/Light mode** với auto-detect
-- 🔒 **Data encryption** cho bảo mật
+- ✨ **Smooth Animations**: Fade-in, slide-in, stagger effects
+- 🎭 **Hover Effects**: Lift animations và scale effects
+- 🎨 **Modern Design**: Pastel black theme với gradients
+- 🌈 **Interactive Elements**: Button animations và transitions
+- 📊 **Clean Layout**: Card-based design với shadows
+- 🍔 **Mobile Menu**: Hamburger menu với overlay
+- 🎪 **Loading States**: Shimmer effects và spinners
 
 ---
 
 ## 🛠️ **Tính năng chính**
 
 ### 💸 **Quản lý giao dịch**
-- ➕ Thêm/sửa/xóa giao dịch thu chi
-- 🔍 Tìm kiếm thông minh theo ghi chú và danh mục
-- 📅 Quản lý theo ngày tháng
-- 🏷️ Phân loại theo danh mục chi tiết
-- ✅ **Form validation** mạnh mẽ
+- ➕ **Quick Add**: Thêm giao dịch nhanh với modal
+- ✏️ **Edit/Delete**: Sửa và xóa giao dịch dễ dàng
+- 🔍 **Smart Search**: Tìm kiếm theo ghi chú và danh mục
+- 📅 **Date & Time**: Chọn ngày và giờ riêng biệt
+- 🏷️ **Categories**: Phân loại theo danh mục với icon và màu
+- 💰 **Currency Format**: Tự động format số tiền với dấu phẩy
 
 ### 📊 **Dashboard thông minh**
-- 💰 **Tổng quan tài chính**: Thu nhập, chi tiêu, số dư
-- 📈 **Xu hướng tháng**: Phân tích thu chi hàng ngày
-- 🎯 **Mục tiêu nhanh**: Hiển thị tiến độ các mục tiêu
-- 📝 **Thống kê giao dịch**: Số lượng giao dịch trong tháng
+- 💰 **Balance Card**: Hiển thị số dư với pulse animation
+- 📈 **Stats Cards**: Thu nhập, chi tiêu, lãi/lỗ
+- 📊 **Top Categories**: Danh mục chi tiêu nhiều nhất
+- 🎯 **Time Range**: Xem theo tuần/tháng/năm/tất cả
+- 🎨 **Hover Effects**: Cards có lift animation
 
-### 🧾 **Quản lý ngân sách**
-- 📋 Tạo ngân sách theo từng danh mục
-- 📊 **Progress bars** trực quan với màu sắc thông minh:
-  - 🟢 **Xanh**: Trong ngân sách (< 80%)
-  - 🟡 **Vàng**: Cảnh báo (80-100%)
-  - 🔴 **Đỏ**: Vượt ngân sách (> 100%)
-- 💡 Cảnh báo khi sắp vượt ngân sách
+### 🏷️ **Quản lý danh mục**
+- ➕ **Add Categories**: Tạo danh mục mới với icon và màu
+- ✏️ **Edit/Delete**: Sửa và xóa danh mục
+- 🎨 **Icon Selection**: 30+ icons với grid responsive
+- 🌈 **Color Picker**: 15 màu sắc đẹp mắt
+- 📱 **Mobile Optimized**: Grid responsive cho mobile
 
-### 💳 **Quản lý nợ & thẻ tín dụng**
-- 📝 Theo dõi số dư nợ hiện tại
-- 📈 Quản lý lãi suất và thanh toán tối thiểu
-- ⚠️ Cảnh báo nợ quá hạn
+### 🎯 **Ngân sách (Budgets)**
+- 📋 **Budget Management**: Tạo và quản lý ngân sách
+- 📊 **Progress Tracking**: Theo dõi tiến độ chi tiêu
+- ⚠️ **Alerts**: Cảnh báo khi vượt ngân sách
 
-### 🎯 **Mục tiêu tài chính**
-- 🏆 Tạo và theo dõi các mục tiêu tiết kiệm
-- 📊 **Progress tracking** với thanh tiến độ
-- 💪 Động lực hoàn thành mục tiêu
-
-### 📈 **Biểu đồ phân tích**
-- 🥧 **Pie Chart**: Chi tiêu theo danh mục
-- 📈 **Line Chart**: Xu hướng thu chi theo tháng
-- 🎨 Màu sắc đẹp mắt và tương tác
-
-### 🏦 **Quản lý tài khoản ngân hàng**
-- 💳 Quản lý nhiều tài khoản ngân hàng
-- 💰 Theo dõi số dư theo thời gian thực
-- 🏛️ Phân loại theo loại tài khoản
-
-### 📋 **Quản lý hóa đơn**
-- 📅 Nhắc nhở hóa đơn sắp đến hạn
-- ✅ Theo dõi trạng thái thanh toán
-- 🔔 Thông báo tự động
-
-### ⚙️ **Cài đặt & Quản lý**
-- 💾 **Auto-save**: Tự động lưu dữ liệu
-- 📥 **Export data**: Xuất dữ liệu JSON
-- 🗑️ **Reset data**: Xóa toàn bộ dữ liệu
-- 📊 **Thống kê**: Thông tin ứng dụng và dữ liệu
-- 🔒 **Data encryption**: Mã hóa dữ liệu nhạy cảm
+### ⚙️ **Cài đặt**
+- 🌙 **Theme Toggle**: Dark/Light mode
+- 💾 **Data Management**: Export/Import dữ liệu
+- 🗑️ **Clear Data**: Xóa toàn bộ dữ liệu
+- 📊 **App Info**: Thông tin ứng dụng
 
 ---
 
@@ -101,29 +80,26 @@
 
 ### **Frontend Stack**
 - ⚛️ **React 19.1.1** - UI Framework hiện đại
-- 🔷 **TypeScript** - Type safety và developer experience
 - ⚡ **Vite 7.1.6** - Build tool siêu nhanh
 - 🎨 **TailwindCSS 3.4.17** - Utility-first CSS
 - 📊 **Recharts 3.2.1** - Thư viện biểu đồ React
 
-### **Testing & Quality**
-- 🧪 **Jest** - Unit testing framework
-- 🔍 **React Testing Library** - Component testing
-- 📊 **Coverage reports** - Test coverage tracking
-- 🔍 **ESLint** - Code quality và linting
-- 🎯 **TypeScript** - Type checking
-
 ### **PWA & Performance**
 - 📱 **PWA Support** - Progressive Web App
 - 🔄 **Service Worker** - Offline support
-- ⚡ **React.memo** - Performance optimization
-- 🎨 **Custom hooks** - State management
+- 📦 **Vite PWA Plugin** - Auto-generate manifest
+- 🎨 **Custom CSS Animations** - Smooth transitions
 
-### **Security & Data**
-- 🔒 **Data encryption** - Mã hóa dữ liệu nhạy cảm
-- ✅ **Input validation** - Form validation mạnh mẽ
-- 🛡️ **Error boundaries** - Error handling
-- 🔐 **Data integrity** - Hash validation
+### **State Management**
+- 🔄 **React Context** - Global state management
+- 💾 **LocalStorage** - Client-side data persistence
+- 🎯 **Custom Hooks** - Reusable logic
+
+### **Development Tools**
+- 🔍 **ESLint** - Code quality và linting
+- 🧪 **Jest** - Unit testing framework
+- 🔍 **React Testing Library** - Component testing
+- 📊 **Coverage Reports** - Test coverage tracking
 
 ---
 
@@ -136,7 +112,7 @@
 ### **Cài đặt**
 ```bash
 # Clone repository
-git clone https://github.com/hellgray98/hioney
+git clone https://github.com/yourusername/hioney
 cd hioney
 
 # Cài đặt dependencies
@@ -149,7 +125,7 @@ npm run dev
 ### **Scripts có sẵn**
 ```bash
 # Development
-npm run dev              # Chạy development server
+npm run dev              # Chạy development server (localhost:5173)
 npm run build            # Build production
 npm run preview          # Preview production build
 
@@ -161,74 +137,90 @@ npm run test:coverage    # Chạy tests với coverage report
 # Code Quality
 npm run lint             # Chạy ESLint
 npm run type-check       # TypeScript type checking
+
+# Deployment
+npm run deploy           # Deploy lên Vercel production
+npm run deploy:preview   # Deploy lên Vercel preview
 ```
 
 ---
 
-## 🧪 **Testing**
+## 🎨 **Animations & Effects**
 
-Dự án sử dụng Jest và React Testing Library cho testing:
+### **CSS Animations**
+- 🎭 **Page Transitions**: Fade in/out với slide effects
+- 🎪 **Slide Animations**: slideInRight, slideInLeft, slideInUp, slideInDown
+- ✨ **Fade Animations**: fadeIn với delay (0.1s, 0.2s, 0.3s)
+- 🎯 **Scale Animations**: scaleIn, scaleInCenter
+- 💓 **Pulse Animations**: pulseAmount, pulseSuccess
+- 🎪 **Bounce Animations**: bounceIn
+- 🎨 **Stagger Animations**: Items xuất hiện lần lượt
+- 🎭 **Hover Effects**: hover-lift với shadow và transform
 
-```bash
-# Chạy tất cả tests
-npm run test
-
-# Chạy tests với watch mode
-npm run test:watch
-
-# Tạo coverage report
-npm run test:coverage
-```
-
-### **Test Coverage**
-- ✅ Helper functions (100%)
-- ✅ Validation functions (100%)
-- ✅ Storage utilities
-- ✅ Component tests
-- ✅ Hook tests
-
----
-
-## 🔒 **Bảo mật**
-
-### **Data Encryption**
-- Dữ liệu nhạy cảm được mã hóa trước khi lưu vào localStorage
-- Hash validation để kiểm tra tính toàn vẹn dữ liệu
-- Fallback mechanism cho backward compatibility
-
-### **Input Validation**
-- Validation mạnh mẽ cho tất cả form inputs
-- Sanitization dữ liệu đầu vào
-- Error handling toàn diện
+### **Component Animations**
+- 📱 **Header**: slide-in-down animation
+- 🏠 **Dashboard**: fade-in, stagger effects cho cards
+- 💸 **Transactions**: stagger animations cho list items
+- 🏷️ **Categories**: hover-lift cho category cards
+- ➕ **QuickAdd Modal**: scale-in-center animation
+- 🍔 **Mobile Menu**: slide-in-right animation
 
 ---
 
 ## 📱 **PWA Features**
 
-### **Service Worker**
-- Offline support
-- Auto-update notifications
-- Install prompts
+### **Installation**
+- 📱 **iOS Safari**: Share → Add to Home Screen
+- 🤖 **Android Chrome**: Native install prompt
+- 🖥️ **Desktop**: Install button trong browser
+
+### **Offline Support**
+- 🔄 **Service Worker**: Cache static assets
+- 📦 **Auto Update**: Tự động cập nhật khi có version mới
+- 💾 **Local Storage**: Dữ liệu lưu trữ local
 
 ### **Manifest**
-- App icons (192x192, 512x512)
-- Theme colors
-- Display mode: standalone
+- 🎨 **Icons**: 192x192, 512x512 PNG icons
+- 🎯 **Theme Colors**: Pastel black theme
+- 📱 **Display Mode**: Standalone app
+- 🎪 **Orientation**: Portrait mode
 
 ---
 
-## 🎨 **Theme System**
+## 💾 **Lưu trữ dữ liệu**
 
-### **Dark/Light Mode**
-- Tự động detect system preference
-- Manual toggle
-- Smooth transitions
-- Persistent settings
+### **LocalStorage**
+- 🏠 **Client-side**: Dữ liệu lưu trên trình duyệt
+- 🔄 **Auto-save**: Tự động lưu khi có thay đổi
+- 📥 **Export**: Xuất dữ liệu JSON để backup
+- 🔒 **Privacy**: Dữ liệu không được gửi lên server
+- 🛡️ **Data Integrity**: JSON validation
 
-### **Responsive Design**
-- Mobile-first approach
-- Breakpoints: xs, sm, md, lg, xl
-- Touch-friendly interface
+### **Data Structure**
+```javascript
+{
+  transactions: [],    // Danh sách giao dịch
+  categories: [],      // Danh mục với icon và màu
+  budgets: [],         // Ngân sách
+  balance: 0          // Số dư tổng
+}
+```
+
+---
+
+## 🎯 **Responsive Design**
+
+### **Breakpoints**
+- 📱 **Mobile**: < 640px (sm)
+- 📱 **Tablet**: 640px - 768px (md)
+- 🖥️ **Desktop**: 768px - 1024px (lg)
+- 🖥️ **Large**: > 1024px (xl)
+
+### **Mobile Optimizations**
+- 🍔 **Hamburger Menu**: Full-screen overlay menu
+- 📱 **Touch-friendly**: 48px minimum touch targets
+- 🎯 **Swipe Gestures**: Smooth navigation
+- 📱 **iOS Optimized**: 16px font size để tránh zoom
 
 ---
 
@@ -277,52 +269,46 @@ vercel --prod
 ## 📱 **Screenshots**
 
 ### 🏠 **Dashboard**
-- Tổng quan tài chính với 4 cards chính
-- Xu hướng tháng và mục tiêu nhanh
-- Giao diện responsive đẹp mắt
-- Dark/Light mode toggle
+- Tổng quan tài chính với balance card có pulse animation
+- Stats cards với hover-lift effects
+- Top categories với stagger animations
+- Responsive design cho mọi thiết bị
 
 ### 💸 **Giao dịch**
-- Bảng giao dịch với tìm kiếm
-- Form thêm/sửa giao dịch modal
-- Phân loại thu chi rõ ràng
-- Validation mạnh mẽ
+- Danh sách giao dịch với stagger animations
+- Quick Add modal với scale-in animation
+- Edit form với date/time fields riêng biệt
+- Currency formatting tự động
 
-### 📊 **Biểu đồ**
-- Pie chart chi tiêu theo danh mục
-- Line chart xu hướng thu chi
-- Màu sắc và tương tác đẹp
+### 🏷️ **Danh mục**
+- Grid responsive cho icon và color selection
+- Hover effects cho category cards
+- Add/Edit form với slide-in animations
 
----
-
-## 💾 **Lưu trữ dữ liệu**
-
-- 🏠 **LocalStorage**: Dữ liệu được lưu trữ trên trình duyệt
-- 🔄 **Auto-save**: Tự động lưu khi có thay đổi
-- 📥 **Export**: Xuất dữ liệu JSON để backup
-- 🔒 **Privacy**: Dữ liệu không được gửi lên server
-- 🛡️ **Encryption**: Mã hóa dữ liệu nhạy cảm
+### 🍔 **Mobile Menu**
+- Full-screen overlay với slide-in-right
+- User info và navigation items
+- Close button với smooth animations
 
 ---
 
 ## 🚀 **Roadmap**
 
-### **Version 2.0** (In Progress)
-- [x] 🔐 **TypeScript** - Type safety
-- [x] 🌙 **Dark Mode** - Theme system
-- [x] 🧪 **Testing** - Unit tests với Jest
-- [x] 🔒 **Data Encryption** - Bảo mật dữ liệu
-- [x] ✅ **Form Validation** - Validation mạnh mẽ
-- [x] 🛡️ **Error Boundaries** - Error handling
-- [ ] ☁️ **Cloud Sync** - Đồng bộ dữ liệu
-- [ ] 🔔 **Push Notifications** - Thông báo nhắc nhở
+### **Version 2.0** (Completed ✅)
+- [x] 🎨 **Animations** - Smooth UI animations
+- [x] 📱 **PWA Support** - Progressive Web App
+- [x] 🍔 **Mobile Menu** - Hamburger menu với overlay
+- [x] 📅 **Date/Time Split** - Separate date và time fields
+- [x] 🎯 **Responsive Grid** - Mobile-optimized layouts
+- [x] 💰 **Currency Format** - Auto-format với dấu phẩy
 
-### **Version 3.0** (Future)
-- [ ] 🤖 **AI Insights** - Gợi ý thông minh
-- [ ] 📈 **Investment Tracking** - Theo dõi đầu tư
-- [ ] 🏦 **Bank Integration** - Kết nối ngân hàng
-- [ ] 👥 **Family Sharing** - Chia sẻ gia đình
-- [ ] 📱 **Mobile App** - React Native
+### **Version 3.0** (Future 🚀)
+- [ ] ☁️ **Cloud Sync** - Firebase integration
+- [ ] 🔔 **Push Notifications** - Budget alerts
+- [ ] 📊 **Advanced Charts** - More chart types
+- [ ] 🎯 **Goals Tracking** - Financial goals
+- [ ] 📱 **Mobile App** - React Native version
+- [ ] 🤖 **AI Insights** - Smart recommendations
 
 ---
 
@@ -337,10 +323,11 @@ Chúng tôi hoan nghênh mọi đóng góp! Hãy:
 5. 🔄 **Open** Pull Request
 
 ### **Development Guidelines**
-- Sử dụng TypeScript cho tất cả files mới
+- Sử dụng functional components với hooks
 - Viết tests cho functions và components
 - Tuân thủ ESLint rules
 - Cập nhật documentation khi cần
+- Test trên mobile và desktop
 
 ---
 

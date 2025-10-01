@@ -81,13 +81,13 @@ const Categories = () => {
   const incomeCategories = data.categories.filter(c => c.type === 'income' || c.type === 'both');
 
   return (
-    <div className="max-w-4xl mx-auto p-4 space-y-6">
+    <div className="max-w-4xl mx-auto p-4 space-y-6 fade-in">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between slide-in-down">
         <h1 className="text-2xl font-bold">Danh mục</h1>
         <button
           onClick={() => setShowAddForm(true)}
-          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors"
+          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors btn-animate"
         >
           + Thêm danh mục
         </button>
@@ -95,7 +95,7 @@ const Categories = () => {
 
       {/* Add/Edit Form */}
       {showAddForm && (
-        <div className={`rounded-2xl p-6 transition-colors ${
+        <div className={`rounded-2xl p-6 transition-colors slide-in-up ${
           theme === 'dark' ? 'bg-gray-800' : 'bg-white'
         }`}>
           <h3 className="text-lg font-semibold mb-4">
@@ -226,7 +226,7 @@ const Categories = () => {
       {/* Categories List */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Expense Categories */}
-        <div className={`rounded-2xl p-6 transition-colors ${
+        <div className={`rounded-2xl p-6 transition-colors hover-lift stagger-item ${
           theme === 'dark' ? 'bg-gray-800' : 'bg-white'
         }`}>
           <h3 className="text-lg font-semibold mb-4 flex items-center">
@@ -273,7 +273,7 @@ const Categories = () => {
         </div>
 
         {/* Income Categories */}
-        <div className={`rounded-2xl p-6 transition-colors ${
+        <div className={`rounded-2xl p-6 transition-colors hover-lift stagger-item ${
           theme === 'dark' ? 'bg-gray-800' : 'bg-white'
         }`}>
           <h3 className="text-lg font-semibold mb-4 flex items-center">

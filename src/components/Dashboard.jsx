@@ -68,14 +68,14 @@ const Dashboard = () => {
   const formatCurrency = formatCurrencyDisplay;
 
   return (
-    <div className="max-w-4xl mx-auto p-4 space-y-4">
+    <div className="max-w-4xl mx-auto p-4 space-y-4 fade-in">
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-4 slide-in-down">
         <h1 className="text-xl font-bold">Tổng quan</h1>
         <select
           value={timeRange}
           onChange={(e) => setTimeRange(e.target.value)}
-          className={`px-3 py-2 rounded-lg border text-sm transition-colors ${
+          className={`px-3 py-2 rounded-lg border text-sm transition-colors btn-animate ${
             theme === 'dark'
               ? 'bg-gray-700 border-gray-600 text-white'
               : 'bg-white border-gray-300 text-gray-900'
@@ -89,12 +89,12 @@ const Dashboard = () => {
       </div>
 
       {/* Balance Card */}
-      <div className={`rounded-2xl p-4 transition-colors ${
+      <div className={`rounded-2xl p-4 transition-colors hover-lift scale-in ${
         theme === 'dark' ? 'bg-gray-800' : 'bg-white'
       }`}>
         <div className="text-center">
           <h2 className="text-sm font-medium mb-2 text-gray-600 dark:text-gray-400">Số dư hiện tại</h2>
-          <div className={`text-2xl sm:text-3xl md:text-4xl font-bold break-all ${
+          <div className={`text-2xl sm:text-3xl md:text-4xl font-bold break-all pulse-amount ${
             data.balance >= 0 ? 'text-green-500' : 'text-red-500'
           }`}>
             {formatCurrency(data.balance)}
@@ -104,7 +104,7 @@ const Dashboard = () => {
         
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        <div className={`rounded-xl p-4 transition-colors ${
+        <div className={`rounded-xl p-4 transition-colors hover-lift stagger-item ${
           theme === 'dark' ? 'bg-gray-800' : 'bg-white'
         }`}>
           <div className="flex items-center justify-between">
@@ -120,7 +120,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className={`rounded-xl p-4 transition-colors ${
+        <div className={`rounded-xl p-4 transition-colors hover-lift stagger-item ${
           theme === 'dark' ? 'bg-gray-800' : 'bg-white'
         }`}>
           <div className="flex items-center justify-between">
@@ -136,7 +136,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className={`rounded-xl p-4 transition-colors sm:col-span-2 lg:col-span-1 ${
+        <div className={`rounded-xl p-4 transition-colors hover-lift stagger-item sm:col-span-2 lg:col-span-1 ${
           theme === 'dark' ? 'bg-gray-800' : 'bg-white'
         }`}>
           <div className="flex items-center justify-between">

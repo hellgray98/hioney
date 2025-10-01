@@ -17,11 +17,11 @@ const Header = ({ activeTab, setActiveTab, onQuickAdd, onMobileMenuToggle }) => 
 
   return (
     <>
-      <header className={`fixed top-0 left-0 right-0 z-50 border-b transition-colors duration-300 ${
-        theme === 'dark' 
-          ? 'bg-gray-800 border-gray-700' 
-          : 'bg-white border-gray-200'
-      }`}>
+          <header className={`fixed top-0 left-0 right-0 z-50 border-b transition-colors duration-300 slide-in-down ${
+            theme === 'dark' 
+              ? 'bg-gray-800 border-gray-700' 
+              : 'bg-white border-gray-200'
+          }`}>
         <div className="max-w-4xl mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
@@ -118,30 +118,30 @@ const Header = ({ activeTab, setActiveTab, onQuickAdd, onMobileMenuToggle }) => 
 
             {/* Right side buttons */}
             <div className="flex items-center space-x-2">
-              {/* Theme Toggle */}
-              <button
-                onClick={toggleTheme}
-                className={`p-2 rounded-lg transition-colors ${
-                  theme === 'dark'
-                    ? 'text-gray-300 hover:bg-gray-700'
-                    : 'text-gray-600 hover:bg-gray-100'
-                }`}
-              >
-                {theme === 'dark' ? '☀️' : '🌙'}
-              </button>
+                  {/* Theme Toggle */}
+                  <button
+                    onClick={toggleTheme}
+                    className={`p-2 rounded-lg transition-colors btn-animate ${
+                      theme === 'dark'
+                        ? 'text-gray-300 hover:bg-gray-700'
+                        : 'text-gray-600 hover:bg-gray-100'
+                    }`}
+                  >
+                    {theme === 'dark' ? '☀️' : '🌙'}
+                  </button>
 
-              {/* Mobile Menu Button */}
-            <button
-                onClick={() => {
-                  setShowMobileMenu(!showMobileMenu);
-                  onMobileMenuToggle?.(!showMobileMenu);
-                }}
-                className={`p-2 rounded-lg transition-colors ${
-                  theme === 'dark'
-                    ? 'text-gray-300 hover:bg-gray-700'
-                    : 'text-gray-600 hover:bg-gray-100'
-                }`}
-              >
+                  {/* Mobile Menu Button */}
+                  <button
+                    onClick={() => {
+                      setShowMobileMenu(!showMobileMenu);
+                      onMobileMenuToggle?.(!showMobileMenu);
+                    }}
+                    className={`p-2 rounded-lg transition-colors btn-animate ${
+                      theme === 'dark'
+                        ? 'text-gray-300 hover:bg-gray-700'
+                        : 'text-gray-600 hover:bg-gray-100'
+                    }`}
+                  >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
@@ -164,10 +164,10 @@ const Header = ({ activeTab, setActiveTab, onQuickAdd, onMobileMenuToggle }) => 
             }}
           />
           
-          {/* Menu Panel */}
-          <div className={`fixed top-0 right-0 w-80 h-full transition-all duration-300 shadow-2xl backdrop-blur-md overflow-y-auto ${
-            theme === 'dark' ? 'bg-gray-900/95 border-l border-gray-700' : 'bg-white/95 border-l border-gray-200'
-          }`}>
+              {/* Menu Panel */}
+              <div className={`fixed top-0 right-0 w-80 h-full transition-all duration-300 shadow-2xl backdrop-blur-md overflow-y-auto slide-in-right ${
+                theme === 'dark' ? 'bg-gray-900/95 border-l border-gray-700' : 'bg-white/95 border-l border-gray-200'
+              }`}>
             <div className="pt-4 px-6 pb-6">
               {/* Header with Close Button */}
               <div className="flex items-center justify-between mb-8">

@@ -11,7 +11,8 @@ const QuickAdd = ({ onClose }) => {
     amount: '',
     categoryId: '',
     note: '',
-    date: new Date().toISOString().slice(0, 16) // Format: YYYY-MM-DDTHH:MM
+    date: new Date().toISOString().slice(0, 10), // Format: YYYY-MM-DD
+    time: new Date().toTimeString().slice(0, 5) // Format: HH:MM
   });
 
   const handleSubmit = (e) => {
@@ -24,7 +25,7 @@ const QuickAdd = ({ onClose }) => {
     addTransaction({
       ...formData,
       amount: parseCurrencyInput(formData.amount),
-      createdAt: new Date(formData.date).toISOString()
+      createdAt: new Date(`${formData.date}T${formData.time}`).toISOString()
     });
 
     setFormData({
@@ -32,7 +33,8 @@ const QuickAdd = ({ onClose }) => {
       amount: '',
       categoryId: '',
       note: '',
-      date: new Date().toISOString().slice(0, 16)
+      date: new Date().toISOString().slice(0, 10),
+      time: new Date().toTimeString().slice(0, 5)
     });
     onClose();
   };
@@ -42,8 +44,8 @@ const QuickAdd = ({ onClose }) => {
   );
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className={`w-full max-w-md rounded-2xl p-6 transition-colors ${
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 fade-in">
+      <div className={`w-full max-w-md rounded-2xl p-6 transition-colors scale-in-center ${
         theme === 'dark' ? 'bg-gray-800' : 'bg-white'
       }`}>
         <div className="flex items-center justify-between mb-6">
@@ -134,24 +136,46 @@ const QuickAdd = ({ onClose }) => {
           </div>
 
           {/* Date & Time */}
-          <div>
-            <label className="block text-sm font-medium mb-2">Ngày & Giờ</label>
-            <input
-              type="datetime-local"
-              value={formData.date}
-              onChange={(e) => setFormData({...formData, date: e.target.value})}
-              className={`w-full px-4 py-3 rounded-lg border transition-colors text-base ${
-                theme === 'dark'
-                  ? 'bg-gray-700 border-gray-600 text-white'
-                  : 'bg-white border-gray-300 text-gray-900'
-              }`}
-              style={{
-                fontSize: '16px', // Prevent zoom on iOS
-                minHeight: '48px',
-                maxWidth: '100%',
-                boxSizing: 'border-box'
-              }}
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-2">Ngày</label>
+              <input
+                type="date"
+                value={formData.date}
+                onChange={(e) => setFormData({...formData, date: e.target.value})}
+                className={`w-full px-4 py-3 rounded-lg border transition-colors text-base ${
+                  theme === 'dark'
+                    ? 'bg-gray-700 border-gray-600 text-white'
+                    : 'bg-white border-gray-300 text-gray-900'
+                }`}
+                style={{
+                  fontSize: '16px', // Prevent zoom on iOS
+                  minHeight: '48px',
+                  maxWidth: '100%',
+                  boxSizing: 'border-box'
+                }}
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-2">Giờ</label>
+              <input
+                type="time"
+                value={formData.time}
+                onChange={(e) => setFormData({...formData, time: e.target.value})}
+                className={`w-full px-4 py-3 rounded-lg border transition-colors text-base ${
+                  theme === 'dark'
+                    ? 'bg-gray-700 border-gray-600 text-white'
+                    : 'bg-white border-gray-300 text-gray-900'
+                }`}
+                style={{
+                  fontSize: '16px', // Prevent zoom on iOS
+                  minHeight: '48px',
+                  maxWidth: '100%',
+                  boxSizing: 'border-box'
+                }}
+              />
+            </div>
           </div>
 
           {/* Note */}
@@ -173,7 +197,7 @@ const QuickAdd = ({ onClose }) => {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 rounded-lg transition-colors"
+            className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 rounded-lg transition-colors btn-animate"
           >
             Thêm giao dịch
           </button>

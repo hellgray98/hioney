@@ -15,7 +15,8 @@ const Transactions = () => {
     amount: '',
     categoryId: '',
     note: '',
-    date: ''
+    date: '',
+    time: ''
   });
 
   // Filter and sort transactions
@@ -69,7 +70,8 @@ const Transactions = () => {
       amount: formatCurrencyInput(transaction.amount.toString()),
       categoryId: transaction.categoryId,
       note: transaction.note || '',
-      date: transactionDate.toISOString().slice(0, 16)
+      date: transactionDate.toISOString().slice(0, 10),
+      time: transactionDate.toTimeString().slice(0, 5)
     });
   };
 
@@ -78,14 +80,15 @@ const Transactions = () => {
       updateTransaction(editingId, {
         ...editForm,
         amount: parseCurrencyInput(editForm.amount),
-        createdAt: new Date(editForm.date).toISOString()
+        createdAt: new Date(`${editForm.date}T${editForm.time}`).toISOString()
       });
       setEditingId(null);
       setEditForm({
         amount: '',
         categoryId: '',
         note: '',
-        date: ''
+        date: '',
+        time: ''
       });
     }
   };
@@ -96,7 +99,8 @@ const Transactions = () => {
       amount: '',
       categoryId: '',
       note: '',
-      date: ''
+      date: '',
+      time: ''
     });
   };
 
@@ -119,12 +123,12 @@ const Transactions = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4 space-y-6">
+    <div className="max-w-4xl mx-auto p-4 space-y-6 fade-in">
       {/* Header */}
-      <h1 className="text-2xl font-bold">Giao dịch</h1>
+      <h1 className="text-2xl font-bold slide-in-down">Giao dịch</h1>
 
       {/* Filters */}
-      <div className={`rounded-2xl p-6 transition-colors ${
+      <div className={`rounded-2xl p-6 transition-colors slide-in-up ${
         theme === 'dark' ? 'bg-gray-800' : 'bg-white'
       }`}>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -205,7 +209,7 @@ const Transactions = () => {
       </div>
 
       {/* Transactions List */}
-      <div className={`rounded-2xl p-6 transition-colors ${
+      <div className={`rounded-2xl p-6 transition-colors slide-in-up ${
         theme === 'dark' ? 'bg-gray-800' : 'bg-white'
       }`}>
         <div className="flex items-center justify-between mb-4">
@@ -223,7 +227,7 @@ const Transactions = () => {
             return (
                 <div
                   key={transaction.id}
-                  className={`p-4 rounded-lg border transition-colors ${
+                  className={`p-4 rounded-lg border transition-colors hover-lift stagger-item ${
                     theme === 'dark' 
                       ? 'bg-gray-700 border-gray-600' 
                       : 'bg-gray-50 border-gray-200'
@@ -271,9 +275,9 @@ const Transactions = () => {
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div>
-                          <label className="block text-sm font-medium mb-1">Ngày & Giờ</label>
+                          <label className="block text-sm font-medium mb-1">Ngày</label>
                           <input
-                            type="datetime-local"
+                            type="date"
                             value={editForm.date}
                             onChange={(e) => setEditForm({...editForm, date: e.target.value})}
                             className={`w-full px-3 py-2 rounded-lg border transition-colors text-sm ${
@@ -289,7 +293,30 @@ const Transactions = () => {
                             }}
                           />
                         </div>
-                    <div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium mb-1">Giờ</label>
+                          <input
+                            type="time"
+                            value={editForm.time}
+                            onChange={(e) => setEditForm({...editForm, time: e.target.value})}
+                            className={`w-full px-3 py-2 rounded-lg border transition-colors text-sm ${
+                              theme === 'dark'
+                                ? 'bg-gray-600 border-gray-500 text-white'
+                                : 'bg-white border-gray-300 text-gray-900'
+                            }`}
+                            style={{
+                              fontSize: '14px', // Prevent zoom on iOS
+                              minHeight: '40px',
+                              maxWidth: '100%',
+                              boxSizing: 'border-box'
+                            }}
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div>
                           <label className="block text-sm font-medium mb-1">Ghi chú</label>
                           <input
                             type="text"
@@ -302,7 +329,8 @@ const Transactions = () => {
                             }`}
                           />
                         </div>
-                    </div>
+                        <div></div> {/* Empty div for grid alignment */}
+                      </div>
                       <div className="flex space-x-2">
                         <button
                           onClick={handleSaveEdit}

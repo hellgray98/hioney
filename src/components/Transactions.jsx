@@ -320,46 +320,48 @@ const Transactions = () => {
                     </div>
                   ) : (
                     // Display Mode
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                      <div className="flex items-center space-x-4 flex-1 min-w-0">
                         <div 
-                          className="w-12 h-12 rounded-full flex items-center justify-center text-white"
+                          className="w-12 h-12 rounded-full flex items-center justify-center text-white flex-shrink-0"
                           style={{ backgroundColor: category?.color || '#gray' }}
                         >
                           <span className="text-xl">{category?.icon || '📝'}</span>
                         </div>
-                        <div>
-                          <h4 className="font-semibold">{category?.name || 'Không xác định'}</h4>
+                        <div className="min-w-0 flex-1">
+                          <h4 className="font-semibold truncate">{category?.name || 'Không xác định'}</h4>
                           {transaction.note && (
-                            <p className="text-sm text-gray-500">{transaction.note}</p>
+                            <p className="text-sm text-gray-500 truncate">{transaction.note}</p>
                           )}
                           <p className="text-xs text-gray-400">{formatDate(transaction.createdAt)}</p>
-                  </div>
-                </div>
-                      <div className="flex items-center space-x-2">
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center justify-between sm:justify-end gap-3 flex-shrink-0">
                         <div className={`text-right ${
                           transaction.type === 'income' ? 'text-green-500' : 'text-red-500'
                         }`}>
-                          <div className="font-bold">
+                          <div className="font-bold text-sm sm:text-base break-all">
                             {transaction.type === 'income' ? '+' : '-'}{formatCurrency(transaction.amount)}
                           </div>
                           <div className="text-xs">
                             {transaction.type === 'income' ? 'Thu nhập' : 'Chi tiêu'}
                           </div>
                         </div>
+                        
                         <div className="flex space-x-1">
-                                <button
-                                  onClick={() => handleEdit(transaction)}
-                            className="p-2 text-blue-500 hover:bg-blue-100 rounded-lg transition-colors"
-                                >
+                          <button
+                            onClick={() => handleEdit(transaction)}
+                            className="p-2 text-blue-500 hover:bg-blue-100 rounded-lg transition-colors flex-shrink-0"
+                          >
                             ✏️
-                                </button>
-                                <button
-                                  onClick={() => handleDelete(transaction.id)}
-                            className="p-2 text-red-500 hover:bg-red-100 rounded-lg transition-colors"
-                                >
+                          </button>
+                          <button
+                            onClick={() => handleDelete(transaction.id)}
+                            className="p-2 text-red-500 hover:bg-red-100 rounded-lg transition-colors flex-shrink-0"
+                          >
                             🗑️
-                                </button>
+                          </button>
                         </div>
                       </div>
                     </div>

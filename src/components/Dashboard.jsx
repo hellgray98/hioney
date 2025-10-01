@@ -1,317 +1,229 @@
-import React, { memo } from 'react';
-import { fmt, formatDate } from '../utils/helpers';
+import React, { useState, useMemo } from 'react';
+import { useTheme } from '../contexts/ThemeContext';
+import { useData } from '../contexts/DataContext';
+import { formatCurrencyDisplay } from '../utils/formatCurrency';
 
-const Dashboard = memo(({ analytics, state }) => {
-  const { incomeTotal, expenseTotal, balance, currentMonth, monthTx } = analytics;
-  
-  // Calculate total balance from wallets
-  const totalWalletBalance = state.wallets ? state.wallets.reduce((sum, wallet) => sum + wallet.balance, 0) : 0;
-  
-  // Get recent transactions (last 5)
-  const recentTransactions = state.transactions
-    .sort((a, b) => new Date(b.date) - new Date(a.date))
-    .slice(0, 5);
-  
-  // Helper function to get category label
-  const catLabel = (id) => state.categories.find(c => c.id === id)?.label || id;
-  
-  // Helper function to get wallet name
-  const walletName = (id) => state.wallets?.find(w => w.id === id)?.name || 'Không xác định';
+const Dashboard = () => {
+  const { theme } = useTheme();
+  const { data } = useData();
+  const [timeRange, setTimeRange] = useState('month');
 
-  // Calculate additional financial data
-  const totalBankBalance = state.bankAccounts ? state.bankAccounts.reduce((sum, account) => sum + account.balance, 0) : 0;
-  const totalDebt = state.debts ? state.debts.reduce((sum, debt) => sum + debt.balance, 0) : 0;
-  const totalBudget = state.budgets ? state.budgets.reduce((sum, budget) => sum + budget.monthly, 0) : 0;
-  const totalGoalTarget = state.goals ? state.goals.reduce((sum, goal) => sum + goal.target, 0) : 0;
-  const totalGoalSaved = state.goals ? state.goals.reduce((sum, goal) => sum + goal.saved, 0) : 0;
-  
-  // Calculate budget analysis
-  const budgetAnalysis = state.budgets ? state.budgets.map(budget => {
-    const spent = state.transactions
-      .filter(t => t.type === 'expense' && t.category === budget.category)
+  // Calculate statistics
+  const stats = useMemo(() => {
+    const now = new Date();
+    let startDate;
+
+    switch (timeRange) {
+      case 'week':
+        startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        break;
+      case 'month':
+        startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+        break;
+      case 'year':
+        startDate = new Date(now.getFullYear(), 0, 1);
+        break;
+      default:
+        startDate = new Date(0);
+    }
+
+    const filteredTransactions = data.transactions.filter(t => 
+      new Date(t.createdAt) >= startDate
+    );
+
+    const income = filteredTransactions
+      .filter(t => t.type === 'income')
       .reduce((sum, t) => sum + t.amount, 0);
-    return {
-      ...budget,
-      spent,
-      remaining: budget.monthly - spent
-    };
-  }) : [];
-  
-  const totalBudgetSpent = budgetAnalysis.reduce((sum, b) => sum + b.spent, 0);
-  const totalBudgetRemaining = budgetAnalysis.reduce((sum, b) => sum + b.remaining, 0);
-  
-  // Calculate bills analysis
-  const totalBills = state.bills ? state.bills.length : 0;
-  const paidBills = state.bills ? state.bills.filter(bill => bill.paid).length : 0;
-  const unpaidBills = totalBills - paidBills;
-  
-  // Calculate goals analysis
-  const completedGoals = state.goals ? state.goals.filter(goal => goal.saved >= goal.target).length : 0;
-  const overallProgress = totalGoalTarget > 0 ? (totalGoalSaved / totalGoalTarget) * 100 : 0;
+
+    const expense = filteredTransactions
+      .filter(t => t.type === 'expense')
+      .reduce((sum, t) => sum + t.amount, 0);
+
+    const net = income - expense;
+
+    // Category breakdown
+    const categoryStats = {};
+    filteredTransactions.forEach(t => {
+      const category = data.categories.find(c => c.id === t.categoryId);
+      if (category) {
+        if (!categoryStats[category.id]) {
+          categoryStats[category.id] = {
+            name: category.name,
+            icon: category.icon,
+            color: category.color,
+            amount: 0
+          };
+        }
+        categoryStats[category.id].amount += t.amount;
+      }
+    });
+
+    const topCategories = Object.values(categoryStats)
+      .sort((a, b) => b.amount - a.amount)
+      .slice(0, 5);
+
+    return { income, expense, net, topCategories };
+  }, [data.transactions, data.categories, timeRange]);
+
+  const formatCurrency = formatCurrencyDisplay;
 
   return (
-    <div className="space-y-8">
-      {/* Welcome Section - Minimalist Style */}
-      <div className="text-center py-8">
-        <h1 className="text-3xl font-light text-gray-900 dark:text-gray-100 mb-2">
-          Tổng quan tài chính
-        </h1>
-        <p className="text-gray-500 dark:text-gray-400 text-sm">
-          {new Date().toLocaleDateString('vi-VN', { 
-            weekday: 'long', 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
-          })}
-        </p>
+    <div className="max-w-4xl mx-auto p-4 space-y-4">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-xl font-bold">Tổng quan</h1>
+        <select
+          value={timeRange}
+          onChange={(e) => setTimeRange(e.target.value)}
+          className={`px-3 py-2 rounded-lg border text-sm transition-colors ${
+            theme === 'dark'
+              ? 'bg-gray-700 border-gray-600 text-white'
+              : 'bg-white border-gray-300 text-gray-900'
+          }`}
+        >
+          <option value="week">Tuần này</option>
+          <option value="month">Tháng này</option>
+          <option value="year">Năm này</option>
+          <option value="all">Tất cả</option>
+        </select>
       </div>
 
-      {/* Financial Overview - Comprehensive */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-        {/* Total Assets */}
-        <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 border border-gray-100 dark:border-gray-700">
-          <div className="text-center">
-            <div className="text-sm text-gray-500 dark:text-gray-400 mb-2 break-words">Tổng tài sản</div>
-            <div className={`text-3xl font-light ${(totalWalletBalance + totalBankBalance) >= 0 ? 'text-gray-900 dark:text-gray-100' : 'text-red-500'}`}>
-              {fmt(totalWalletBalance + totalBankBalance)}
-            </div>
-            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              Ví: {totalWalletBalance >= 1000000 ? `${(totalWalletBalance / 1000000).toFixed(1)}M ₫` : fmt(totalWalletBalance)} • 
-              NH: {totalBankBalance >= 1000000 ? `${(totalBankBalance / 1000000).toFixed(1)}M ₫` : fmt(totalBankBalance)}
-            </div>
+      {/* Balance Card */}
+      <div className={`rounded-2xl p-4 transition-colors ${
+        theme === 'dark' ? 'bg-gray-800' : 'bg-white'
+      }`}>
+        <div className="text-center">
+          <h2 className="text-sm font-medium mb-2 text-gray-600 dark:text-gray-400">Số dư hiện tại</h2>
+          <div className={`text-2xl sm:text-3xl md:text-4xl font-bold break-all ${
+            data.balance >= 0 ? 'text-green-500' : 'text-red-500'
+          }`}>
+            {formatCurrency(data.balance)}
           </div>
         </div>
+      </div>
         
-        {/* Total Debt */}
-        <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 border border-gray-100 dark:border-gray-700">
-          <div className="text-center">
-            <div className="text-sm text-gray-500 dark:text-gray-400 mb-2 break-words">Tổng nợ</div>
-            <div className="text-3xl font-light text-red-600">
-              {fmt(totalDebt)}
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className={`rounded-xl p-4 transition-colors ${
+          theme === 'dark' ? 'bg-gray-800' : 'bg-white'
+        }`}>
+          <div className="flex items-center justify-between">
+            <div className="flex-1 min-w-0">
+              <p className="text-xs text-gray-500 dark:text-gray-400">Thu nhập</p>
+              <p className="text-lg sm:text-xl font-bold text-green-500 break-all">
+                {formatCurrency(stats.income)}
+              </p>
             </div>
-            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              {state.debts ? state.debts.length : 0} khoản nợ
-            </div>
-          </div>
-        </div>
-        
-        {/* Net Worth */}
-        <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 border border-gray-100 dark:border-gray-700">
-          <div className="text-center">
-            <div className="text-sm text-gray-500 dark:text-gray-400 mb-2 break-words">Tài sản ròng</div>
-            <div className={`text-3xl font-light ${(totalWalletBalance + totalBankBalance - totalDebt) >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
-              {fmt(totalWalletBalance + totalBankBalance - totalDebt)}
-            </div>
-            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              Tài sản - Nợ
+            <div className="w-10 h-10 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center flex-shrink-0 ml-2">
+              <span className="text-lg">💰</span>
             </div>
           </div>
         </div>
-        
-        {/* Monthly Transactions */}
-        <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 border border-gray-100 dark:border-gray-700">
-          <div className="text-center">
-            <div className="text-sm text-gray-500 dark:text-gray-400 mb-2 break-words">Giao dịch tháng</div>
-            <div className="text-3xl font-light text-gray-900 dark:text-gray-100">{monthTx.length}</div>
-            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              Thu: {incomeTotal >= 1000000 ? `${(incomeTotal / 1000000).toFixed(1)}M ₫` : fmt(incomeTotal)} • 
-              Chi: {expenseTotal >= 1000000 ? `${(expenseTotal / 1000000).toFixed(1)}M ₫` : fmt(expenseTotal)}
+
+        <div className={`rounded-xl p-4 transition-colors ${
+          theme === 'dark' ? 'bg-gray-800' : 'bg-white'
+        }`}>
+          <div className="flex items-center justify-between">
+            <div className="flex-1 min-w-0">
+              <p className="text-xs text-gray-500 dark:text-gray-400">Chi tiêu</p>
+              <p className="text-lg sm:text-xl font-bold text-red-500 break-all">
+                {formatCurrency(stats.expense)}
+              </p>
+            </div>
+            <div className="w-10 h-10 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center flex-shrink-0 ml-2">
+              <span className="text-lg">💸</span>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Budget & Goals Overview */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Budget Overview */}
-        {state.budgets && state.budgets.length > 0 && (
-          <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 border border-gray-100 dark:border-gray-700">
-            <h3 className="text-lg font-light text-gray-900 dark:text-gray-100 mb-6 text-center">Ngân sách tháng này</h3>
-            <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 break-words">Tổng ngân sách</span>
-              <span className="font-bold text-gray-900 dark:text-gray-100 text-xs truncate ml-2" title={fmt(totalBudget)}>
-                {totalBudget >= 1000000000 ? `${(totalBudget / 1000000000).toFixed(1)}B ₫` : 
-                 totalBudget >= 1000000 ? `${(totalBudget / 1000000).toFixed(1)}M ₫` : 
-                 fmt(totalBudget)}
-              </span>
+        <div className={`rounded-xl p-4 transition-colors sm:col-span-2 lg:col-span-1 ${
+          theme === 'dark' ? 'bg-gray-800' : 'bg-white'
+        }`}>
+          <div className="flex items-center justify-between">
+            <div className="flex-1 min-w-0">
+              <p className="text-xs text-gray-500 dark:text-gray-400">Lãi/Lỗ</p>
+              <p className={`text-lg sm:text-xl font-bold break-all ${
+                stats.net >= 0 ? 'text-green-500' : 'text-red-500'
+              }`}>
+                {formatCurrency(stats.net)}
+              </p>
             </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 break-words">Đã chi tiêu</span>
-              <span className="font-bold text-red-600 text-xs truncate ml-2" title={fmt(totalBudgetSpent)}>
-                {totalBudgetSpent >= 1000000000 ? `${(totalBudgetSpent / 1000000000).toFixed(1)}B ₫` : 
-                 totalBudgetSpent >= 1000000 ? `${(totalBudgetSpent / 1000000).toFixed(1)}M ₫` : 
-                 fmt(totalBudgetSpent)}
-              </span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 break-words">Còn lại</span>
-              <span className={`font-bold text-xs truncate ml-2 ${totalBudgetRemaining >= 0 ? 'text-emerald-600' : 'text-red-600'}`} title={fmt(totalBudgetRemaining)}>
-                {totalBudgetRemaining >= 1000000000 ? `${(totalBudgetRemaining / 1000000000).toFixed(1)}B ₫` : 
-                 totalBudgetRemaining >= 1000000 ? `${(totalBudgetRemaining / 1000000).toFixed(1)}M ₫` : 
-                 fmt(totalBudgetRemaining)}
-              </span>
-            </div>
-              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                <div 
-                  className={`h-2 rounded-full transition-all duration-500 ${
-                    totalBudgetSpent > totalBudget ? 'bg-red-500' : 'bg-emerald-500'
-                  }`}
-                  style={{width: `${Math.min((totalBudgetSpent / totalBudget) * 100, 100)}%`}}
-                ></div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Goals Overview */}
-        {state.goals && state.goals.length > 0 && (
-          <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 border border-gray-100 dark:border-gray-700">
-            <h3 className="text-lg font-light text-gray-900 dark:text-gray-100 mb-6 text-center">Mục tiêu tài chính</h3>
-            <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 break-words">Tổng mục tiêu</span>
-              <span className="font-bold text-gray-900 dark:text-gray-100 text-xs truncate ml-2" title={fmt(totalGoalTarget)}>
-                {totalGoalTarget >= 1000000000 ? `${(totalGoalTarget / 1000000000).toFixed(1)}B ₫` : 
-                 totalGoalTarget >= 1000000 ? `${(totalGoalTarget / 1000000).toFixed(1)}M ₫` : 
-                 fmt(totalGoalTarget)}
-              </span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 break-words">Đã tiết kiệm</span>
-              <span className="font-bold text-emerald-600 text-xs truncate ml-2" title={fmt(totalGoalSaved)}>
-                {totalGoalSaved >= 1000000000 ? `${(totalGoalSaved / 1000000000).toFixed(1)}B ₫` : 
-                 totalGoalSaved >= 1000000 ? `${(totalGoalSaved / 1000000).toFixed(1)}M ₫` : 
-                 fmt(totalGoalSaved)}
-              </span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 break-words">Đã hoàn thành</span>
-              <span className="font-bold text-blue-600 text-xs truncate ml-2">{completedGoals}/{state.goals.length}</span>
-            </div>
-              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                <div 
-                  className="bg-blue-500 h-2 rounded-full transition-all duration-500"
-                  style={{width: `${Math.min(overallProgress, 100)}%`}}
-                ></div>
-              </div>
-              <div className="text-center text-sm text-gray-500 dark:text-gray-400">
-                {overallProgress.toFixed(1)}% hoàn thành
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Bills & Notifications Overview */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Bills Overview */}
-        {state.bills && state.bills.length > 0 && (
-          <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 border border-gray-100 dark:border-gray-700">
-            <h3 className="text-lg font-light text-gray-900 dark:text-gray-100 mb-6 text-center">Hóa đơn</h3>
-            <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 break-words">Tổng hóa đơn</span>
-              <span className="font-bold text-gray-900 dark:text-gray-100 text-xs truncate ml-2">{totalBills}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 break-words">Đã thanh toán</span>
-              <span className="font-bold text-emerald-600 text-xs truncate ml-2">{paidBills}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 break-words">Chưa thanh toán</span>
-              <span className="font-bold text-red-600 text-xs truncate ml-2">{unpaidBills}</span>
-            </div>
-              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                <div 
-                  className="bg-emerald-500 h-2 rounded-full transition-all duration-500"
-                  style={{width: `${totalBills > 0 ? (paidBills / totalBills) * 100 : 0}%`}}
-                ></div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Quick Stats */}
-        <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 border border-gray-100 dark:border-gray-700">
-          <h3 className="text-lg font-light text-gray-900 dark:text-gray-100 mb-6 text-center">Thống kê nhanh</h3>
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">Tổng ví</span>
-              <span className="font-bold text-gray-900 dark:text-gray-100 text-xs">{state.wallets ? state.wallets.length : 0}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 break-words">Tài khoản NH</span>
-              <span className="font-bold text-gray-900 dark:text-gray-100 text-xs">{state.bankAccounts ? state.bankAccounts.length : 0}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 break-words">Danh mục</span>
-              <span className="font-bold text-gray-900 dark:text-gray-100 text-xs">{state.categories ? state.categories.length : 0}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 break-words">Thông báo</span>
-              <span className="font-bold text-yellow-600 text-xs">
-                {state.notifications ? state.notifications.filter(n => !n.read).length : 0}
-              </span>
+            <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ml-2 ${
+              stats.net >= 0 ? 'bg-green-100 dark:bg-green-900/20' : 'bg-red-100 dark:bg-red-900/20'
+            }`}>
+              <span className="text-lg">{stats.net >= 0 ? '📈' : '📉'}</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Recent Transactions Section - Minimalist Style */}
-      {recentTransactions.length > 0 && (
-        <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 border border-gray-100 dark:border-gray-700">
-          <h3 className="text-lg font-light text-gray-900 dark:text-gray-100 mb-6 text-center">
-            Giao dịch gần đây
-          </h3>
-          <div className="space-y-4">
-            {recentTransactions.map((transaction) => (
-              <div key={transaction.id} className="flex items-center justify-between py-3 px-4 rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                <div className="flex items-center gap-4">
-                  {/* Transaction Icon */}
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                    transaction.type === 'income' 
-                      ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400' 
-                      : 'bg-red-100 text-red-600 dark:bg-red-900/20 dark:text-red-400'
-                  }`}>
-                    <span className="text-lg">
-                      {transaction.type === 'income' ? '💰' : '💸'}
-                    </span>
+      {/* Top Categories */}
+      <div className={`rounded-xl p-4 transition-colors ${
+        theme === 'dark' ? 'bg-gray-800' : 'bg-white'
+      }`}>
+        <h3 className="text-sm font-semibold mb-3">Danh mục chi tiêu nhiều nhất</h3>
+        {stats.topCategories.length > 0 ? (
+          <div className="space-y-2">
+            {stats.topCategories.map((category, index) => (
+              <div key={index} className="flex items-center justify-between">
+                <div className="flex items-center space-x-3 flex-1 min-w-0">
+                  <div 
+                    className="w-8 h-8 rounded-full flex items-center justify-center text-white flex-shrink-0"
+                    style={{ backgroundColor: category.color }}
+                  >
+                    {category.icon}
                   </div>
-
-                  {/* Transaction Info */}
-                  <div className="flex-1">
-                    <div className="font-medium text-gray-900 dark:text-gray-100 text-sm">
-                      {transaction.note}
-                    </div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">
-                      {catLabel(transaction.category)} • {walletName(transaction.walletId)}
-                    </div>
-                  </div>
+                  <span className="font-medium text-sm truncate">{category.name}</span>
                 </div>
-
-                {/* Amount and Date */}
-                <div className="text-right">
-                  <div className={`font-medium text-sm ${
-                    transaction.type === 'income' ? 'text-emerald-600' : 'text-red-600'
-                  }`}>
-                    {transaction.type === 'income' ? '+' : '-'}{fmt(transaction.amount)}
-                  </div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">
-                    {formatDate(transaction.date)}
-                  </div>
-                </div>
+                <span className="font-bold text-sm break-all ml-2">{formatCurrency(category.amount)}</span>
               </div>
             ))}
           </div>
-        </div>
-      )}
+        ) : (
+          <p className="text-gray-500 text-center py-4 text-sm">Chưa có dữ liệu</p>
+        )}
+      </div>
 
+      {/* Recent Transactions */}
+      <div className={`rounded-xl p-4 transition-colors ${
+        theme === 'dark' ? 'bg-gray-800' : 'bg-white'
+      }`}>
+        <h3 className="text-sm font-semibold mb-3">Giao dịch gần đây</h3>
+        {data.transactions.slice(0, 5).length > 0 ? (
+          <div className="space-y-2">
+            {data.transactions.slice(0, 5).map(transaction => {
+              const category = data.categories.find(c => c.id === transaction.categoryId);
+              return (
+                <div key={transaction.id} className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3 flex-1 min-w-0">
+                    <div 
+                      className="w-8 h-8 rounded-full flex items-center justify-center text-white flex-shrink-0"
+                      style={{ backgroundColor: category?.color || '#gray' }}
+                    >
+                      {category?.icon || '📝'}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-sm truncate">{category?.name || 'Không xác định'}</p>
+                      {transaction.note && (
+                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{transaction.note}</p>
+                      )}
+                    </div>
+                  </div>
+                  <div className={`font-bold text-sm break-all ml-2 ${
+                    transaction.type === 'income' ? 'text-green-500' : 'text-red-500'
+                  }`}>
+                    {transaction.type === 'income' ? '+' : '-'}{formatCurrency(transaction.amount)}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <p className="text-gray-500 text-center py-4 text-sm">Chưa có giao dịch nào</p>
+        )}
+      </div>
     </div>
   );
-});
-
-Dashboard.displayName = 'Dashboard';
+};
 
 export default Dashboard;
-

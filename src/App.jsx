@@ -1,12 +1,16 @@
-import React from 'react';
-import PersonalFinanceApp from "./PersonalFinanceAppNew";
-import ErrorBoundary from "./components/ErrorBoundary";
+import React, { useState, useEffect } from 'react';
+import { ThemeProvider } from './contexts/ThemeContext';
+import { DataProvider } from './contexts/DataContext';
+import MainApp from './components/MainApp';
+import './index.css';
 
 function App() {
   return (
-    <ErrorBoundary>
-      <PersonalFinanceApp />
-    </ErrorBoundary>
+    <ThemeProvider>
+      <DataProvider>
+        <MainApp />
+      </DataProvider>
+    </ThemeProvider>
   );
 }
 

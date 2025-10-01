@@ -1,230 +1,373 @@
-import React, { useState } from 'react';
-import { fmt, formatDate } from '../utils/helpers';
+import React, { useState, useMemo } from 'react';
+import { useTheme } from '../contexts/ThemeContext';
+import { useData } from '../contexts/DataContext';
+import { formatCurrencyInput, parseCurrencyInput, formatCurrencyDisplay } from '../utils/formatCurrency';
 
-const Transactions = ({ 
-  state, 
-  addTransaction, 
-  updateTransaction, 
-  deleteTransaction, 
-  showAddForm, 
-  setShowAddForm,
-  editingItem,
-  setEditingItem,
-  formData,
-  setFormData,
-  handleFormSubmit,
-  handleEdit,
-  handleDelete
-}) => {
-  const [query, setQuery] = useState("");
-  const [filterType, setFilterType] = useState("all"); // all, income, expense
-  const [sortBy, setSortBy] = useState("date"); // date, amount, category
-
-  const catLabel = (id) => state.categories.find(c => c.id === id)?.label || id;
+const Transactions = () => {
+  const { theme } = useTheme();
+  const { data, updateTransaction, deleteTransaction } = useData();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterType, setFilterType] = useState('all');
+  const [filterCategory, setFilterCategory] = useState('all');
+  const [sortBy, setSortBy] = useState('newest');
+  const [editingId, setEditingId] = useState(null);
+  const [editForm, setEditForm] = useState({
+    amount: '',
+    categoryId: '',
+    note: '',
+    date: ''
+  });
 
   // Filter and sort transactions
-  const filteredTransactions = state.transactions
-    .filter(t => {
-      const matchesQuery = !query || 
-        t.note.toLowerCase().includes(query.toLowerCase()) || 
-        catLabel(t.category).toLowerCase().includes(query.toLowerCase());
-      
-      const matchesType = filterType === "all" || t.type === filterType;
-      
-      return matchesQuery && matchesType;
-    })
-    .sort((a, b) => {
+  const filteredTransactions = useMemo(() => {
+    let filtered = data.transactions;
+
+    // Search filter
+    if (searchTerm) {
+      filtered = filtered.filter(t => {
+        const category = data.categories.find(c => c.id === t.categoryId);
+        return (
+          t.note?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          category?.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      });
+    }
+
+    // Type filter
+    if (filterType !== 'all') {
+      filtered = filtered.filter(t => t.type === filterType);
+    }
+
+    // Category filter
+    if (filterCategory !== 'all') {
+      filtered = filtered.filter(t => t.categoryId === filterCategory);
+    }
+
+    // Sort
+    filtered.sort((a, b) => {
       switch (sortBy) {
-        case "amount":
+        case 'newest':
+          return new Date(b.createdAt) - new Date(a.createdAt);
+        case 'oldest':
+          return new Date(a.createdAt) - new Date(b.createdAt);
+        case 'amount_high':
           return b.amount - a.amount;
-        case "category":
-          return catLabel(a.category).localeCompare(catLabel(b.category));
-        case "date":
+        case 'amount_low':
+          return a.amount - b.amount;
         default:
-          return new Date(b.date) - new Date(a.date);
+          return 0;
       }
     });
 
-  // Group transactions by date
-  const groupedTransactions = filteredTransactions.reduce((groups, transaction) => {
-    const date = new Date(transaction.date).toLocaleDateString('vi-VN', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-    
-    if (!groups[date]) {
-      groups[date] = [];
-    }
-    groups[date].push(transaction);
-    return groups;
-  }, {});
+    return filtered;
+  }, [data.transactions, data.categories, searchTerm, filterType, filterCategory, sortBy]);
 
-  // Calculate daily totals
-  const getDailyTotal = (transactions) => {
-    const income = transactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
-    const expense = transactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
-    return { income, expense, balance: income - expense };
+  const handleEdit = (transaction) => {
+    setEditingId(transaction.id);
+    const transactionDate = new Date(transaction.createdAt);
+    setEditForm({
+      amount: formatCurrencyInput(transaction.amount.toString()),
+      categoryId: transaction.categoryId,
+      note: transaction.note || '',
+      date: transactionDate.toISOString().slice(0, 16)
+    });
+  };
+
+  const handleSaveEdit = () => {
+    if (editForm.amount && editForm.categoryId) {
+      updateTransaction(editingId, {
+        ...editForm,
+        amount: parseCurrencyInput(editForm.amount),
+        createdAt: new Date(editForm.date).toISOString()
+      });
+      setEditingId(null);
+      setEditForm({
+        amount: '',
+        categoryId: '',
+        note: '',
+        date: ''
+      });
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingId(null);
+    setEditForm({
+      amount: '',
+      categoryId: '',
+      note: '',
+      date: ''
+    });
+  };
+
+  const handleDelete = (id) => {
+    if (window.confirm('Bạn có chắc muốn xóa giao dịch này?')) {
+      deleteTransaction(id);
+    }
+  };
+
+  const formatCurrency = formatCurrencyDisplay;
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('vi-VN', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   };
 
   return (
-    <div className="space-y-8">
-      {/* Header - Minimalist */}
-      <div className="text-center py-8">
-        <h1 className="text-3xl font-light text-gray-900 dark:text-gray-100 mb-2">
-          Giao dịch
-        </h1>
-        <p className="text-gray-500 dark:text-gray-400 text-sm">
-          Quản lý thu chi hàng ngày
-        </p>
-      </div>
+    <div className="max-w-4xl mx-auto p-4 space-y-6">
+      {/* Header */}
+      <h1 className="text-2xl font-bold">Giao dịch</h1>
 
-      {/* Search and Filters - Minimalist */}
-      <div className="space-y-4">
-        {/* Search Bar */}
-        <div className="relative">
-          <svg className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
+      {/* Filters */}
+      <div className={`rounded-2xl p-6 transition-colors ${
+        theme === 'dark' ? 'bg-gray-800' : 'bg-white'
+      }`}>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          {/* Search */}
+          <div>
+            <label className="block text-sm font-medium mb-2">Tìm kiếm</label>
           <input
-            className="w-full pl-12 pr-4 py-4 border border-gray-200 dark:border-gray-600 rounded-2xl focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-100 focus:border-transparent transition-all bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
-            placeholder="Tìm kiếm giao dịch..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Tìm theo ghi chú hoặc danh mục..."
+              className={`w-full px-4 py-2 rounded-lg border transition-colors ${
+                theme === 'dark'
+                  ? 'bg-gray-700 border-gray-600 text-white'
+                  : 'bg-white border-gray-300 text-gray-900'
+              }`}
           />
         </div>
         
-        {/* Filters */}
-        <div className="flex gap-3">
-          <select
-            value={filterType}
-            onChange={(e) => setFilterType(e.target.value)}
-            className="flex-1 px-4 py-3 text-sm border border-gray-200 dark:border-gray-600 rounded-2xl focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-100 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
-          >
+          {/* Type Filter */}
+          <div>
+            <label className="block text-sm font-medium mb-2">Loại</label>
+            <select
+              value={filterType}
+              onChange={(e) => setFilterType(e.target.value)}
+              className={`w-full px-4 py-2 rounded-lg border transition-colors ${
+                theme === 'dark'
+                  ? 'bg-gray-700 border-gray-600 text-white'
+                  : 'bg-white border-gray-300 text-gray-900'
+              }`}
+            >
             <option value="all">Tất cả</option>
             <option value="income">Thu nhập</option>
             <option value="expense">Chi tiêu</option>
           </select>
-          
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="flex-1 px-4 py-3 text-sm border border-gray-200 dark:border-gray-600 rounded-2xl focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-100 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
-          >
-            <option value="date">Ngày</option>
-            <option value="amount">Số tiền</option>
-            <option value="category">Danh mục</option>
+          </div>
+
+          {/* Category Filter */}
+          <div>
+            <label className="block text-sm font-medium mb-2">Danh mục</label>
+            <select
+              value={filterCategory}
+              onChange={(e) => setFilterCategory(e.target.value)}
+              className={`w-full px-4 py-2 rounded-lg border transition-colors ${
+                theme === 'dark'
+                  ? 'bg-gray-700 border-gray-600 text-white'
+                  : 'bg-white border-gray-300 text-gray-900'
+              }`}
+            >
+              <option value="all">Tất cả</option>
+              {data.categories.map(category => (
+                <option key={category.id} value={category.id}>
+                  {category.icon} {category.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Sort */}
+          <div>
+            <label className="block text-sm font-medium mb-2">Sắp xếp</label>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className={`w-full px-4 py-2 rounded-lg border transition-colors ${
+                theme === 'dark'
+                  ? 'bg-gray-700 border-gray-600 text-white'
+                  : 'bg-white border-gray-300 text-gray-900'
+              }`}
+            >
+              <option value="newest">Mới nhất</option>
+              <option value="oldest">Cũ nhất</option>
+              <option value="amount_high">Số tiền cao</option>
+              <option value="amount_low">Số tiền thấp</option>
           </select>
+          </div>
         </div>
       </div>
 
       {/* Transactions List */}
-      <div className="space-y-6">
-        {Object.keys(groupedTransactions).length === 0 ? (
-          <div className="text-center py-12">
-            <div className="w-20 h-20 mx-auto bg-gray-100 rounded-full flex items-center justify-center mb-4">
-              <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
+      <div className={`rounded-2xl p-6 transition-colors ${
+        theme === 'dark' ? 'bg-gray-800' : 'bg-white'
+      }`}>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold">
+            Danh sách giao dịch ({filteredTransactions.length})
+          </h3>
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Chưa có giao dịch</h3>
-            <p className="text-gray-500">Thêm giao dịch đầu tiên để bắt đầu quản lý tài chính</p>
-          </div>
-        ) : (
-          Object.entries(groupedTransactions).map(([date, transactions]) => {
-            const dailyTotal = getDailyTotal(transactions);
+
+        {filteredTransactions.length > 0 ? (
+          <div className="space-y-3">
+            {filteredTransactions.map(transaction => {
+              const category = data.categories.find(c => c.id === transaction.categoryId);
+              const isEditing = editingId === transaction.id;
             
             return (
-              <div key={date} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                {/* Date Header */}
-                <div className="bg-gray-50 px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                <div
+                  key={transaction.id}
+                  className={`p-4 rounded-lg border transition-colors ${
+                    theme === 'dark' 
+                      ? 'bg-gray-700 border-gray-600' 
+                      : 'bg-gray-50 border-gray-200'
+                  }`}
+                >
+                  {isEditing ? (
+                    // Edit Form
+                    <div className="space-y-3">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-sm font-medium mb-1">Số tiền</label>
+                          <input
+                            type="text"
+                            value={editForm.amount}
+                            onChange={(e) => {
+                              const formatted = formatCurrencyInput(e.target.value);
+                              setEditForm({...editForm, amount: formatted});
+                            }}
+                            placeholder="VD: 1.000.000"
+                            className={`w-full px-3 py-2 rounded-lg border transition-colors ${
+                              theme === 'dark'
+                                ? 'bg-gray-600 border-gray-500 text-white'
+                                : 'bg-white border-gray-300 text-gray-900'
+                            }`}
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium mb-1">Danh mục</label>
+                          <select
+                            value={editForm.categoryId}
+                            onChange={(e) => setEditForm({...editForm, categoryId: e.target.value})}
+                            className={`w-full px-3 py-2 rounded-lg border transition-colors ${
+                              theme === 'dark'
+                                ? 'bg-gray-600 border-gray-500 text-white'
+                                : 'bg-white border-gray-300 text-gray-900'
+                            }`}
+                          >
+                            {data.categories.map(cat => (
+                              <option key={cat.id} value={cat.id}>
+                                {cat.icon} {cat.name}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-sm font-medium mb-1">Ngày & Giờ</label>
+                          <input
+                            type="datetime-local"
+                            value={editForm.date}
+                            onChange={(e) => setEditForm({...editForm, date: e.target.value})}
+                            className={`w-full px-3 py-2 rounded-lg border transition-colors ${
+                              theme === 'dark'
+                                ? 'bg-gray-600 border-gray-500 text-white'
+                                : 'bg-white border-gray-300 text-gray-900'
+                            }`}
+                          />
+                        </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900 capitalize text-sm sm:text-base">{date}</h3>
-                      <p className="text-xs sm:text-sm text-gray-500">{transactions.length} giao dịch</p>
+                          <label className="block text-sm font-medium mb-1">Ghi chú</label>
+                          <input
+                            type="text"
+                            value={editForm.note}
+                            onChange={(e) => setEditForm({...editForm, note: e.target.value})}
+                            className={`w-full px-3 py-2 rounded-lg border transition-colors ${
+                              theme === 'dark'
+                                ? 'bg-gray-600 border-gray-500 text-white'
+                                : 'bg-white border-gray-300 text-gray-900'
+                            }`}
+                          />
+                        </div>
                     </div>
-                    <div className="text-left sm:text-right">
-                      <div className="text-xs sm:text-sm text-gray-500">Tổng cộng</div>
-                      <div className={`font-bold text-sm sm:text-base ${dailyTotal.balance >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
-                        {fmt(Math.abs(dailyTotal.balance))}
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={handleSaveEdit}
+                          className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors"
+                        >
+                          Lưu
+                        </button>
+                        <button
+                          onClick={handleCancelEdit}
+                          className="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg transition-colors"
+                        >
+                          Hủy
+                        </button>
                       </div>
                     </div>
+                  ) : (
+                    // Display Mode
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-4">
+                        <div 
+                          className="w-12 h-12 rounded-full flex items-center justify-center text-white"
+                          style={{ backgroundColor: category?.color || '#gray' }}
+                        >
+                          <span className="text-xl">{category?.icon || '📝'}</span>
+                        </div>
+                        <div>
+                          <h4 className="font-semibold">{category?.name || 'Không xác định'}</h4>
+                          {transaction.note && (
+                            <p className="text-sm text-gray-500">{transaction.note}</p>
+                          )}
+                          <p className="text-xs text-gray-400">{formatDate(transaction.createdAt)}</p>
                   </div>
                 </div>
-
-                {/* Transactions */}
-                <div className="divide-y divide-gray-100">
-                  {transactions.map((transaction) => (
-                    <div key={transaction.id} className="px-4 sm:px-6 py-3 sm:py-4 hover:bg-gray-50 transition-colors">
-                      <div className="flex items-start gap-3">
-                        {/* Icon */}
-                        <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0 ${
-                          transaction.type === 'income' 
-                            ? 'bg-emerald-100 text-emerald-600' 
-                            : 'bg-red-100 text-red-600'
+                      <div className="flex items-center space-x-2">
+                        <div className={`text-right ${
+                          transaction.type === 'income' ? 'text-green-500' : 'text-red-500'
                         }`}>
-                          <span className="text-base sm:text-lg">
-                            {transaction.type === 'income' ? '💰' : '💸'}
-                          </span>
+                          <div className="font-bold">
+                            {transaction.type === 'income' ? '+' : '-'}{formatCurrency(transaction.amount)}
+                          </div>
+                          <div className="text-xs">
+                            {transaction.type === 'income' ? 'Thu nhập' : 'Chi tiêu'}
+                          </div>
                         </div>
-
-                        {/* Content */}
-                        <div className="flex-1 min-w-0">
-                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                            <div className="flex-1 min-w-0">
-                              <h4 className="font-medium text-gray-900 text-sm sm:text-base truncate">{transaction.note}</h4>
-                              <div className="flex flex-col xs:flex-row xs:items-center gap-1 xs:gap-2 mt-1">
-                                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 w-fit">
-                                  {catLabel(transaction.category)}
-                                </span>
-                                <span className="text-xs text-gray-500">
-                                  {new Date(transaction.date).toLocaleTimeString('vi-VN', {
-                                    hour: '2-digit',
-                                    minute: '2-digit'
-                                  })}
-                                </span>
-                              </div>
-                            </div>
-
-                            {/* Amount and Actions */}
-                            <div className="flex items-center justify-between sm:justify-end gap-2">
-                              <div className={`text-right ${transaction.type === 'income' ? 'text-emerald-600' : 'text-red-600'}`}>
-                                <div className="font-bold text-sm sm:text-lg">
-                                  {transaction.type === 'income' ? '+' : '-'}{fmt(transaction.amount)}
-                                </div>
-                              </div>
-                              
-                              <div className="flex gap-1">
+                        <div className="flex space-x-1">
                                 <button
                                   onClick={() => handleEdit(transaction)}
-                                  className="p-1.5 sm:p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
-                                  title="Sửa giao dịch"
+                            className="p-2 text-blue-500 hover:bg-blue-100 rounded-lg transition-colors"
                                 >
-                                  <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                  </svg>
+                            ✏️
                                 </button>
                                 <button
                                   onClick={() => handleDelete(transaction.id)}
-                                  className="p-1.5 sm:p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
-                                  title="Xóa giao dịch"
+                            className="p-2 text-red-500 hover:bg-red-100 rounded-lg transition-colors"
                                 >
-                                  <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                  </svg>
+                            🗑️
                                 </button>
-                              </div>
-                            </div>
-                          </div>
                         </div>
                       </div>
                     </div>
-                  ))}
+                  )}
                 </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="text-center py-8">
+            <div className="text-6xl mb-4">📝</div>
+            <p className="text-gray-500">Không có giao dịch nào</p>
+            <p className="text-sm text-gray-400">Thêm giao dịch đầu tiên của bạn!</p>
               </div>
-            );
-          })
         )}
       </div>
     </div>

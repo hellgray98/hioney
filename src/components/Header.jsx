@@ -112,7 +112,7 @@ const Header = ({ activeTab, setActiveTab, onQuickAdd, onMobileMenuToggle }) => 
                 <p className={`text-xs -mt-1 text-left ${
                   theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
                 }`}>Personal Finance</p>
-              </div>
+                </div>
             </button>
 
 
@@ -131,7 +131,7 @@ const Header = ({ activeTab, setActiveTab, onQuickAdd, onMobileMenuToggle }) => 
               </button>
 
               {/* Mobile Menu Button */}
-              <button
+            <button
                 onClick={() => {
                   setShowMobileMenu(!showMobileMenu);
                   onMobileMenuToggle?.(!showMobileMenu);
@@ -145,7 +145,7 @@ const Header = ({ activeTab, setActiveTab, onQuickAdd, onMobileMenuToggle }) => 
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
-              </button>
+            </button>
             </div>
           </div>
 
@@ -189,7 +189,7 @@ const Header = ({ activeTab, setActiveTab, onQuickAdd, onMobileMenuToggle }) => 
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </button>
-              </div>
+                  </div>
 
               {/* Current Tab Display */}
               <div className="mb-8">

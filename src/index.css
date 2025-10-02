@@ -355,3 +355,94 @@
     background-position: 200% 0;
   }
 }
+
+/* iOS Date/Time Input Fixes */
+/* Fix for iOS date and time inputs overflow issues */
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"] {
+  /* Reset appearance */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  
+  /* Ensure proper sizing */
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  
+  /* Fix iOS specific issues */
+  display: block;
+  position: relative;
+  background-color: inherit;
+}
+
+/* iOS specific date/time input classes */
+.ios-date-input,
+.ios-time-input {
+  /* Prevent overflow on iOS */
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  
+  /* Reset iOS default styles */
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  
+  /* Maintain consistent height */
+  display: block !important;
+  position: relative !important;
+}
+
+/* iOS Safari specific fixes */
+@supports (-webkit-touch-callout: none) {
+  input[type="date"],
+  input[type="time"],
+  input[type="datetime-local"] {
+    /* Additional iOS Safari fixes */
+    min-height: 44px; /* iOS recommended touch target */
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+  
+  /* Fix for date/time picker icons on iOS */
+  input[type="date"]::-webkit-inner-spin-button,
+  input[type="date"]::-webkit-calendar-picker-indicator,
+  input[type="time"]::-webkit-inner-spin-button,
+  input[type="time"]::-webkit-calendar-picker-indicator {
+    display: block;
+    -webkit-appearance: none;
+    appearance: none;
+    position: absolute;
+    right: 0;
+    width: 2.5em;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    cursor: pointer;
+  }
+}
+
+/* Dark mode adjustments for date/time inputs */
+.dark input[type="date"],
+.dark input[type="time"],
+.dark input[type="datetime-local"] {
+  color-scheme: dark;
+}
+
+/* Ensure proper text color in dark mode */
+.dark input[type="date"]::-webkit-datetime-edit,
+.dark input[type="time"]::-webkit-datetime-edit,
+.dark input[type="datetime-local"]::-webkit-datetime-edit {
+  color: #f3f4f6;
+}
+
+/* Fix placeholder text color */
+.dark input[type="date"]::-webkit-datetime-edit-text,
+.dark input[type="time"]::-webkit-datetime-edit-text,
+.dark input[type="datetime-local"]::-webkit-datetime-edit-text {
+  color: #9ca3af;
+}

@@ -137,13 +137,13 @@ const QuickAdd = ({ onClose }) => {
 
           {/* Date & Time */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
+            <div className="relative overflow-hidden">
               <label className="block text-sm font-medium mb-2">Ngày</label>
               <input
                 type="date"
                 value={formData.date}
                 onChange={(e) => setFormData({...formData, date: e.target.value})}
-                className={`w-full px-4 py-3 rounded-lg border transition-colors text-base ${
+                className={`w-full px-4 py-3 rounded-lg border transition-colors text-base ios-date-input ${
                   theme === 'dark'
                     ? 'bg-gray-700 border-gray-600 text-white'
                     : 'bg-white border-gray-300 text-gray-900'
@@ -151,19 +151,19 @@ const QuickAdd = ({ onClose }) => {
                 style={{
                   fontSize: '16px', // Prevent zoom on iOS
                   minHeight: '48px',
-                  maxWidth: '100%',
-                  boxSizing: 'border-box'
+                  WebkitAppearance: 'none',
+                  appearance: 'none'
                 }}
               />
             </div>
             
-            <div>
+            <div className="relative overflow-hidden">
               <label className="block text-sm font-medium mb-2">Giờ</label>
               <input
                 type="time"
                 value={formData.time}
                 onChange={(e) => setFormData({...formData, time: e.target.value})}
-                className={`w-full px-4 py-3 rounded-lg border transition-colors text-base ${
+                className={`w-full px-4 py-3 rounded-lg border transition-colors text-base ios-time-input ${
                   theme === 'dark'
                     ? 'bg-gray-700 border-gray-600 text-white'
                     : 'bg-white border-gray-300 text-gray-900'
@@ -171,8 +171,8 @@ const QuickAdd = ({ onClose }) => {
                 style={{
                   fontSize: '16px', // Prevent zoom on iOS
                   minHeight: '48px',
-                  maxWidth: '100%',
-                  boxSizing: 'border-box'
+                  WebkitAppearance: 'none',
+                  appearance: 'none'
                 }}
               />
             </div>

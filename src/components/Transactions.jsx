@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
-import { useData } from '../contexts/DataContext';
+import { useData } from '../contexts/FirebaseDataContext';
 import { formatCurrencyInput, parseCurrencyInput, formatCurrencyDisplay } from '../utils/formatCurrency';
 
 const Transactions = () => {
@@ -127,7 +127,6 @@ const Transactions = () => {
       {/* Header */}
       <div className="slide-in-down">
         <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white">Giao dịch</h1>
-        <p className="text-gray-600 dark:text-gray-400 mt-1 font-medium">Quản lý và theo dõi mọi giao dịch</p>
       </div>
 
       {/* Filters - Enhanced */}
@@ -149,54 +148,97 @@ const Transactions = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Tìm theo ghi chú hoặc danh mục..."
-              className="input-fintech"
+              className={`pl-4 py-2.5 w-full rounded-xl border-2 font-semibold text-sm transition-all duration-200 focus:ring-2 focus:ring-offset-2 ${
+                theme === 'dark'
+                  ? 'bg-gray-800 border-gray-700 text-white placeholder-gray-400 hover:bg-gray-750 focus:border-gray-600 focus:ring-gray-500'
+                  : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 hover:bg-gray-50 focus:border-gray-400 focus:ring-gray-300'
+              }`}
             />
           </div>
           
           {/* Type Filter */}
           <div className="space-y-2">
             <label className="block text-sm font-semibold text-gray-900 dark:text-white">Loại</label>
-            <select
-              value={filterType}
-              onChange={(e) => setFilterType(e.target.value)}
-              className="select-fintech"
-            >
-              <option value="all">Tất cả</option>
-              <option value="income">Thu nhập</option>
-              <option value="expense">Chi tiêu</option>
-            </select>
+            <div className="relative">
+              <select
+                value={filterType}
+                onChange={(e) => setFilterType(e.target.value)}
+                className={`select-fintech appearance-none pr-10 pl-4 py-2.5 w-full rounded-xl border-2 font-semibold text-sm transition-all duration-200 cursor-pointer focus:ring-2 focus:ring-offset-2 ${
+                  theme === 'dark'
+                    ? 'bg-gray-800 border-gray-700 text-white hover:bg-gray-750 focus:border-gray-600 focus:ring-gray-500'
+                    : 'bg-white border-gray-300 text-gray-900 hover:bg-gray-50 focus:border-gray-400 focus:ring-gray-300'
+                }`}
+              >
+                <option value="all">Tất cả</option>
+                <option value="income">Thu nhập</option>
+                <option value="expense">Chi tiêu</option>
+              </select>
+              <div className={`pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 ${
+                theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+              }`}>
+                <svg className="w-5 h-5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
           </div>
 
           {/* Category Filter */}
           <div className="space-y-2">
             <label className="block text-sm font-semibold text-gray-900 dark:text-white">Danh mục</label>
-            <select
-              value={filterCategory}
-              onChange={(e) => setFilterCategory(e.target.value)}
-              className="select-fintech"
-            >
-              <option value="all">Tất cả</option>
-              {data.categories.map(category => (
-                <option key={category.id} value={category.id}>
-                  {category.icon} {category.name}
-                </option>
-              ))}
-            </select>
+            <div className="relative">
+              <select
+                value={filterCategory}
+                onChange={(e) => setFilterCategory(e.target.value)}
+                className={`select-fintech appearance-none pr-10 pl-4 py-2.5 w-full rounded-xl border-2 font-semibold text-sm transition-all duration-200 cursor-pointer focus:ring-2 focus:ring-offset-2 ${
+                  theme === 'dark'
+                    ? 'bg-gray-800 border-gray-700 text-white hover:bg-gray-750 focus:border-gray-600 focus:ring-gray-500'
+                    : 'bg-white border-gray-300 text-gray-900 hover:bg-gray-50 focus:border-gray-400 focus:ring-gray-300'
+                }`}
+              >
+                <option value="all">Tất cả</option>
+                {data.categories.map(category => (
+                  <option key={category.id} value={category.id}>
+                    {category.icon} {category.name}
+                  </option>
+                ))}
+              </select>
+              <div className={`pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 ${
+                theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+              }`}>
+                <svg className="w-5 h-5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
           </div>
 
           {/* Sort */}
           <div className="space-y-2">
             <label className="block text-sm font-semibold text-gray-900 dark:text-white">Sắp xếp</label>
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="select-fintech"
-            >
-              <option value="newest">Mới nhất</option>
-              <option value="oldest">Cũ nhất</option>
-              <option value="amount_high">Số tiền cao</option>
-              <option value="amount_low">Số tiền thấp</option>
-            </select>
+            <div className="relative">
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className={`select-fintech appearance-none pr-10 pl-4 py-2.5 w-full rounded-xl border-2 font-semibold text-sm transition-all duration-200 cursor-pointer focus:ring-2 focus:ring-offset-2 ${
+                  theme === 'dark'
+                    ? 'bg-gray-800 border-gray-700 text-white hover:bg-gray-750 focus:border-gray-600 focus:ring-gray-500'
+                    : 'bg-white border-gray-300 text-gray-900 hover:bg-gray-50 focus:border-gray-400 focus:ring-gray-300'
+                }`}
+              >
+                <option value="newest">Mới nhất</option>
+                <option value="oldest">Cũ nhất</option>
+                <option value="amount_high">Số tiền cao</option>
+                <option value="amount_low">Số tiền thấp</option>
+              </select>
+              <div className={`pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 ${
+                theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+              }`}>
+                <svg className="w-5 h-5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -254,22 +296,39 @@ const Transactions = () => {
                               setEditForm({...editForm, amount: formatted});
                             }}
                             placeholder="VD: 1.000.000"
-                            className="input-fintech"
+                            className={`pl-4 py-2.5 w-full rounded-xl border-2 font-semibold text-sm transition-all duration-200 focus:ring-2 focus:ring-offset-2 ${
+                              theme === 'dark'
+                                ? 'bg-gray-800 border-gray-700 text-white placeholder-gray-400 hover:bg-gray-750 focus:border-gray-600 focus:ring-gray-500'
+                                : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 hover:bg-gray-50 focus:border-gray-400 focus:ring-gray-300'
+                            }`}
                           />
                         </div>
                         <div className="space-y-2">
                           <label className="block text-sm font-semibold text-gray-900 dark:text-white">Danh mục</label>
-                          <select
-                            value={editForm.categoryId}
-                            onChange={(e) => setEditForm({...editForm, categoryId: e.target.value})}
-                            className="select-fintech"
-                          >
-                            {data.categories.map(cat => (
-                              <option key={cat.id} value={cat.id}>
-                                {cat.icon} {cat.name}
-                              </option>
-                            ))}
-                          </select>
+                          <div className="relative">
+                            <select
+                              value={editForm.categoryId}
+                              onChange={(e) => setEditForm({...editForm, categoryId: e.target.value})}
+                              className={`select-fintech appearance-none pr-10 pl-4 py-2.5 w-full rounded-xl border-2 font-semibold text-sm transition-all duration-200 cursor-pointer focus:ring-2 focus:ring-offset-2 ${
+                                theme === 'dark'
+                                  ? 'bg-gray-800 border-gray-700 text-white hover:bg-gray-750 focus:border-gray-600 focus:ring-gray-500'
+                                  : 'bg-white border-gray-300 text-gray-900 hover:bg-gray-50 focus:border-gray-400 focus:ring-gray-300'
+                              }`}
+                            >
+                              {data.categories.map(cat => (
+                                <option key={cat.id} value={cat.id}>
+                                  {cat.icon} {cat.name}
+                                </option>
+                              ))}
+                            </select>
+                            <div className={`pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 ${
+                              theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+                            }`}>
+                              <svg className="w-5 h-5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                              </svg>
+                            </div>
+                          </div>
                         </div>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -280,7 +339,11 @@ const Transactions = () => {
                               type="date"
                               value={editForm.date}
                               onChange={(e) => setEditForm({...editForm, date: e.target.value})}
-                              className="input-fintech ios-date-input"
+                              className={`pl-4 py-2.5 w-full rounded-xl border-2 font-semibold text-sm transition-all duration-200 focus:ring-2 focus:ring-offset-2 ios-date-input ${
+                                theme === 'dark'
+                                  ? 'bg-gray-800 border-gray-700 text-white hover:bg-gray-750 focus:border-gray-600 focus:ring-gray-500'
+                                  : 'bg-white border-gray-300 text-gray-900 hover:bg-gray-50 focus:border-gray-400 focus:ring-gray-300'
+                              }`}
                               style={{
                                 fontSize: '16px',
                                 minHeight: '40px',
@@ -298,7 +361,11 @@ const Transactions = () => {
                               type="time"
                               value={editForm.time}
                               onChange={(e) => setEditForm({...editForm, time: e.target.value})}
-                              className="input-fintech ios-time-input"
+                              className={`pl-4 py-2.5 w-full rounded-xl border-2 font-semibold text-sm transition-all duration-200 focus:ring-2 focus:ring-offset-2 ios-time-input ${
+                                theme === 'dark'
+                                  ? 'bg-gray-800 border-gray-700 text-white hover:bg-gray-750 focus:border-gray-600 focus:ring-gray-500'
+                                  : 'bg-white border-gray-300 text-gray-900 hover:bg-gray-50 focus:border-gray-400 focus:ring-gray-300'
+                              }`}
                               style={{
                                 fontSize: '16px',
                                 minHeight: '40px',
@@ -316,7 +383,11 @@ const Transactions = () => {
                           type="text"
                           value={editForm.note}
                           onChange={(e) => setEditForm({...editForm, note: e.target.value})}
-                          className="input-fintech"
+                          className={`pl-4 py-2.5 w-full rounded-xl border-2 font-semibold text-sm transition-all duration-200 focus:ring-2 focus:ring-offset-2 ${
+                            theme === 'dark'
+                              ? 'bg-gray-800 border-gray-700 text-white placeholder-gray-400 hover:bg-gray-750 focus:border-gray-600 focus:ring-gray-500'
+                              : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 hover:bg-gray-50 focus:border-gray-400 focus:ring-gray-300'
+                          }`}
                           placeholder="Thêm ghi chú..."
                         />
                       </div>
@@ -431,7 +502,6 @@ const Transactions = () => {
           <div className="text-center py-12">
             <div className="text-6xl mb-6">📋</div>
             <p className="text-gray-500 dark:text-gray-400 font-semibold text-lg">Không có giao dịch nào</p>
-            <p className="text-sm text-gray-400 dark:text-gray-500 mt-2">Thêm giao dịch đầu tiên của bạn để bắt đầu!</p>
           </div>
         )}
       </div>

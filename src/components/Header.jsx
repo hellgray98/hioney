@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
+import { useAuth } from '../contexts/AuthContext';
 
 const Header = ({ activeTab, setActiveTab, onQuickAdd, onMobileMenuToggle }) => {
   const { theme, toggleTheme } = useTheme();
+  const { currentUser } = useAuth();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   const tabs = [
@@ -33,7 +35,7 @@ const Header = ({ activeTab, setActiveTab, onQuickAdd, onMobileMenuToggle }) => 
                 <span className="text-white dark:text-gray-900 font-extrabold text-lg">H</span>
               </div>
               <div>
-                <h1 className={`text-xl font-extrabold ${
+                <h1 className={`text-left text-xl font-extrabold ${
                   theme === 'dark' ? 'text-white' : 'text-gray-900'
                 }`}>
                   Hioney
@@ -118,29 +120,54 @@ const Header = ({ activeTab, setActiveTab, onQuickAdd, onMobileMenuToggle }) => 
                 </button>
               </div>
 
-              {/* Current Tab Display */}
+              {/* User Profile Section */}
               <div className="mb-8">
-                <h3 className={`text-sm font-semibold mb-3 ${
-                  theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
-                }`}>Trang hiện tại</h3>
-                <div className={`flex items-center space-x-3 px-4 py-3 rounded-xl border ${
-                  theme === 'dark' 
-                    ? 'bg-gray-800/50 border-gray-700' 
-                    : 'bg-gray-50 border-gray-200'
-                }`}>
-                  <span className="text-xl">{currentTab?.icon}</span>
-                  <span className={`font-semibold ${
-                    theme === 'dark' ? 'text-white' : 'text-gray-900'
-                  }`}>{currentTab?.name}</span>
-                </div>
+                <button
+                  onClick={() => {
+                    setActiveTab('account');
+                    setShowMobileMenu(false);
+                    onMobileMenuToggle?.(false);
+                  }}
+                  className={`w-full flex items-center space-x-4 px-5 py-4 rounded-2xl text-left transition-all duration-200 group ${
+                    activeTab === 'account'
+                      ? theme === 'dark'
+                        ? 'bg-white text-gray-900 shadow-fintech-lg'
+                        : 'bg-gray-900 text-white shadow-fintech-lg'
+                      : theme === 'dark'
+                        ? 'text-gray-300 hover:bg-gray-800/60 hover:text-white'
+                        : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                  }`}
+                >
+                  <div className="w-14 h-14 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center text-white text-lg font-bold flex-shrink-0">
+                    {currentUser?.displayName?.charAt(0)?.toUpperCase() || 'U'}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className={`font-semibold text-base truncate ${
+                      activeTab === 'account' 
+                        ? theme === 'dark' ? 'text-gray-900' : 'text-white'
+                        : theme === 'dark' ? 'text-white' : 'text-gray-900'
+                    }`}>
+                      {currentUser?.displayName || 'User'}
+                    </div>
+                    <div className={`text-sm truncate ${
+                      activeTab === 'account' 
+                        ? theme === 'dark' ? 'text-gray-600' : 'text-gray-300'
+                        : theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+                    }`}>
+                      {currentUser?.email || 'user@example.com'}
+                    </div>
+                  </div>
+                  {activeTab === 'account' && (
+                    <div className={`w-2 h-2 rounded-full ${
+                      theme === 'dark' ? 'bg-gray-900' : 'bg-white'
+                    }`}></div>
+                  )}
+                </button>
               </div>
 
               {/* Navigation Menu */}
               <div>
-                <h3 className={`text-sm font-semibold mb-4 ${
-                  theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
-                }`}>Chuyển trang</h3>
-                <nav className="space-y-2">
+                <nav className="space-y-1">
                   {tabs.map(tab => (
                     <button
                       key={tab.id}
@@ -149,35 +176,35 @@ const Header = ({ activeTab, setActiveTab, onQuickAdd, onMobileMenuToggle }) => 
                         setShowMobileMenu(false);
                         onMobileMenuToggle?.(false);
                       }}
-                      className={`w-full flex items-center space-x-4 px-4 py-4 rounded-xl text-left transition-all duration-200 ${
+                      className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-left transition-all duration-200 group ${
                         activeTab === tab.id
                           ? theme === 'dark'
                             ? 'bg-white text-gray-900 shadow-fintech-md'
                             : 'bg-gray-900 text-white shadow-fintech-md'
                           : theme === 'dark'
-                            ? 'text-gray-300 hover:bg-gray-800/50 hover:text-white'
+                            ? 'text-gray-300 hover:bg-gray-800/60 hover:text-white'
                             : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
                       }`}
                     >
-                      <span className="text-xl">{tab.icon}</span>
-                      <div>
-                        <div className={`font-semibold text-sm ${
+                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-200 ${
+                        activeTab === tab.id
+                          ? theme === 'dark'
+                            ? 'bg-gray-100 text-gray-900'
+                            : 'bg-white/20 text-white'
+                          : theme === 'dark'
+                            ? 'bg-gray-800 text-gray-300 group-hover:bg-gray-700'
+                            : 'bg-gray-100 text-gray-600 group-hover:bg-gray-200'
+                      }`}>
+                        <span className="text-lg">{tab.icon}</span>
+                      </div>
+                      <div className="flex-1">
+                        <div className={`font-medium text-sm ${
                           activeTab === tab.id 
                             ? theme === 'dark' ? 'text-gray-900' : 'text-white'
                             : theme === 'dark' ? 'text-white' : 'text-gray-900'
                         }`}>{tab.name}</div>
-                        <div className={`text-xs mt-0.5 ${
-                          activeTab === tab.id 
-                            ? theme === 'dark' ? 'text-gray-600' : 'text-gray-300'
-                            : theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
-                        }`}>
-                          {tab.id === 'dashboard' && 'Xem tổng quan tài chính'}
-                          {tab.id === 'transactions' && 'Quản lý giao dịch'}
-                          {tab.id === 'categories' && 'Quản lý danh mục'}
-                          {tab.id === 'budgets' && 'Quản lý ngân sách'}
-                          {tab.id === 'settings' && 'Cài đặt ứng dụng'}
-                        </div>
                       </div>
+
                     </button>
                   ))}
                 </nav>

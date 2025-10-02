@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
-import { useData } from '../contexts/DataContext';
+import { useData } from '../contexts/FirebaseDataContext';
 
 const Settings = () => {
   const { theme, toggleTheme } = useTheme();
@@ -65,7 +65,6 @@ const Settings = () => {
       {/* Header */}
       <div className="slide-in-down">
         <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white">Cài đặt</h1>
-        <p className="text-gray-600 dark:text-gray-400 mt-1 font-medium">Quản lý tùy chọn và dữ liệu ứng dụng</p>
       </div>
 
       {/* Message */}
@@ -109,7 +108,6 @@ const Settings = () => {
                 <span className="mr-3 text-2xl">🎨</span>
                 Giao diện
               </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Tùy chỉnh giao diện ứng dụng</p>
             </div>
             <div className="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
               <span className="text-sm">{theme === 'dark' ? '🌙' : '☀️'}</span>
@@ -126,9 +124,6 @@ const Settings = () => {
                 </div>
                 <div>
                   <p className="font-semibold text-gray-900 dark:text-white">Chế độ {theme === 'dark' ? 'tối' : 'sáng'}</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    {theme === 'dark' ? 'Giao diện tối cho mắt' : 'Giao diện sáng tiêu chuẩn'}
-                  </p>
                 </div>
               </div>
               <button
@@ -144,25 +139,6 @@ const Settings = () => {
                 />
               </button>
             </div>
-            
-            <div className="grid grid-cols-2 gap-3">
-              <div className={`p-3 rounded-xl border text-center ${
-                theme === 'light' 
-                  ? 'border-success-500 bg-success-50 dark:bg-success-900/20' 
-                  : 'border-gray-300 dark:border-gray-600'
-              }`}>
-                <div className="text-2xl mb-2">☀️</div>
-                <p className="text-xs font-medium">Sáng</p>
-              </div>
-              <div className={`p-3 rounded-xl border text-center ${
-                theme === 'dark' 
-                  ? 'border-success-500 bg-success-50 dark:bg-success-900/20' 
-                  : 'border-gray-300 dark:border-gray-600'
-              }`}>
-                <div className="text-2xl mb-2">🌙</div>
-                <p className="text-xs font-medium">Tối</p>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -176,7 +152,6 @@ const Settings = () => {
                 <span className="mr-3 text-2xl">💾</span>
                 Quản lý dữ liệu
               </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Sao lưu và khôi phục dữ liệu</p>
             </div>
             <div className="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
               <span className="text-sm">📊</span>
@@ -201,9 +176,12 @@ const Settings = () => {
               </div>
               <button
                 onClick={handleExport}
-                className="btn-fintech-success flex-shrink-0 ml-4"
+                className="btn-fintech-success w-10 h-10 p-0 flex-shrink-0 ml-4"
+                title="Xuất dữ liệu"
               >
-                Xuất
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
               </button>
             </div>
 
@@ -224,9 +202,12 @@ const Settings = () => {
               </div>
               <button
                 onClick={handleFileSelect}
-                className="btn-fintech-primary flex-shrink-0 ml-4"
+                className="btn-fintech-primary w-10 h-10 p-0 flex-shrink-0 ml-4"
+                title="Nhập dữ liệu"
               >
-                Nhập
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
+                </svg>
               </button>
               <input
                 ref={fileInputRef}
@@ -252,9 +233,12 @@ const Settings = () => {
               </div>
               <button
                 onClick={handleClearData}
-                className="btn-fintech-danger flex-shrink-0 ml-4"
+                className="btn-fintech-danger w-10 h-10 p-0 flex-shrink-0 ml-4"
+                title="Xóa tất cả dữ liệu"
               >
-                Xóa
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
               </button>
             </div>
           </div>
@@ -271,7 +255,6 @@ const Settings = () => {
               <span className="mr-3 text-2xl">ℹ️</span>
               Thông tin ứng dụng
             </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Chi tiết về ứng dụng và dữ liệu</p>
           </div>
           <div className="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
             <span className="text-sm">📱</span>

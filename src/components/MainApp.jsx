@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
-import { useData } from '../contexts/DataContext';
+import { useData } from '../contexts/FirebaseDataContext';
+import { useAuth } from '../contexts/AuthContext';
 import Header from './Header';
 import Dashboard from './Dashboard';
 import Transactions from './Transactions';
@@ -8,24 +9,42 @@ import Categories from './Categories';
 import Budgets from './Budgets';
 import Settings from './Settings';
 import QuickAdd from './QuickAdd';
+import Account from './Account';
 
 const MainApp = () => {
   const { theme } = useTheme();
-  const { data } = useData();
+  const { data, loading } = useData();
+  const { currentUser } = useAuth();
   const [activeTab, setActiveTab] = useState('dashboard');
+  
+  // Handle account tab navigation
+  const handleSetActiveTab = (tab) => {
+    setActiveTab(tab);
+  };
   const [showQuickAdd, setShowQuickAdd] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   const tabs = [
-    { id: 'dashboard', name: 'Tổng quan', icon: '📊', description: 'Xem tổng quan tài chính' },
-    { id: 'transactions', name: 'Giao dịch', icon: '💰', description: 'Quản lý giao dịch' },
-    { id: 'categories', name: 'Danh mục', icon: '📂', description: 'Quản lý danh mục' },
-    { id: 'budgets', name: 'Ngân sách', icon: '🎯', description: 'Quản lý ngân sách' },
-    { id: 'settings', name: 'Cài đặt', icon: '⚙️', description: 'Cài đặt ứng dụng' }
+    { id: 'dashboard', name: 'Tổng quan', icon: '📊' },
+    { id: 'transactions', name: 'Giao dịch', icon: '💰' },
+    { id: 'categories', name: 'Danh mục', icon: '📂' },
+    { id: 'budgets', name: 'Ngân sách', icon: '🎯' },
+    { id: 'settings', name: 'Cài đặt', icon: '⚙️' }
   ];
 
   const renderContent = () => {
+    if (loading) {
+      return (
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 dark:border-white mx-auto mb-4"></div>
+            <p className="text-gray-600 dark:text-gray-400">Đang tải dữ liệu...</p>
+          </div>
+        </div>
+      );
+    }
+
     switch (activeTab) {
       case 'dashboard':
         return <Dashboard />;
@@ -35,6 +54,8 @@ const MainApp = () => {
         return <Categories />;
       case 'budgets':
         return <Budgets />;
+      case 'account':
+        return <Account />;
       case 'settings':
         return <Settings />;
       default:
@@ -53,7 +74,7 @@ const MainApp = () => {
       {/* Mobile Header */}
       <Header 
         activeTab={activeTab} 
-        setActiveTab={setActiveTab}
+        setActiveTab={handleSetActiveTab} 
         onQuickAdd={() => setShowQuickAdd(true)}
         onMobileMenuToggle={setIsMobileMenuOpen}
       />
@@ -115,33 +136,26 @@ const MainApp = () => {
           {/* Navigation */}
           <nav className="flex-1 p-4 space-y-2">
             {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`w-full flex items-center rounded-xl text-left transition-all duration-200 group ${
-                  isSidebarCollapsed ? 'justify-center p-3' : 'space-x-3 px-4 py-3'
-                } ${
-                  activeTab === tab.id
-                    ? theme === 'dark'
-                      ? 'bg-white text-gray-900 shadow-fintech-md'
-                      : 'bg-gray-900 text-white shadow-fintech-md'
-                    : theme === 'dark'
-                      ? 'text-gray-300 hover:bg-gray-700 hover:text-white'
-                      : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
-                }`}
-                title={isSidebarCollapsed ? tab.name : ''}
-              >
+                <button
+                  key={tab.id}
+                  onClick={() => handleSetActiveTab(tab.id)}
+                  className={`w-full flex items-center rounded-xl text-left transition-all duration-200 group ${
+                    isSidebarCollapsed ? 'justify-center p-3' : 'space-x-3 px-4 py-3'
+                  } ${
+                    activeTab === tab.id
+                      ? theme === 'dark'
+                        ? 'bg-white text-gray-900 shadow-fintech-md'
+                        : 'bg-gray-900 text-white shadow-fintech-md'
+                      : theme === 'dark'
+                        ? 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                        : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                  }`}
+                  title={isSidebarCollapsed ? tab.name : ''}
+                >
                 <span className={`text-2xl flex-shrink-0 ${isSidebarCollapsed ? '' : ''}`}>{tab.icon}</span>
                 {!isSidebarCollapsed && (
                   <div className="flex-1 min-w-0">
                     <div className="font-semibold">{tab.name}</div>
-                    <div className={`text-xs mt-0.5 ${
-                      activeTab === tab.id 
-                        ? theme === 'dark' ? 'text-gray-600' : 'text-gray-300'
-                        : theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
-                    }`}>
-                      {tab.description}
-                    </div>
                   </div>
                 )}
               </button>
@@ -149,7 +163,37 @@ const MainApp = () => {
           </nav>
 
           {/* Sidebar Footer */}
-          <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+          <div className="p-4 border-t border-gray-200 dark:border-gray-700 space-y-3">
+            {/* User Profile Button */}
+            <button
+              onClick={() => handleSetActiveTab('account')}
+              className={`w-full flex items-center rounded-xl text-left transition-all duration-200 group ${
+                isSidebarCollapsed ? 'justify-center p-3' : 'space-x-3 px-4 py-3'
+              } ${
+                activeTab === 'account'
+                  ? theme === 'dark'
+                    ? 'bg-white text-gray-900 shadow-fintech-md'
+                    : 'bg-gray-900 text-white shadow-fintech-md'
+                  : theme === 'dark'
+                    ? 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+              }`}
+              title={isSidebarCollapsed ? currentUser?.displayName || 'Tài khoản' : ''}
+            >
+              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+                {currentUser?.displayName?.charAt(0)?.toUpperCase() || 'U'}
+              </div>
+              {!isSidebarCollapsed && (
+                <div className="flex-1 min-w-0">
+                  <div className="font-semibold truncate">{currentUser?.displayName || 'User'}</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                    {currentUser?.email}
+                  </div>
+                </div>
+              )}
+            </button>
+
+            {/* Balance Card */}
             {!isSidebarCollapsed && (
               <div className={`p-4 rounded-xl ${theme === 'dark' ? 'bg-gray-700' : 'bg-gray-50'}`}>
                 <div className="flex items-center space-x-3">

@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
-import { useData } from '../contexts/DataContext';
+import { useData } from '../contexts/FirebaseDataContext';
 import { formatCurrencyInput, parseCurrencyInput, formatCurrencyDisplay } from '../utils/formatCurrency';
 
 const Budgets = () => {
@@ -135,60 +135,84 @@ const Budgets = () => {
   );
 
   return (
-    <div className="max-w-4xl mx-auto p-4 space-y-6">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8 fade-in">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Ngân sách</h1>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 slide-in-down">
+        <div>
+          <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white">Ngân sách</h1>
+        </div>
         <button
           onClick={() => setShowAddForm(true)}
           disabled={availableCategories.length === 0}
-          className="bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400 text-white px-4 py-2 rounded-lg transition-colors"
+          className="btn-fintech-primary w-12 h-12 p-0 disabled:opacity-50 disabled:cursor-not-allowed"
+          title="Thêm ngân sách"
         >
-          + Thêm ngân sách
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          </svg>
         </button>
       </div>
 
       {availableCategories.length === 0 && !showAddForm && (
-        <div className={`rounded-2xl p-6 text-center transition-colors ${
-          theme === 'dark' ? 'bg-gray-800' : 'bg-white'
-        }`}>
-          <div className="text-6xl mb-4">🎯</div>
-          <p className="text-gray-500">Tất cả danh mục đã có ngân sách</p>
-          <p className="text-sm text-gray-400">Thêm danh mục mới để tạo ngân sách</p>
+        <div className="fintech-card text-center slide-in-up">
+          <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center bounce-in">
+            <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+          </div>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Tất cả danh mục đã có ngân sách</h3>
         </div>
       )}
 
       {/* Add/Edit Form */}
       {showAddForm && (
-        <div className={`rounded-2xl p-6 transition-colors ${
-          theme === 'dark' ? 'bg-gray-800' : 'bg-white'
-        }`}>
-          <h3 className="text-lg font-semibold mb-4">
-            {editingId ? 'Sửa ngân sách' : 'Thêm ngân sách mới'}
-          </h3>
+        <div className="fintech-card-elevated p-6 transition-colors slide-in-up">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+              {editingId ? 'Sửa ngân sách' : 'Thêm ngân sách mới'}
+            </h3>
+            <button
+              onClick={handleCancel}
+              className="btn-fintech-ghost w-10 h-10 p-0"
+              title="Đóng"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
           
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Category */}
               <div>
                 <label className="block text-sm font-medium mb-2">Danh mục</label>
-                <select
-                  value={formData.categoryId}
-                  onChange={(e) => setFormData({...formData, categoryId: e.target.value})}
-                  className={`w-full px-4 py-3 rounded-lg border transition-colors ${
-                    theme === 'dark'
-                      ? 'bg-gray-700 border-gray-600 text-white'
-                      : 'bg-white border-gray-300 text-gray-900'
-                  }`}
-                  required
-                >
-                  <option value="">Chọn danh mục</option>
-                  {availableCategories.map(category => (
-                    <option key={category.id} value={category.id}>
-                      {category.icon} {category.name}
-                    </option>
-                  ))}
-                </select>
+                 <div className="relative">
+                   <select
+                     value={formData.categoryId}
+                     onChange={(e) => setFormData({...formData, categoryId: e.target.value})}
+                     className={`select-fintech appearance-none pr-10 pl-4 py-2.5 w-full rounded-xl border-2 font-semibold text-sm transition-all duration-200 cursor-pointer focus:ring-2 focus:ring-offset-2 ${
+                       theme === 'dark'
+                         ? 'bg-gray-800 border-gray-700 text-white hover:bg-gray-750 focus:border-gray-600 focus:ring-gray-500'
+                         : 'bg-white border-gray-300 text-gray-900 hover:bg-gray-50 focus:border-gray-400 focus:ring-gray-300'
+                     }`}
+                     required
+                   >
+                     <option value="">Chọn danh mục</option>
+                     {availableCategories.map(category => (
+                       <option key={category.id} value={category.id}>
+                         {category.icon} {category.name}
+                       </option>
+                     ))}
+                   </select>
+                   <div className={`pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 ${
+                     theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+                   }`}>
+                     <svg className="w-5 h-5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                     </svg>
+                   </div>
+                 </div>
               </div>
 
               {/* Amount */}
@@ -202,10 +226,10 @@ const Budgets = () => {
                     setFormData({...formData, amount: formatted});
                   }}
                   placeholder="Nhập số tiền (VD: 1.000.000)"
-                  className={`w-full px-4 py-3 rounded-lg border transition-colors ${
+                  className={`pl-4 py-2.5 w-full rounded-xl border-2 font-semibold text-sm transition-all duration-200 focus:ring-2 focus:ring-offset-2 ${
                     theme === 'dark'
-                      ? 'bg-gray-700 border-gray-600 text-white'
-                      : 'bg-white border-gray-300 text-gray-900'
+                      ? 'bg-gray-800 border-gray-700 text-white placeholder-gray-400 hover:bg-gray-750 focus:border-gray-600 focus:ring-gray-500'
+                      : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 hover:bg-gray-50 focus:border-gray-400 focus:ring-gray-300'
                   }`}
                   required
                 />
@@ -214,33 +238,42 @@ const Budgets = () => {
               {/* Period */}
               <div>
                 <label className="block text-sm font-medium mb-2">Chu kỳ</label>
-                <select
-                  value={formData.period}
-                  onChange={(e) => setFormData({...formData, period: e.target.value})}
-                  className={`w-full px-4 py-3 rounded-lg border transition-colors ${
-                    theme === 'dark'
-                      ? 'bg-gray-700 border-gray-600 text-white'
-                      : 'bg-white border-gray-300 text-gray-900'
-                  }`}
-                >
-                  <option value="month">Hàng tháng</option>
-                  <option value="year">Hàng năm</option>
-                </select>
+                 <div className="relative">
+                   <select
+                     value={formData.period}
+                     onChange={(e) => setFormData({...formData, period: e.target.value})}
+                     className={`select-fintech appearance-none pr-10 pl-4 py-2.5 w-full rounded-xl border-2 font-semibold text-sm transition-all duration-200 cursor-pointer focus:ring-2 focus:ring-offset-2 ${
+                       theme === 'dark'
+                         ? 'bg-gray-800 border-gray-700 text-white hover:bg-gray-750 focus:border-gray-600 focus:ring-gray-500'
+                         : 'bg-white border-gray-300 text-gray-900 hover:bg-gray-50 focus:border-gray-400 focus:ring-gray-300'
+                     }`}
+                   >
+                     <option value="month">Hàng tháng</option>
+                     <option value="year">Hàng năm</option>
+                   </select>
+                   <div className={`pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 ${
+                     theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+                   }`}>
+                     <svg className="w-5 h-5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                     </svg>
+                   </div>
+                 </div>
               </div>
             </div>
 
             {/* Buttons */}
-            <div className="flex space-x-3">
+            <div className="flex flex-col sm:flex-row gap-3 pt-2">
               <button
                 type="submit"
-                className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg transition-colors"
+                className="btn-fintech-primary flex-1"
               >
                 {editingId ? 'Cập nhật' : 'Thêm'}
               </button>
               <button
                 type="button"
                 onClick={handleCancel}
-                className="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg transition-colors"
+                className="btn-fintech-secondary flex-1"
               >
                 Hủy
               </button>

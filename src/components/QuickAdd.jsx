@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
-import { useData } from '../contexts/DataContext';
+import { useData } from '../contexts/FirebaseDataContext';
 import { formatCurrencyInput, parseCurrencyInput } from '../utils/formatCurrency';
 
 const QuickAdd = ({ onClose }) => {
@@ -52,7 +52,6 @@ const QuickAdd = ({ onClose }) => {
         <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200 dark:border-gray-800 flex-shrink-0">
           <div>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Thêm giao dịch</h2>
-            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-1">Ghi lại thu chi nhanh chóng</p>
           </div>
           <button
             onClick={onClose}
@@ -118,7 +117,11 @@ const QuickAdd = ({ onClose }) => {
                     setFormData({...formData, amount: formatted});
                   }}
                   placeholder="Nhập số tiền (VD: 1.000.000)"
-                  className="input-fintech text-base sm:text-lg pr-12"
+                  className={`pl-4 py-2.5 pr-12 w-full rounded-xl border-2 font-semibold text-base sm:text-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 ${
+                    theme === 'dark'
+                      ? 'bg-gray-800 border-gray-700 text-white placeholder-gray-400 hover:bg-gray-750 focus:border-gray-600 focus:ring-gray-500'
+                      : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 hover:bg-gray-50 focus:border-gray-400 focus:ring-gray-300'
+                  }`}
                   required
                 />
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 font-medium text-sm">
@@ -130,19 +133,32 @@ const QuickAdd = ({ onClose }) => {
             {/* Category */}
             <div className="space-y-2">
               <label className="block text-sm font-semibold text-gray-900 dark:text-white">Danh mục</label>
-              <select
-                value={formData.categoryId}
-                onChange={(e) => setFormData({...formData, categoryId: e.target.value})}
-                className="select-fintech"
-                required
-              >
-                <option value="">Chọn danh mục</option>
-                {filteredCategories.map(category => (
-                  <option key={category.id} value={category.id}>
-                    {category.icon} {category.name}
-                  </option>
-                ))}
-              </select>
+              <div className="relative">
+                <select
+                  value={formData.categoryId}
+                  onChange={(e) => setFormData({...formData, categoryId: e.target.value})}
+                  className={`select-fintech appearance-none pr-10 pl-4 py-2.5 w-full rounded-xl border-2 font-semibold text-sm transition-all duration-200 cursor-pointer focus:ring-2 focus:ring-offset-2 ${
+                    theme === 'dark'
+                      ? 'bg-gray-800 border-gray-700 text-white hover:bg-gray-750 focus:border-gray-600 focus:ring-gray-500'
+                      : 'bg-white border-gray-300 text-gray-900 hover:bg-gray-50 focus:border-gray-400 focus:ring-gray-300'
+                  }`}
+                  required
+                >
+                  <option value="">Chọn danh mục</option>
+                  {filteredCategories.map(category => (
+                    <option key={category.id} value={category.id}>
+                      {category.icon} {category.name}
+                    </option>
+                  ))}
+                </select>
+                <div className={`pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 ${
+                  theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+                }`}>
+                  <svg className="w-5 h-5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
             </div>
 
             {/* Date & Time */}
@@ -154,7 +170,11 @@ const QuickAdd = ({ onClose }) => {
                     type="date"
                     value={formData.date}
                     onChange={(e) => setFormData({...formData, date: e.target.value})}
-                    className="input-fintech ios-date-input"
+                    className={`pl-4 py-2.5 w-full rounded-xl border-2 font-semibold text-sm transition-all duration-200 focus:ring-2 focus:ring-offset-2 ios-date-input ${
+                      theme === 'dark'
+                        ? 'bg-gray-800 border-gray-700 text-white hover:bg-gray-750 focus:border-gray-600 focus:ring-gray-500'
+                        : 'bg-white border-gray-300 text-gray-900 hover:bg-gray-50 focus:border-gray-400 focus:ring-gray-300'
+                    }`}
                     style={{
                       fontSize: '16px',
                       minHeight: '48px',
@@ -172,7 +192,11 @@ const QuickAdd = ({ onClose }) => {
                     type="time"
                     value={formData.time}
                     onChange={(e) => setFormData({...formData, time: e.target.value})}
-                    className="input-fintech ios-time-input"
+                    className={`pl-4 py-2.5 w-full rounded-xl border-2 font-semibold text-sm transition-all duration-200 focus:ring-2 focus:ring-offset-2 ios-time-input ${
+                      theme === 'dark'
+                        ? 'bg-gray-800 border-gray-700 text-white hover:bg-gray-750 focus:border-gray-600 focus:ring-gray-500'
+                        : 'bg-white border-gray-300 text-gray-900 hover:bg-gray-50 focus:border-gray-400 focus:ring-gray-300'
+                    }`}
                     style={{
                       fontSize: '16px',
                       minHeight: '48px',
@@ -192,7 +216,11 @@ const QuickAdd = ({ onClose }) => {
                 value={formData.note}
                 onChange={(e) => setFormData({...formData, note: e.target.value})}
                 placeholder="Thêm ghi chú..."
-                className="input-fintech"
+                className={`pl-4 py-2.5 w-full rounded-xl border-2 font-semibold text-sm transition-all duration-200 focus:ring-2 focus:ring-offset-2 ${
+                  theme === 'dark'
+                    ? 'bg-gray-800 border-gray-700 text-white placeholder-gray-400 hover:bg-gray-750 focus:border-gray-600 focus:ring-gray-500'
+                    : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 hover:bg-gray-50 focus:border-gray-400 focus:ring-gray-300'
+                }`}
               />
             </div>
           </form>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
-import { useData } from '../contexts/DataContext';
+import { useData } from '../contexts/FirebaseDataContext';
 
 const Categories = () => {
   const { theme } = useTheme();
@@ -137,7 +137,11 @@ const Categories = () => {
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
                   placeholder="Nhập tên danh mục"
-                  className="input-fintech"
+                  className={`pl-4 py-2.5 w-full rounded-xl border-2 font-semibold text-sm transition-all duration-200 focus:ring-2 focus:ring-offset-2 ${
+                    theme === 'dark'
+                      ? 'bg-gray-800 border-gray-700 text-white placeholder-gray-400 hover:bg-gray-750 focus:border-gray-600 focus:ring-gray-500'
+                      : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 hover:bg-gray-50 focus:border-gray-400 focus:ring-gray-300'
+                  }`}
                   required
                 />
               </div>
@@ -145,15 +149,28 @@ const Categories = () => {
               {/* Type */}
               <div className="space-y-2">
                 <label className="block text-sm font-semibold text-gray-900 dark:text-white">Loại giao dịch</label>
-                <select
-                  value={formData.type}
-                  onChange={(e) => setFormData({...formData, type: e.target.value})}
-                  className="select-fintech"
-                >
-                  <option value="expense">Chi tiêu</option>
-                  <option value="income">Thu nhập</option>
-                  <option value="both">Cả hai</option>
-                </select>
+                <div className="relative">
+                  <select
+                    value={formData.type}
+                    onChange={(e) => setFormData({...formData, type: e.target.value})}
+                    className={`select-fintech appearance-none pr-10 pl-4 py-2.5 w-full rounded-xl border-2 font-semibold text-sm transition-all duration-200 cursor-pointer focus:ring-2 focus:ring-offset-2 ${
+                      theme === 'dark'
+                        ? 'bg-gray-800 border-gray-700 text-white hover:bg-gray-750 focus:border-gray-600 focus:ring-gray-500'
+                        : 'bg-white border-gray-300 text-gray-900 hover:bg-gray-50 focus:border-gray-400 focus:ring-gray-300'
+                    }`}
+                  >
+                    <option value="expense">Chi tiêu</option>
+                    <option value="income">Thu nhập</option>
+                    <option value="both">Cả hai</option>
+                  </select>
+                  <div className={`pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 ${
+                    theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+                  }`}>
+                    <svg className="w-5 h-5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
               </div>
             </div>
 

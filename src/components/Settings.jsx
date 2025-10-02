@@ -61,145 +61,271 @@ const Settings = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4 space-y-6">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8 fade-in">
       {/* Header */}
-      <h1 className="text-2xl font-bold">Cài đặt</h1>
+      <div className="slide-in-down">
+        <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white">Cài đặt</h1>
+        <p className="text-gray-600 dark:text-gray-400 mt-1 font-medium">Quản lý tùy chọn và dữ liệu ứng dụng</p>
+      </div>
 
       {/* Message */}
       {message && (
-        <div className={`p-4 rounded-lg ${
+        <div className={`fintech-card p-4 scale-in ${
           messageType === 'error' 
-            ? 'bg-red-100 text-red-700 border border-red-200' 
-            : 'bg-green-100 text-green-700 border border-green-200'
+            ? 'bg-danger-50 border-danger-200 dark:bg-danger-900/20 dark:border-danger-800' 
+            : 'bg-success-50 border-success-200 dark:bg-success-900/20 dark:border-success-800'
         }`}>
-          {message}
+          <div className="flex items-center space-x-3">
+            <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
+              messageType === 'error' ? 'bg-danger-500' : 'bg-success-500'
+            }`}>
+              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {messageType === 'error' ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                )}
+              </svg>
+            </div>
+            <span className={`font-medium ${
+              messageType === 'error' 
+                ? 'text-danger-700 dark:text-danger-400' 
+                : 'text-success-700 dark:text-success-400'
+            }`}>
+              {message}
+            </span>
+          </div>
         </div>
       )}
 
-      {/* Theme Settings */}
-      <div className={`rounded-2xl p-6 transition-colors ${
-        theme === 'dark' ? 'bg-gray-800' : 'bg-white'
-      }`}>
-        <h3 className="text-lg font-semibold mb-4">Giao diện</h3>
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="font-medium">Chế độ tối</p>
-            <p className="text-sm text-gray-500">Chuyển đổi giữa chế độ sáng và tối</p>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Theme Settings */}
+        <div className={`fintech-card p-6 transition-colors hover-lift slide-in-up ${
+          theme === 'dark' ? 'bg-gray-800' : 'bg-white'
+        }`}>
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center">
+                <span className="mr-3 text-2xl">🎨</span>
+                Giao diện
+              </h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Tùy chỉnh giao diện ứng dụng</p>
+            </div>
+            <div className="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+              <span className="text-sm">{theme === 'dark' ? '🌙' : '☀️'}</span>
+            </div>
           </div>
-          <button
-            onClick={toggleTheme}
-            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-              theme === 'dark' ? 'bg-blue-600' : 'bg-gray-200'
-            }`}
-          >
-            <span
-              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                theme === 'dark' ? 'translate-x-6' : 'translate-x-1'
-              }`}
-            />
-          </button>
+          
+          <div className="space-y-4">
+            <div className="flex items-center justify-between p-4 rounded-xl border border-gray-200 dark:border-gray-700">
+              <div className="flex items-center space-x-4">
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                  theme === 'dark' ? 'bg-gray-700' : 'bg-gray-100'
+                }`}>
+                  <span className="text-xl">{theme === 'dark' ? '🌙' : '☀️'}</span>
+                </div>
+                <div>
+                  <p className="font-semibold text-gray-900 dark:text-white">Chế độ {theme === 'dark' ? 'tối' : 'sáng'}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {theme === 'dark' ? 'Giao diện tối cho mắt' : 'Giao diện sáng tiêu chuẩn'}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={toggleTheme}
+                className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors duration-200 ${
+                  theme === 'dark' ? 'bg-success-500' : 'bg-gray-300'
+                } hover:scale-105`}
+              >
+                <span
+                  className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform duration-200 shadow-fintech ${
+                    theme === 'dark' ? 'translate-x-6' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-3">
+              <div className={`p-3 rounded-xl border text-center ${
+                theme === 'light' 
+                  ? 'border-success-500 bg-success-50 dark:bg-success-900/20' 
+                  : 'border-gray-300 dark:border-gray-600'
+              }`}>
+                <div className="text-2xl mb-2">☀️</div>
+                <p className="text-xs font-medium">Sáng</p>
+              </div>
+              <div className={`p-3 rounded-xl border text-center ${
+                theme === 'dark' 
+                  ? 'border-success-500 bg-success-50 dark:bg-success-900/20' 
+                  : 'border-gray-300 dark:border-gray-600'
+              }`}>
+                <div className="text-2xl mb-2">🌙</div>
+                <p className="text-xs font-medium">Tối</p>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
 
-      {/* Data Management */}
-      <div className={`rounded-2xl p-6 transition-colors ${
-        theme === 'dark' ? 'bg-gray-800' : 'bg-white'
-      }`}>
-        <h3 className="text-lg font-semibold mb-4">Quản lý dữ liệu</h3>
-        
-        <div className="space-y-4">
-          {/* Export */}
-          <div className="flex items-center justify-between p-4 rounded-lg border">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                <span className="text-lg">📤</span>
-              </div>
-              <div>
-                <p className="font-medium">Xuất dữ liệu</p>
-                <p className="text-sm text-gray-500">Tải xuống file sao lưu JSON</p>
-              </div>
+        {/* Data Management */}
+        <div className={`fintech-card p-6 transition-colors hover-lift slide-in-up ${
+          theme === 'dark' ? 'bg-gray-800' : 'bg-white'
+        }`}>
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center">
+                <span className="mr-3 text-2xl">💾</span>
+                Quản lý dữ liệu
+              </h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Sao lưu và khôi phục dữ liệu</p>
             </div>
-            <button
-              onClick={handleExport}
-              className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-colors"
-            >
-              Xuất
-            </button>
+            <div className="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+              <span className="text-sm">📊</span>
+            </div>
           </div>
-
-          {/* Import */}
-          <div className="flex items-center justify-between p-4 rounded-lg border">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                <span className="text-lg">📥</span>
+          
+          <div className="space-y-4">
+            {/* Export */}
+            <div className={`flex items-center justify-between p-4 rounded-xl border transition-all duration-200 hover:shadow-fintech ${
+              theme === 'dark' ? 'border-gray-700 hover:border-gray-600' : 'border-gray-200 hover:border-gray-300'
+            }`}>
+              <div className="flex items-center space-x-4 flex-1 min-w-0">
+                <div className="w-12 h-12 bg-success-100 dark:bg-success-900/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <svg className="w-6 h-6 text-success-600 dark:text-success-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-gray-900 dark:text-white">Xuất dữ liệu</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Tải file JSON chứa toàn bộ dữ liệu</p>
+                </div>
               </div>
-              <div>
-                <p className="font-medium">Nhập dữ liệu</p>
-                <p className="text-sm text-gray-500">Khôi phục từ file sao lưu</p>
-              </div>
+              <button
+                onClick={handleExport}
+                className="btn-fintech-success flex-shrink-0 ml-4"
+              >
+                Xuất
+              </button>
             </div>
-            <button
-              onClick={handleFileSelect}
-              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors"
-            >
-              Nhập
-            </button>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".json"
-              onChange={handleImport}
-              className="hidden"
-            />
-          </div>
 
-          {/* Clear Data */}
-          <div className="flex items-center justify-between p-4 rounded-lg border border-red-200">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
-                <span className="text-lg">🗑️</span>
+            {/* Import */}
+            <div className={`flex items-center justify-between p-4 rounded-xl border transition-all duration-200 hover:shadow-fintech ${
+              theme === 'dark' ? 'border-gray-700 hover:border-gray-600' : 'border-gray-200 hover:border-gray-300'
+            }`}>
+              <div className="flex items-center space-x-4 flex-1 min-w-0">
+                <div className="w-12 h-12 bg-primary-100 dark:bg-primary-900/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <svg className="w-6 h-6 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-gray-900 dark:text-white">Nhập dữ liệu</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Khôi phục từ file sao lưu JSON</p>
+                </div>
               </div>
-              <div>
-                <p className="font-medium text-red-700">Xóa tất cả dữ liệu</p>
-                <p className="text-sm text-red-500">Không thể hoàn tác</p>
-              </div>
+              <button
+                onClick={handleFileSelect}
+                className="btn-fintech-primary flex-shrink-0 ml-4"
+              >
+                Nhập
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".json"
+                onChange={handleImport}
+                className="hidden"
+              />
             </div>
-            <button
-              onClick={handleClearData}
-              className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors"
-            >
-              Xóa
-            </button>
+
+            {/* Clear Data */}
+            <div className={`flex items-center justify-between p-4 rounded-xl border border-danger-200 dark:border-danger-800 transition-all duration-200 hover:shadow-fintech`}>
+              <div className="flex items-center space-x-4 flex-1 min-w-0">
+                <div className="w-12 h-12 bg-danger-100 dark:bg-danger-900/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <svg className="w-6 h-6 text-danger-600 dark:text-danger-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-danger-700 dark:text-danger-400">Xóa tất cả dữ liệu</p>
+                  <p className="text-sm text-danger-600 dark:text-danger-500 mt-1">⚠️ Hành động không thể hoàn tác</p>
+                </div>
+              </div>
+              <button
+                onClick={handleClearData}
+                className="btn-fintech-danger flex-shrink-0 ml-4"
+              >
+                Xóa
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
       {/* App Info */}
-      <div className={`rounded-2xl p-6 transition-colors ${
+      <div className={`fintech-card p-6 transition-colors hover-lift slide-in-up ${
         theme === 'dark' ? 'bg-gray-800' : 'bg-white'
       }`}>
-        <h3 className="text-lg font-semibold mb-4">Thông tin ứng dụng</h3>
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center">
+              <span className="mr-3 text-2xl">ℹ️</span>
+              Thông tin ứng dụng
+            </h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Chi tiết về ứng dụng và dữ liệu</p>
+          </div>
+          <div className="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+            <span className="text-sm">📱</span>
+          </div>
+        </div>
         
-        <div className="space-y-3">
-          <div className="flex justify-between items-center">
-            <span className="text-gray-600">Phiên bản</span>
-            <span className="font-medium">2.0.0</span>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          <div className="text-center p-4 rounded-xl border border-gray-200 dark:border-gray-700">
+            <div className="text-2xl mb-2">🏷️</div>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Phiên bản</p>
+            <p className="font-bold text-gray-900 dark:text-white">2.0.0</p>
           </div>
-          <div className="flex justify-between items-center">
-            <span className="text-gray-600">Tác giả</span>
-            <span className="font-medium">Hioney Team</span>
+          
+          <div className="text-center p-4 rounded-xl border border-gray-200 dark:border-gray-700">
+            <div className="text-2xl mb-2">👥</div>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Tác giả</p>
+            <p className="font-bold text-gray-900 dark:text-white">Hioney</p>
           </div>
-          <div className="flex justify-between items-center">
-            <span className="text-gray-600">Số giao dịch</span>
-            <span className="font-medium">{data.transactions.length}</span>
+          
+          <div className="text-center p-4 rounded-xl border border-gray-200 dark:border-gray-700">
+            <div className="text-2xl mb-2">💰</div>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Giao dịch</p>
+            <p className="font-bold text-success-500">{data.transactions.length}</p>
           </div>
-          <div className="flex justify-between items-center">
-            <span className="text-gray-600">Số danh mục</span>
-            <span className="font-medium">{data.categories.length}</span>
+          
+          <div className="text-center p-4 rounded-xl border border-gray-200 dark:border-gray-700">
+            <div className="text-2xl mb-2">📂</div>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Danh mục</p>
+            <p className="font-bold text-primary-500">{data.categories.length}</p>
           </div>
-          <div className="flex justify-between items-center">
-            <span className="text-gray-600">Số ngân sách</span>
-            <span className="font-medium">{data.budgets.length}</span>
+          
+          <div className="text-center p-4 rounded-xl border border-gray-200 dark:border-gray-700">
+            <div className="text-2xl mb-2">🎯</div>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Ngân sách</p>
+            <p className="font-bold text-warning-500">{data.budgets.length}</p>
+          </div>
+        </div>
+
+        {/* Additional Info */}
+        <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gray-900 to-gray-700 dark:from-white dark:to-gray-200 flex items-center justify-center shadow-fintech">
+                <span className="text-white dark:text-gray-900 font-extrabold text-sm">H</span>
+              </div>
+              <div>
+                <p className="font-bold text-gray-900 dark:text-white">Hioney - Personal Finance</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Ứng dụng quản lý tài chính cá nhân thông minh</p>
+              </div>
+            </div>
+            <div className="text-right">
+              <p className="text-sm font-medium text-gray-900 dark:text-white">Made with ❤️</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Fintech Design</p>
+            </div>
           </div>
         </div>
       </div>

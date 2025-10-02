@@ -123,60 +123,57 @@ const Transactions = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4 space-y-6 fade-in">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8 fade-in">
       {/* Header */}
-      <h1 className="text-2xl font-bold slide-in-down">Giao dịch</h1>
+      <div className="slide-in-down">
+        <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white">Giao dịch</h1>
+        <p className="text-gray-600 dark:text-gray-400 mt-1 font-medium">Quản lý và theo dõi mọi giao dịch</p>
+      </div>
 
-      {/* Filters */}
-      <div className={`rounded-2xl p-6 transition-colors slide-in-up ${
+      {/* Filters - Enhanced */}
+      <div className={`fintech-card p-6 transition-colors slide-in-up ${
         theme === 'dark' ? 'bg-gray-800' : 'bg-white'
       }`}>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white">Bộ lọc</h3>
+          <div className="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+            <span className="text-sm">🔍</span>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Search */}
-          <div>
-            <label className="block text-sm font-medium mb-2">Tìm kiếm</label>
-          <input
+          <div className="space-y-2">
+            <label className="block text-sm font-semibold text-gray-900 dark:text-white">Tìm kiếm</label>
+            <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Tìm theo ghi chú hoặc danh mục..."
-              className={`w-full px-4 py-2 rounded-lg border transition-colors ${
-                theme === 'dark'
-                  ? 'bg-gray-700 border-gray-600 text-white'
-                  : 'bg-white border-gray-300 text-gray-900'
-              }`}
-          />
-        </div>
-        
+              className="input-fintech"
+            />
+          </div>
+          
           {/* Type Filter */}
-          <div>
-            <label className="block text-sm font-medium mb-2">Loại</label>
+          <div className="space-y-2">
+            <label className="block text-sm font-semibold text-gray-900 dark:text-white">Loại</label>
             <select
               value={filterType}
               onChange={(e) => setFilterType(e.target.value)}
-              className={`w-full px-4 py-2 rounded-lg border transition-colors ${
-                theme === 'dark'
-                  ? 'bg-gray-700 border-gray-600 text-white'
-                  : 'bg-white border-gray-300 text-gray-900'
-              }`}
+              className="select-fintech"
             >
-            <option value="all">Tất cả</option>
-            <option value="income">Thu nhập</option>
-            <option value="expense">Chi tiêu</option>
-          </select>
+              <option value="all">Tất cả</option>
+              <option value="income">Thu nhập</option>
+              <option value="expense">Chi tiêu</option>
+            </select>
           </div>
 
           {/* Category Filter */}
-          <div>
-            <label className="block text-sm font-medium mb-2">Danh mục</label>
+          <div className="space-y-2">
+            <label className="block text-sm font-semibold text-gray-900 dark:text-white">Danh mục</label>
             <select
               value={filterCategory}
               onChange={(e) => setFilterCategory(e.target.value)}
-              className={`w-full px-4 py-2 rounded-lg border transition-colors ${
-                theme === 'dark'
-                  ? 'bg-gray-700 border-gray-600 text-white'
-                  : 'bg-white border-gray-300 text-gray-900'
-              }`}
+              className="select-fintech"
             >
               <option value="all">Tất cả</option>
               {data.categories.map(category => (
@@ -188,57 +185,67 @@ const Transactions = () => {
           </div>
 
           {/* Sort */}
-          <div>
-            <label className="block text-sm font-medium mb-2">Sắp xếp</label>
+          <div className="space-y-2">
+            <label className="block text-sm font-semibold text-gray-900 dark:text-white">Sắp xếp</label>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className={`w-full px-4 py-2 rounded-lg border transition-colors ${
-                theme === 'dark'
-                  ? 'bg-gray-700 border-gray-600 text-white'
-                  : 'bg-white border-gray-300 text-gray-900'
-              }`}
+              className="select-fintech"
             >
               <option value="newest">Mới nhất</option>
               <option value="oldest">Cũ nhất</option>
               <option value="amount_high">Số tiền cao</option>
               <option value="amount_low">Số tiền thấp</option>
-          </select>
+            </select>
           </div>
         </div>
       </div>
 
-      {/* Transactions List */}
-      <div className={`rounded-2xl p-6 transition-colors slide-in-up ${
+      {/* Transactions List - Enhanced */}
+      <div className={`fintech-card p-6 transition-colors slide-in-up ${
         theme === 'dark' ? 'bg-gray-800' : 'bg-white'
       }`}>
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold">
-            Danh sách giao dịch ({filteredTransactions.length})
-          </h3>
-            </div>
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+              Danh sách giao dịch ({filteredTransactions.length})
+            </h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+              {filteredTransactions.length === 0 ? 'Không có kết quả' : 'Kết quả tìm kiếm'}
+            </p>
+          </div>
+          <div className="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+            <span className="text-sm">📋</span>
+          </div>
+        </div>
 
         {filteredTransactions.length > 0 ? (
-          <div className="space-y-3">
+          <div className="space-y-4">
             {filteredTransactions.map(transaction => {
               const category = data.categories.find(c => c.id === transaction.categoryId);
               const isEditing = editingId === transaction.id;
             
-            return (
+              return (
                 <div
                   key={transaction.id}
-                  className={`p-4 rounded-lg border transition-colors hover-lift stagger-item ${
+                  className={`fintech-card p-4 transition-colors hover-lift stagger-item ${
                     theme === 'dark' 
                       ? 'bg-gray-700 border-gray-600' 
                       : 'bg-gray-50 border-gray-200'
                   }`}
                 >
                   {isEditing ? (
-                    // Edit Form
-                    <div className="space-y-3">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <div>
-                          <label className="block text-sm font-medium mb-1">Số tiền</label>
+                    // Edit Form - Enhanced
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between mb-4">
+                        <h4 className="text-lg font-bold text-gray-900 dark:text-white">Chỉnh sửa giao dịch</h4>
+                        <div className="w-6 h-6 bg-warning-100 dark:bg-warning-900/20 rounded-lg flex items-center justify-center">
+                          <span className="text-xs">✏️</span>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <label className="block text-sm font-semibold text-gray-900 dark:text-white">Số tiền</label>
                           <input
                             type="text"
                             value={editForm.amount}
@@ -247,23 +254,15 @@ const Transactions = () => {
                               setEditForm({...editForm, amount: formatted});
                             }}
                             placeholder="VD: 1.000.000"
-                            className={`w-full px-3 py-2 rounded-lg border transition-colors ${
-                              theme === 'dark'
-                                ? 'bg-gray-600 border-gray-500 text-white'
-                                : 'bg-white border-gray-300 text-gray-900'
-                            }`}
+                            className="input-fintech"
                           />
                         </div>
-                        <div>
-                          <label className="block text-sm font-medium mb-1">Danh mục</label>
+                        <div className="space-y-2">
+                          <label className="block text-sm font-semibold text-gray-900 dark:text-white">Danh mục</label>
                           <select
                             value={editForm.categoryId}
                             onChange={(e) => setEditForm({...editForm, categoryId: e.target.value})}
-                            className={`w-full px-3 py-2 rounded-lg border transition-colors ${
-                              theme === 'dark'
-                                ? 'bg-gray-600 border-gray-500 text-white'
-                                : 'bg-white border-gray-300 text-gray-900'
-                            }`}
+                            className="select-fintech"
                           >
                             {data.categories.map(cat => (
                               <option key={cat.id} value={cat.id}>
@@ -273,122 +272,152 @@ const Transactions = () => {
                           </select>
                         </div>
                       </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <div className="relative overflow-hidden">
-                          <label className="block text-sm font-medium mb-1">Ngày</label>
-                          <input
-                            type="date"
-                            value={editForm.date}
-                            onChange={(e) => setEditForm({...editForm, date: e.target.value})}
-                            className={`w-full px-3 py-2 rounded-lg border transition-colors text-sm ios-date-input ${
-                              theme === 'dark'
-                                ? 'bg-gray-600 border-gray-500 text-white'
-                                : 'bg-white border-gray-300 text-gray-900'
-                            }`}
-                            style={{
-                              fontSize: '16px', // Prevent zoom on iOS
-                              minHeight: '40px',
-                              WebkitAppearance: 'none',
-                              appearance: 'none'
-                            }}
-                          />
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <label className="block text-sm font-semibold text-gray-900 dark:text-white">Ngày</label>
+                          <div className="relative overflow-hidden">
+                            <input
+                              type="date"
+                              value={editForm.date}
+                              onChange={(e) => setEditForm({...editForm, date: e.target.value})}
+                              className="input-fintech ios-date-input"
+                              style={{
+                                fontSize: '16px',
+                                minHeight: '40px',
+                                WebkitAppearance: 'none',
+                                appearance: 'none'
+                              }}
+                            />
+                          </div>
                         </div>
                         
-                        <div className="relative overflow-hidden">
-                          <label className="block text-sm font-medium mb-1">Giờ</label>
-                          <input
-                            type="time"
-                            value={editForm.time}
-                            onChange={(e) => setEditForm({...editForm, time: e.target.value})}
-                            className={`w-full px-3 py-2 rounded-lg border transition-colors text-sm ios-time-input ${
-                              theme === 'dark'
-                                ? 'bg-gray-600 border-gray-500 text-white'
-                                : 'bg-white border-gray-300 text-gray-900'
-                            }`}
-                            style={{
-                              fontSize: '16px', // Prevent zoom on iOS
-                              minHeight: '40px',
-                              WebkitAppearance: 'none',
-                              appearance: 'none'
-                            }}
-                          />
+                        <div className="space-y-2">
+                          <label className="block text-sm font-semibold text-gray-900 dark:text-white">Giờ</label>
+                          <div className="relative overflow-hidden">
+                            <input
+                              type="time"
+                              value={editForm.time}
+                              onChange={(e) => setEditForm({...editForm, time: e.target.value})}
+                              className="input-fintech ios-time-input"
+                              style={{
+                                fontSize: '16px',
+                                minHeight: '40px',
+                                WebkitAppearance: 'none',
+                                appearance: 'none'
+                              }}
+                            />
+                          </div>
                         </div>
                       </div>
                       
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <div>
-                          <label className="block text-sm font-medium mb-1">Ghi chú</label>
-                          <input
-                            type="text"
-                            value={editForm.note}
-                            onChange={(e) => setEditForm({...editForm, note: e.target.value})}
-                            className={`w-full px-3 py-2 rounded-lg border transition-colors ${
-                              theme === 'dark'
-                                ? 'bg-gray-600 border-gray-500 text-white'
-                                : 'bg-white border-gray-300 text-gray-900'
-                            }`}
-                          />
-                        </div>
-                        <div></div> {/* Empty div for grid alignment */}
+                      <div className="space-y-2">
+                        <label className="block text-sm font-semibold text-gray-900 dark:text-white">Ghi chú</label>
+                        <input
+                          type="text"
+                          value={editForm.note}
+                          onChange={(e) => setEditForm({...editForm, note: e.target.value})}
+                          className="input-fintech"
+                          placeholder="Thêm ghi chú..."
+                        />
                       </div>
-                      <div className="flex space-x-2">
+                      <div className="flex space-x-3 pt-2">
                         <button
                           onClick={handleSaveEdit}
-                          className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors"
+                          className="btn-fintech-success flex-1"
                         >
-                          Lưu
+                          Lưu thay đổi
                         </button>
                         <button
                           onClick={handleCancelEdit}
-                          className="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg transition-colors"
+                          className="btn-fintech-secondary flex-1"
                         >
                           Hủy
                         </button>
                       </div>
                     </div>
                   ) : (
-                    // Display Mode
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                      <div className="flex items-center space-x-4 flex-1 min-w-0">
-                        <div 
-                          className="w-12 h-12 rounded-full flex items-center justify-center text-white flex-shrink-0"
-                          style={{ backgroundColor: category?.color || '#gray' }}
-                        >
-                          <span className="text-xl">{category?.icon || '📝'}</span>
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <h4 className="font-semibold truncate">{category?.name || 'Không xác định'}</h4>
-                          {transaction.note && (
-                            <p className="text-sm text-gray-500 truncate">{transaction.note}</p>
-                          )}
-                          <p className="text-xs text-gray-400">{formatDate(transaction.createdAt)}</p>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center justify-between sm:justify-end gap-3 flex-shrink-0">
-                        <div className={`text-right ${
-                          transaction.type === 'income' ? 'text-green-500' : 'text-red-500'
-                        }`}>
-                          <div className="font-bold text-sm sm:text-base break-all">
-                            {transaction.type === 'income' ? '+' : '-'}{formatCurrency(transaction.amount)}
+                    // Display Mode - Redesigned for better responsive
+                    <div className="space-y-3">
+                      {/* Top Row: Category Info + Amount */}
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-center space-x-3 flex-1 min-w-0">
+                          <div 
+                            className="w-12 h-12 rounded-xl flex items-center justify-center text-white flex-shrink-0 shadow-fintech"
+                            style={{ backgroundColor: category?.color || '#6b7280' }}
+                          >
+                            <span className="text-lg">{category?.icon || '📝'}</span>
                           </div>
-                          <div className="text-xs">
-                            {transaction.type === 'income' ? 'Thu nhập' : 'Chi tiêu'}
+                          <div className="min-w-0 flex-1">
+                            <h4 className="font-bold text-gray-900 dark:text-white truncate">{category?.name || 'Không xác định'}</h4>
+                            {transaction.note && (
+                              <p className="text-sm text-gray-600 dark:text-gray-400 truncate mt-0.5">{transaction.note}</p>
+                            )}
                           </div>
                         </div>
                         
-                        <div className="flex space-x-1">
+                        {/* Amount - Always visible and properly sized */}
+                        <div className={`text-right flex-shrink-0 ${
+                          transaction.type === 'income' ? 'text-success-500' : 'text-danger-500'
+                        }`}>
+                          <div className="font-extrabold text-lg leading-tight">
+                            {transaction.type === 'income' ? '+' : '-'}{formatCurrency(transaction.amount)}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Bottom Row: Date/Time Tags + Action Buttons */}
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-2 flex-1 min-w-0">
+                          <span className="inline-flex items-center px-2 py-1 rounded-lg text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 flex-shrink-0">
+                            <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            {formatDate(transaction.createdAt)}
+                          </span>
+                          <span className={`inline-flex items-center px-2 py-1 rounded-lg text-xs font-semibold flex-shrink-0 ${
+                            transaction.type === 'income' 
+                              ? 'text-success-700 bg-success-100 dark:text-success-400 dark:bg-success-900/20'
+                              : 'text-danger-700 bg-danger-100 dark:text-danger-400 dark:bg-danger-900/20'
+                          }`}>
+                            {transaction.type === 'income' ? (
+                              <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                              </svg>
+                            ) : (
+                              <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                              </svg>
+                            )}
+                            {transaction.type === 'income' ? 'Thu nhập' : 'Chi tiêu'}
+                          </span>
+                        </div>
+                        
+                        <div className="flex space-x-2 flex-shrink-0">
                           <button
                             onClick={() => handleEdit(transaction)}
-                            className="p-2 text-blue-500 hover:bg-blue-100 rounded-lg transition-colors flex-shrink-0"
+                            className={`p-2 rounded-lg transition-all duration-200 ${
+                              theme === 'dark'
+                                ? 'text-warning-400 hover:bg-warning-900/20 hover:text-warning-300'
+                                : 'text-warning-600 hover:bg-warning-100 hover:text-warning-700'
+                            }`}
+                            title="Chỉnh sửa"
                           >
-                            ✏️
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
                           </button>
                           <button
                             onClick={() => handleDelete(transaction.id)}
-                            className="p-2 text-red-500 hover:bg-red-100 rounded-lg transition-colors flex-shrink-0"
+                            className={`p-2 rounded-lg transition-all duration-200 ${
+                              theme === 'dark'
+                                ? 'text-danger-400 hover:bg-danger-900/20 hover:text-danger-300'
+                                : 'text-danger-600 hover:bg-danger-100 hover:text-danger-700'
+                            }`}
+                            title="Xóa"
                           >
-                            🗑️
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
                           </button>
                         </div>
                       </div>
@@ -399,11 +428,11 @@ const Transactions = () => {
             })}
           </div>
         ) : (
-          <div className="text-center py-8">
-            <div className="text-6xl mb-4">📝</div>
-            <p className="text-gray-500">Không có giao dịch nào</p>
-            <p className="text-sm text-gray-400">Thêm giao dịch đầu tiên của bạn!</p>
-              </div>
+          <div className="text-center py-12">
+            <div className="text-6xl mb-6">📋</div>
+            <p className="text-gray-500 dark:text-gray-400 font-semibold text-lg">Không có giao dịch nào</p>
+            <p className="text-sm text-gray-400 dark:text-gray-500 mt-2">Thêm giao dịch đầu tiên của bạn để bắt đầu!</p>
+          </div>
         )}
       </div>
     </div>

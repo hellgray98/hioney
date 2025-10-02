@@ -274,42 +274,42 @@ const Transactions = () => {
                         </div>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <div>
+                        <div className="relative overflow-hidden">
                           <label className="block text-sm font-medium mb-1">Ngày</label>
                           <input
                             type="date"
                             value={editForm.date}
                             onChange={(e) => setEditForm({...editForm, date: e.target.value})}
-                            className={`w-full px-3 py-2 rounded-lg border transition-colors text-sm ${
+                            className={`w-full px-3 py-2 rounded-lg border transition-colors text-sm ios-date-input ${
                               theme === 'dark'
                                 ? 'bg-gray-600 border-gray-500 text-white'
                                 : 'bg-white border-gray-300 text-gray-900'
                             }`}
                             style={{
-                              fontSize: '14px', // Prevent zoom on iOS
+                              fontSize: '16px', // Prevent zoom on iOS
                               minHeight: '40px',
-                              maxWidth: '100%',
-                              boxSizing: 'border-box'
+                              WebkitAppearance: 'none',
+                              appearance: 'none'
                             }}
                           />
                         </div>
                         
-                        <div>
+                        <div className="relative overflow-hidden">
                           <label className="block text-sm font-medium mb-1">Giờ</label>
                           <input
                             type="time"
                             value={editForm.time}
                             onChange={(e) => setEditForm({...editForm, time: e.target.value})}
-                            className={`w-full px-3 py-2 rounded-lg border transition-colors text-sm ${
+                            className={`w-full px-3 py-2 rounded-lg border transition-colors text-sm ios-time-input ${
                               theme === 'dark'
                                 ? 'bg-gray-600 border-gray-500 text-white'
                                 : 'bg-white border-gray-300 text-gray-900'
                             }`}
                             style={{
-                              fontSize: '14px', // Prevent zoom on iOS
+                              fontSize: '16px', // Prevent zoom on iOS
                               minHeight: '40px',
-                              maxWidth: '100%',
-                              boxSizing: 'border-box'
+                              WebkitAppearance: 'none',
+                              appearance: 'none'
                             }}
                           />
                         </div>

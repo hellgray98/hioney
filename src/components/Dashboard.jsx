@@ -3,8 +3,9 @@ import { useTheme } from '../contexts/ThemeContext';
 import { useData } from '../contexts/FirebaseDataContext';
 import { formatCurrencyDisplay } from '../utils/formatCurrency';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import CreditSummaryWidget from './credit/CreditSummaryWidget';
 
-const Dashboard = () => {
+const Dashboard = ({ onNavigate }) => {
   const { theme } = useTheme();
   const { data } = useData();
   const [timeRange, setTimeRange] = useState('month');
@@ -359,6 +360,9 @@ const Dashboard = () => {
           )}
         </div>
       </div>
+
+      {/* Credit Card Summary Widget */}
+      <CreditSummaryWidget onViewDetails={() => onNavigate?.('credit')} />
     </div>
   );
 };

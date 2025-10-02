@@ -10,6 +10,7 @@ import Budgets from './Budgets';
 import Settings from './Settings';
 import QuickAdd from './QuickAdd';
 import Account from './Account';
+import CreditDashboard from './credit/CreditDashboard';
 
 const MainApp = () => {
   const { theme } = useTheme();
@@ -30,6 +31,7 @@ const MainApp = () => {
     { id: 'transactions', name: 'Giao dịch', icon: '💰' },
     { id: 'categories', name: 'Danh mục', icon: '📂' },
     { id: 'budgets', name: 'Ngân sách', icon: '🎯' },
+    { id: 'credit', name: 'Tín dụng', icon: '💳' },
     { id: 'settings', name: 'Cài đặt', icon: '⚙️' }
   ];
 
@@ -47,13 +49,15 @@ const MainApp = () => {
 
     switch (activeTab) {
       case 'dashboard':
-        return <Dashboard />;
+        return <Dashboard onNavigate={handleSetActiveTab} />;
       case 'transactions':
         return <Transactions />;
       case 'categories':
         return <Categories />;
       case 'budgets':
         return <Budgets />;
+      case 'credit':
+        return <CreditDashboard />;
       case 'account':
         return <Account />;
       case 'settings':

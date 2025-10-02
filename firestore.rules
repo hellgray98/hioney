@@ -1,19 +1,58 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Users can only access their own user document
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Users collection - main user profile
     match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read, write: if isOwner(userId);
     }
     
-    // Users can only access their own financial data
+    // UserData collection - financial data
     match /userData/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read, write: if isOwner(userId);
     }
     
-    // Deny all other access
-    match /{document=**} {
-      allow read, write: if false;
+    // Credit Cards subcollection
+    match /users/{userId}/creditCards/{cardId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && 
+                      request.resource.data.last4.matches('^[0-9]{4}$') &&
+                      !('pan' in request.resource.data) &&
+                      !('PAN' in request.resource.data) &&
+                      !('cardNumber' in request.resource.data) &&
+                      !('cvv' in request.resource.data) &&
+                      !('CVV' in request.resource.data);
+      allow update: if isOwner(userId) && 
+                      request.resource.data.last4.matches('^[0-9]{4}$') &&
+                      !('pan' in request.resource.data) &&
+                      !('PAN' in request.resource.data) &&
+                      !('cardNumber' in request.resource.data) &&
+                      !('cvv' in request.resource.data) &&
+                      !('CVV' in request.resource.data);
+      allow delete: if isOwner(userId);
+    }
+    
+    // Credit Transactions subcollection
+    match /users/{userId}/creditTransactions/{txId} {
+      allow read, write: if isOwner(userId);
+    }
+    
+    // Credit Payments subcollection
+    match /users/{userId}/creditPayments/{paymentId} {
+      allow read, write: if isOwner(userId);
+    }
+    
+    // Credit Statements subcollection
+    match /users/{userId}/creditStatements/{statementId} {
+      allow read, write: if isOwner(userId);
     }
   }
 }

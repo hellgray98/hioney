@@ -4,7 +4,8 @@ import {
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
-  updateProfile
+  updateProfile,
+  sendPasswordResetEmail
 } from 'firebase/auth';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { auth, db } from '../config/firebase';
@@ -137,6 +138,18 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Reset password function
+  const resetPassword = async (email) => {
+    try {
+      setError('');
+      await sendPasswordResetEmail(auth, email);
+      return true;
+    } catch (error) {
+      setError(error.message);
+      throw error;
+    }
+  };
+
   // Get user profile
   const getUserProfile = async (uid) => {
     try {
@@ -174,6 +187,7 @@ export const AuthProvider = ({ children }) => {
     signup,
     signin,
     logout,
+    resetPassword,
     loading,
     error,
     setError

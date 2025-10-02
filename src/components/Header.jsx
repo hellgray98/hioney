@@ -12,6 +12,7 @@ const Header = ({ activeTab, setActiveTab, onQuickAdd, onMobileMenuToggle }) => 
     { id: 'transactions', name: 'Giao dịch', icon: '💰', shortName: 'Giao dịch' },
     { id: 'categories', name: 'Danh mục', icon: '📂', shortName: 'Danh mục' },
     { id: 'budgets', name: 'Ngân sách', icon: '🎯', shortName: 'Ngân sách' },
+    { id: 'credit', name: 'Tín dụng', icon: '💳', shortName: 'Tín dụng' },
     { id: 'settings', name: 'Cài đặt', icon: '⚙️', shortName: 'Cài đặt' }
   ];
 

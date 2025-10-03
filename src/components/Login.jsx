@@ -46,22 +46,22 @@ const Login = ({ onToggleMode, onShowForgot }) => {
       </div>
 
       {/* Login Card */}
-      <div className="relative w-full max-w-md">
-        <div className="bg-black rounded-3xl shadow-2xl p-8 border border-gray-800">
+      <div className="relative w-full max-w-sm sm:max-w-md">
+        <div className="bg-black rounded-2xl sm:rounded-3xl shadow-2xl p-6 sm:p-8 border border-gray-800">
           {/* Logo */}
-          <div className="flex justify-center mb-8">
-            <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-lg">
-              <img 
-                src="/pwa-512x512.png" 
-                alt="Hioney" 
-                className="w-10 h-10 object-contain"
+          <div className="flex justify-center mb-4 sm:mb-6">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16 bg-white rounded-lg sm:rounded-xl lg:rounded-2xl flex items-center justify-center shadow-lg">
+              <img
+                src="/pwa-512x512.png"
+                alt="Hioney"
+                className="w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10 object-contain"
               />
             </div>
           </div>
 
           {/* Title */}
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-white mb-2">
+          <div className="text-center mb-4 sm:mb-6">
+            <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-white mb-1 sm:mb-2">
               Đăng nhập
             </h1>
           </div>
@@ -79,7 +79,7 @@ const Login = ({ onToggleMode, onShowForgot }) => {
           )}
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
             {/* Email Field */}
             <div className="group">
               <label className="block text-sm font-semibold text-gray-300 mb-2">
@@ -119,7 +119,7 @@ const Login = ({ onToggleMode, onShowForgot }) => {
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full pl-12 pr-12 py-3.5 bg-gray-900 border-2 border-gray-800 rounded-xl text-white placeholder-gray-500 focus:border-white focus:bg-gray-800 transition-all outline-none"
+                  className="w-full pl-10 sm:pl-12 pr-10 sm:pr-12 py-3 sm:py-3.5 bg-gray-900 border-2 border-gray-800 rounded-xl text-white placeholder-gray-500 focus:border-white focus:bg-gray-800 transition-all outline-none text-sm sm:text-base"
                   placeholder="••••••••"
                   required
                 />
@@ -174,7 +174,7 @@ const Login = ({ onToggleMode, onShowForgot }) => {
           </form>
 
           {/* Divider */}
-          <div className="relative my-8">
+          <div className="relative my-6 sm:my-8">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-800"></div>
             </div>
@@ -186,7 +186,7 @@ const Login = ({ onToggleMode, onShowForgot }) => {
           {/* Sign Up Link */}
           <button
             onClick={onToggleMode}
-            className="w-full py-4 bg-gray-900 border-2 border-gray-800 hover:border-white hover:bg-gray-800 text-white font-semibold rounded-xl transition-all"
+            className="w-full py-3 sm:py-4 bg-gray-900 border-2 border-gray-800 hover:border-white hover:bg-gray-800 text-white font-semibold rounded-xl transition-all"
           >
             Tạo tài khoản mới
           </button>

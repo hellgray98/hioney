@@ -81,21 +81,21 @@ const Signup = ({ onToggleMode }) => {
 
       {/* Signup Card */}
       <div className="relative w-full max-w-md">
-        <div className="bg-black rounded-3xl shadow-2xl p-8 border border-gray-800">
+        <div className="bg-black rounded-3xl shadow-2xl p-6 border border-gray-800">
           {/* Logo */}
-          <div className="flex justify-center mb-8">
-            <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-lg">
-              <img 
-                src="/pwa-512x512.png" 
-                alt="Hioney" 
-                className="w-10 h-10 object-contain"
+          <div className="flex justify-center mb-3 sm:mb-4 lg:mb-6">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16 bg-white rounded-lg sm:rounded-xl lg:rounded-2xl flex items-center justify-center shadow-lg">
+              <img
+                src="/pwa-512x512.png"
+                alt="Hioney"
+                className="w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10 object-contain"
               />
             </div>
           </div>
 
           {/* Title */}
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-white mb-2">
+          <div className="text-center mb-4 sm:mb-6 lg:mb-8">
+            <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-white mb-1 sm:mb-2">
               Đăng ký
             </h1>
           </div>

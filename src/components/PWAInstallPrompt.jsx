@@ -119,7 +119,7 @@ const PWAInstallPrompt = () => {
         {/* Content */}
         <div className="mb-6">
           <p className="text-gray-700 mb-4">
-            Cài đặt Hioney để truy cập nhanh và sử dụng offline!
+            Cài đặt Hioney để truy cập nhanh
           </p>
           
           {isIOS ? (

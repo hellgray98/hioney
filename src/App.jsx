@@ -6,19 +6,20 @@ import { useAuth } from './contexts/AuthContext';
 import MainApp from './components/MainApp';
 import AuthWrapper from './components/AuthWrapper';
 import PWAInstallPrompt from './components/PWAInstallPrompt';
-import LoadingSpinner from './components/LoadingSpinner';
+import LoadingScreen from './components/LoadingScreen';
 import './index.css';
 
 // Protected App Component
-const ProtectedApp = () => {
+const ProtectedApp = React.memo(() => {
   const { currentUser, loading } = useAuth();
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <LoadingSpinner />
-      </div>
-    );
+    return <LoadingScreen 
+      message="Đang tải..." 
+      variant="premium" 
+      size="lg" 
+      minDuration={3000}
+    />;
   }
 
   return currentUser ? (
@@ -29,7 +30,7 @@ const ProtectedApp = () => {
   ) : (
     <AuthWrapper />
   );
-};
+});
 
 function App() {
   return (

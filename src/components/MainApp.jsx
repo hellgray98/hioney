@@ -11,6 +11,7 @@ import Settings from './Settings';
 import QuickAdd from './QuickAdd';
 import Account from './Account';
 import CreditDashboard from './credit/CreditDashboard';
+import LoadingScreen from './LoadingScreen';
 
 const MainApp = () => {
   const { theme } = useTheme();
@@ -36,16 +37,14 @@ const MainApp = () => {
   ];
 
   const renderContent = () => {
-    if (loading) {
-      return (
-        <div className="flex items-center justify-center min-h-[400px]">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 dark:border-white mx-auto mb-4"></div>
-            <p className="text-gray-600 dark:text-gray-400">Đang tải dữ liệu...</p>
-          </div>
-        </div>
-      );
-    }
+  if (loading) {
+    return <LoadingScreen 
+      message="Đang tải dữ liệu" 
+      variant="premium" 
+      size="lg" 
+      minDuration={2500}
+    />;
+  }
 
     switch (activeTab) {
       case 'dashboard':

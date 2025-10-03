@@ -1,14 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import LoadingSpinner from './LoadingSpinner';
+import { validateEmail, validatePassword, getFirebaseErrorMessage, debounce } from '../utils/validation';
 
 const Login = ({ onToggleMode, onShowForgot }) => {
-  const { signin, error, setError } = useAuth();
+  const { signin, error, setError, signinLoading } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
-  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [touchedFields, setTouchedFields] = useState({});
+
+  // Debounced validation
+  const debouncedValidate = debounce((name, value) => {
+    let fieldError = null;
+    
+    if (name === 'email') {
+      fieldError = validateEmail(value);
+    } else if (name === 'password') {
+      fieldError = validatePassword(value);
+    }
+    
+    setFieldErrors(prev => ({
+      ...prev,
+      [name]: fieldError
+    }));
+  }, 300);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -16,61 +35,112 @@ const Login = ({ onToggleMode, onShowForgot }) => {
       ...prev,
       [name]: value
     }));
+    
+    // Clear general error when user starts typing
     if (error) setError('');
+    
+    // Validate field if it's been touched
+    if (touchedFields[name]) {
+      debouncedValidate(name, value);
+    }
+  };
+
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+    setTouchedFields(prev => ({ ...prev, [name]: true }));
+    
+    // Validate immediately on blur
+    let fieldError = null;
+    if (name === 'email') {
+      fieldError = validateEmail(value);
+    } else if (name === 'password') {
+      fieldError = validatePassword(value);
+    }
+    
+    setFieldErrors(prev => ({
+      ...prev,
+      [name]: fieldError
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!formData.email || !formData.password) {
-      setError('Vui lòng điền đầy đủ thông tin');
+    // Mark all fields as touched
+    setTouchedFields({ email: true, password: true });
+    
+    // Validate all fields
+    const emailError = validateEmail(formData.email);
+    const passwordError = validatePassword(formData.password);
+    
+    const newFieldErrors = {};
+    if (emailError) newFieldErrors.email = emailError;
+    if (passwordError) newFieldErrors.password = passwordError;
+    
+    setFieldErrors(newFieldErrors);
+    
+    // If there are validation errors, don't submit
+    if (Object.keys(newFieldErrors).length > 0) {
       return;
     }
 
     try {
-      setLoading(true);
       await signin(formData.email, formData.password);
     } catch (error) {
       console.error('Login error:', error);
-    } finally {
-      setLoading(false);
+      const errorMessage = getFirebaseErrorMessage(error.code);
+      setError(errorMessage);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-gradient-to-br from-gray-50 via-white to-gray-100">
-      {/* Subtle Background Pattern */}
-      <div className="absolute inset-0 overflow-hidden opacity-30">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-gray-200 to-transparent rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-br from-gray-300 to-transparent rounded-full blur-3xl"></div>
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-slate-100">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        {/* Floating geometric shapes */}
+        <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-2xl rotate-12 animate-float-slow"></div>
+        <div className="absolute top-40 right-20 w-24 h-24 bg-gradient-to-br from-green-500/10 to-teal-500/10 rounded-full animate-float-medium"></div>
+        <div className="absolute bottom-32 left-20 w-40 h-40 bg-gradient-to-br from-orange-500/10 to-pink-500/10 rounded-3xl -rotate-12 animate-float-fast"></div>
+        <div className="absolute bottom-20 right-10 w-28 h-28 bg-gradient-to-br from-indigo-500/10 to-blue-500/10 rounded-xl rotate-45 animate-float-slow"></div>
+        
+        {/* Subtle grid pattern */}
+        <div className="absolute inset-0 opacity-[0.02]">
+          <div className="w-full h-full" style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, #64748b 1px, transparent 0)`,
+            backgroundSize: '20px 20px'
+          }}></div>
+        </div>
       </div>
 
-      {/* Login Card */}
-      <div className="relative w-full max-w-sm sm:max-w-md">
-        <div className="bg-black rounded-2xl sm:rounded-3xl shadow-2xl p-6 sm:p-8 border border-gray-800">
-          {/* Logo */}
-          <div className="flex justify-center mb-4 sm:mb-6">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16 bg-white rounded-lg sm:rounded-xl lg:rounded-2xl flex items-center justify-center shadow-lg">
+      {/* Login Card with enhanced animations */}
+      <div className="relative w-full max-w-sm sm:max-w-md mx-4">
+        <div className="bg-white/80 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-2xl p-4 sm:p-6 lg:p-8 border border-white/20 animate-slide-up">
+          {/* Logo with enhanced animation */}
+          <div className="flex justify-center mb-4 sm:mb-6 animate-fade-in">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-800 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-xl animate-pulse-slow">
               <img
                 src="/pwa-512x512.png"
                 alt="Hioney"
-                className="w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10 object-contain"
+                className="w-8 h-8 sm:w-10 sm:h-10 filter invert"
               />
             </div>
           </div>
 
-          {/* Title */}
-          <div className="text-center mb-4 sm:mb-6">
-            <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-white mb-1 sm:mb-2">
+          {/* Title with animation */}
+          <div className="text-center mb-6 sm:mb-8 animate-slide-down">
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1 sm:mb-2">
               Đăng nhập
             </h1>
+            <p className="text-xs sm:text-sm text-gray-600">
+              Chào mừng bạn quay trở lại
+            </p>
           </div>
 
           {/* Error Message */}
           {error && (
-            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-sm animate-shake">
+            <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-xs sm:text-sm animate-shake">
               <div className="flex items-center gap-2">
-                <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <span>{error}</span>
@@ -78,76 +148,93 @@ const Login = ({ onToggleMode, onShowForgot }) => {
             </div>
           )}
 
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
-            {/* Email Field */}
-            <div className="group">
-              <label className="block text-sm font-semibold text-gray-300 mb-2">
-                Email
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <svg className="w-5 h-5 text-gray-500 group-focus-within:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
-                  </svg>
-                </div>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="w-full pl-12 pr-4 py-3.5 bg-gray-900 border-2 border-gray-800 rounded-xl text-white placeholder-gray-500 focus:border-white focus:bg-gray-800 transition-all outline-none"
-                  placeholder="your@email.com"
-                  required
-                />
-              </div>
-            </div>
+          {/* Form with enhanced animations */}
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6 animate-fade-in-delay">
+                 {/* Email Field */}
+                 <div className="group animate-slide-up-delay-1">
+                   <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">
+                     Email
+                   </label>
+                   <div className="relative">
+                     <input
+                       type="email"
+                       name="email"
+                       value={formData.email}
+                       onChange={handleChange}
+                       onBlur={handleBlur}
+                       required
+                       className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white/80 border rounded-xl text-sm sm:text-base text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:border-transparent transition-all duration-300 hover:bg-white/90 ${
+                         fieldErrors.email && touchedFields.email
+                           ? 'border-red-500 focus:ring-red-500'
+                           : 'border-gray-200 focus:ring-blue-500'
+                       }`}
+                       placeholder="Nhập email của bạn"
+                     />
+                     <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                       <svg className={`w-4 h-4 sm:w-5 sm:h-5 ${
+                         fieldErrors.email && touchedFields.email ? 'text-red-500' : 'text-gray-400'
+                       }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+                       </svg>
+                     </div>
+                   </div>
+                   {fieldErrors.email && touchedFields.email && (
+                     <p className="text-red-500 text-xs mt-1 animate-shake">
+                       {fieldErrors.email}
+                     </p>
+                   )}
+                 </div>
 
             {/* Password Field */}
-            <div className="group">
-              <label className="block text-sm font-semibold text-gray-300 mb-2">
+            <div className="group animate-slide-up-delay-2">
+              <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">
                 Mật khẩu
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <svg className="w-5 h-5 text-gray-500 group-focus-within:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                  </svg>
-                </div>
                 <input
                   type={showPassword ? 'text' : 'password'}
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full pl-10 sm:pl-12 pr-10 sm:pr-12 py-3 sm:py-3.5 bg-gray-900 border-2 border-gray-800 rounded-xl text-white placeholder-gray-500 focus:border-white focus:bg-gray-800 transition-all outline-none text-sm sm:text-base"
-                  placeholder="••••••••"
+                  onBlur={handleBlur}
                   required
+                  className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white/80 border rounded-xl text-sm sm:text-base text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:border-transparent transition-all duration-300 hover:bg-white/90 ${
+                    fieldErrors.password && touchedFields.password
+                      ? 'border-red-500 focus:ring-red-500'
+                      : 'border-gray-200 focus:ring-blue-500'
+                  }`}
+                  placeholder="Nhập mật khẩu"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-500 hover:text-white transition-colors"
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 transition-colors"
                 >
                   {showPassword ? (
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
                     </svg>
                   ) : (
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                     </svg>
                   )}
                 </button>
               </div>
+              {fieldErrors.password && touchedFields.password && (
+                <p className="text-red-500 text-xs mt-1 animate-shake">
+                  {fieldErrors.password}
+                </p>
+              )}
             </div>
 
-            {/* Forgot Password */}
-            <div className="text-right">
+            {/* Forgot Password Link */}
+            <div className="text-right animate-slide-up-delay-3">
               <button
                 type="button"
                 onClick={onShowForgot}
-                className="text-sm font-semibold text-gray-400 hover:text-white transition-colors"
+                className="text-xs sm:text-sm text-gray-900 hover:text-blue-700 font-medium transition-colors"
               >
                 Quên mật khẩu?
               </button>
@@ -156,15 +243,12 @@ const Login = ({ onToggleMode, onShowForgot }) => {
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={loading}
-              className="w-full py-4 bg-white hover:bg-gray-100 text-black font-semibold rounded-xl shadow-lg transform hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              disabled={signinLoading}
+              className="w-full py-2.5 sm:py-3 px-4 bg-gray-800 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed animate-slide-up-delay-4 text-sm sm:text-base"
             >
-              {loading ? (
-                <div className="flex items-center justify-center gap-2">
-                  <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
+              {signinLoading ? (
+                <div className="flex items-center justify-center gap-3">
+                  <LoadingSpinner variant="sleek" size="sm" />
                   <span>Đang đăng nhập...</span>
                 </div>
               ) : (
@@ -173,37 +257,80 @@ const Login = ({ onToggleMode, onShowForgot }) => {
             </button>
           </form>
 
-          {/* Divider */}
-          <div className="relative my-6 sm:my-8">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-800"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-black text-gray-500 font-medium">hoặc</span>
-            </div>
+          {/* Toggle Mode */}
+          <div className="mt-6 sm:mt-8 text-center animate-fade-in-delay-2">
+            <p className="text-xs sm:text-sm text-gray-600">
+              Chưa có tài khoản?{' '}
+              <button
+                type="button"
+                onClick={onToggleMode}
+                className="text-gray-900 hover:text-blue-700 font-semibold transition-colors"
+              >
+                Đăng ký ngay
+              </button>
+            </p>
           </div>
-
-          {/* Sign Up Link */}
-          <button
-            onClick={onToggleMode}
-            className="w-full py-3 sm:py-4 bg-gray-900 border-2 border-gray-800 hover:border-white hover:bg-gray-800 text-white font-semibold rounded-xl transition-all"
-          >
-            Tạo tài khoản mới
-          </button>
         </div>
-
-        {/* Footer Text */}
-        <p className="text-center mt-6 text-sm text-gray-600">
-          Bằng việc đăng nhập, bạn đồng ý với{' '}
-          <button className="text-gray-800 hover:text-black font-semibold">
-            Điều khoản
-          </button>
-          {' '}và{' '}
-          <button className="text-gray-800 hover:text-black font-semibold">
-            Chính sách
-          </button>
-        </p>
       </div>
+
+      {/* Custom CSS for animations */}
+      <style jsx>{`
+        @keyframes float-slow {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-20px) rotate(5deg); }
+        }
+        
+        @keyframes float-medium {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-15px) rotate(-3deg); }
+        }
+        
+        @keyframes float-fast {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-25px) rotate(8deg); }
+        }
+        
+        @keyframes slide-up {
+          from { transform: translate3d(0, 30px, 0); opacity: 0; }
+          to { transform: translate3d(0, 0, 0); opacity: 1; }
+        }
+        
+        @keyframes slide-down {
+          from { transform: translate3d(0, -20px, 0); opacity: 0; }
+          to { transform: translate3d(0, 0, 0); opacity: 1; }
+        }
+        
+        @keyframes fade-in {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          25% { transform: translateX(-5px); }
+          75% { transform: translateX(5px); }
+        }
+        
+        @keyframes pulse-slow {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.05); }
+        }
+        
+        .animate-float-slow { animation: float-slow 6s ease-in-out infinite; }
+        .animate-float-medium { animation: float-medium 4s ease-in-out infinite; }
+        .animate-float-fast { animation: float-fast 3s ease-in-out infinite; }
+        .animate-slide-up { animation: slide-up 0.6s ease-out; }
+        .animate-slide-down { animation: slide-down 0.5s ease-out; }
+        .animate-fade-in { animation: fade-in 0.8s ease-out; }
+        .animate-fade-in-delay { animation: fade-in 0.4s ease-out 0.1s both; }
+        .animate-fade-in-delay-2 { animation: fade-in 0.4s ease-out 0.2s both; }
+        .animate-slide-up-delay-1 { animation: slide-up 0.3s ease-out 0.05s both; }
+        .animate-slide-up-delay-2 { animation: slide-up 0.3s ease-out 0.1s both; }
+        .animate-slide-up-delay-3 { animation: slide-up 0.3s ease-out 0.15s both; }
+        .animate-slide-up-delay-4 { animation: slide-up 0.3s ease-out 0.2s both; }
+        .animate-shake { animation: shake 0.5s ease-in-out; }
+        .animate-pulse-slow { animation: pulse-slow 3s ease-in-out infinite; }
+      `}</style>
     </div>
   );
 };

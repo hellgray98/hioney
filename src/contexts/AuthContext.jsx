@@ -23,6 +23,7 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [signinLoading, setSigninLoading] = useState(false);
   const [error, setError] = useState('');
 
   // Sign up function
@@ -116,14 +117,14 @@ export const AuthProvider = ({ children }) => {
   const signin = async (email, password) => {
     try {
       setError('');
-      setLoading(true);
+      setSigninLoading(true);
       const result = await signInWithEmailAndPassword(auth, email, password);
       return result;
     } catch (error) {
       setError(error.message);
       throw error;
     } finally {
-      setLoading(false);
+      setSigninLoading(false);
     }
   };
 
@@ -167,16 +168,27 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        // Get additional user data from Firestore
-        const userProfile = await getUserProfile(user.uid);
-        setCurrentUser({
-          ...user,
-          ...userProfile
-        });
+        // Set user immediately for faster UI response
+        setCurrentUser(user);
+        setLoading(false);
+        
+        // Fetch additional user data in background
+        try {
+          const userProfile = await getUserProfile(user.uid);
+          if (userProfile) {
+            setCurrentUser({
+              ...user,
+              ...userProfile
+            });
+          }
+        } catch (error) {
+          console.error('Error fetching user profile:', error);
+          // Keep the basic user data even if profile fetch fails
+        }
       } else {
         setCurrentUser(null);
+        setLoading(false);
       }
-      setLoading(false);
     });
 
     return unsubscribe;
@@ -189,6 +201,7 @@ export const AuthProvider = ({ children }) => {
     logout,
     resetPassword,
     loading,
+    signinLoading,
     error,
     setError
   };

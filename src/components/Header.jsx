@@ -158,11 +158,6 @@ const Header = ({ activeTab, setActiveTab, onQuickAdd, onMobileMenuToggle }) => 
                       {currentUser?.email || 'user@example.com'}
                     </div>
                   </div>
-                  {activeTab === 'account' && (
-                    <div className={`w-2 h-2 rounded-full ${
-                      theme === 'dark' ? 'bg-gray-900' : 'bg-white'
-                    }`}></div>
-                  )}
                 </button>
               </div>
 

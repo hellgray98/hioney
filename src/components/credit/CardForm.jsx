@@ -18,7 +18,7 @@ const POPULAR_ISSUERS = [
   'American Express', 'Discover', 'US Bank', 'Barclays', 'Synchrony'
 ];
 
-const CardForm = ({ card, onSubmit, onCancel }) => {
+const CardForm = ({ card, defaultCategoryType = 'expense', onSubmit, onCancel }) => {
   const { theme } = useTheme();
   const { currentUser } = useAuth();
   const { addCard, updateCard } = useCreditStore();
@@ -33,7 +33,6 @@ const CardForm = ({ card, onSubmit, onCancel }) => {
     statementDay: card?.statementDay || 1,
     dueDay: card?.dueDay || 25,
     minPaymentPercent: card?.minPaymentPercent ? card.minPaymentPercent * 100 : 2,
-    minPaymentFloor: card?.minPaymentFloor || 25,
     gracePeriodDays: card?.gracePeriodDays || 21,
     purchaseAPR: card?.purchaseAPR ? card.purchaseAPR * 100 : 19.99,
     iconUrl: card?.iconUrl || ''
@@ -65,7 +64,8 @@ const CardForm = ({ card, onSubmit, onCancel }) => {
         ...formData,
         openedAt: new Date(formData.openedAt),
         minPaymentPercent: formData.minPaymentPercent / 100,
-        purchaseAPR: formData.purchaseAPR / 100
+        purchaseAPR: formData.purchaseAPR / 100,
+        minPaymentFloor: 0 // Set to 0 since we're not using it anymore
       };
       
       if (card) {
@@ -220,7 +220,7 @@ const CardForm = ({ card, onSubmit, onCancel }) => {
           
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Ngày mở thẻ
+              Ngày hết hạn thẻ
             </label>
             <input
               type="date"
@@ -238,22 +238,23 @@ const CardForm = ({ card, onSubmit, onCancel }) => {
           
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Hạn mức tín dụng
+              Hạn mức tín dụng (VNĐ)
             </label>
             <input
-              type="number"
+              type="text"
               name="creditLimit"
-              value={formData.creditLimit}
-              onChange={handleChange}
+              value={formData.creditLimit ? formData.creditLimit.toLocaleString('vi-VN') : ''}
+              onChange={(e) => {
+                const value = e.target.value.replace(/[^\d]/g, '');
+                setFormData(prev => ({ ...prev, creditLimit: parseInt(value) || 0 }));
+              }}
               required
-              min={0}
-              step={1000000}
               className={`w-full px-4 py-2.5 rounded-xl border-2 font-medium text-sm transition-all duration-200 focus:ring-2 focus:ring-offset-2 ${
                 theme === 'dark'
                   ? 'bg-gray-800 border-gray-700 text-white placeholder-gray-400 hover:bg-gray-750 focus:border-gray-600 focus:ring-gray-500'
                   : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 hover:bg-gray-50 focus:border-gray-400 focus:ring-gray-300'
               }`}
-              placeholder="10000000"
+              placeholder="47,125,000"
             />
           </div>
         </div>
@@ -306,29 +307,10 @@ const CardForm = ({ card, onSubmit, onCancel }) => {
             />
           </div>
           
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Thời gian ân hạn (ngày)
-            </label>
-            <input
-              type="number"
-              name="gracePeriodDays"
-              value={formData.gracePeriodDays}
-              onChange={handleChange}
-              required
-              min={0}
-              max={60}
-              className={`w-full px-4 py-2.5 rounded-xl border-2 font-medium text-sm transition-all duration-200 focus:ring-2 focus:ring-offset-2 ${
-                theme === 'dark'
-                  ? 'bg-gray-800 border-gray-700 text-white placeholder-gray-400 hover:bg-gray-750 focus:border-gray-600 focus:ring-gray-500'
-                  : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 hover:bg-gray-50 focus:border-gray-400 focus:ring-gray-300'
-              }`}
-            />
-          </div>
           
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              APR (%)
+              Lãi suất APR (%)
             </label>
             <input
               type="number"
@@ -344,6 +326,7 @@ const CardForm = ({ card, onSubmit, onCancel }) => {
                   ? 'bg-gray-800 border-gray-700 text-white placeholder-gray-400 hover:bg-gray-750 focus:border-gray-600 focus:ring-gray-500'
                   : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 hover:bg-gray-50 focus:border-gray-400 focus:ring-gray-300'
               }`}
+              placeholder="19.99"
             />
           </div>
         </div>
@@ -355,7 +338,7 @@ const CardForm = ({ card, onSubmit, onCancel }) => {
           Thanh toán tối thiểu
         </h3>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Tỷ lệ tối thiểu (%)
@@ -374,27 +357,11 @@ const CardForm = ({ card, onSubmit, onCancel }) => {
                   ? 'bg-gray-800 border-gray-700 text-white placeholder-gray-400 hover:bg-gray-750 focus:border-gray-600 focus:ring-gray-500'
                   : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 hover:bg-gray-50 focus:border-gray-400 focus:ring-gray-300'
               }`}
+              placeholder="2.5"
             />
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Số tiền tối thiểu
-            </label>
-            <input
-              type="number"
-              name="minPaymentFloor"
-              value={formData.minPaymentFloor}
-              onChange={handleChange}
-              required
-              min={0}
-              step={100000}
-              className={`w-full px-4 py-2.5 rounded-xl border-2 font-medium text-sm transition-all duration-200 focus:ring-2 focus:ring-offset-2 ${
-                theme === 'dark'
-                  ? 'bg-gray-800 border-gray-700 text-white placeholder-gray-400 hover:bg-gray-750 focus:border-gray-600 focus:ring-gray-500'
-                  : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 hover:bg-gray-50 focus:border-gray-400 focus:ring-gray-300'
-              }`}
-            />
+            <p className="text-xs text-gray-500 mt-1">
+              Số tiền tối thiểu = Tỷ lệ × Dư nợ hiện tại
+            </p>
           </div>
         </div>
       </div>

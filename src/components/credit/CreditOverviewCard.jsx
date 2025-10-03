@@ -36,7 +36,7 @@ const CreditOverviewCard = () => {
   
   if (activeCards.length === 0) {
     return (
-      <div className="fintech-card text-center slide-in-up">
+      <div className="fintech-card text-center slide-in-up p-6">
         <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center bounce-in">
           <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />

@@ -3,6 +3,7 @@ import CreditOverviewCard from './CreditOverviewCard';
 import CardForm from './CardForm';
 import TransactionForm from './TransactionForm';
 import PaymentForm from './PaymentForm';
+import StatementModal from './StatementModal';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useAuth } from '../../contexts/AuthContext';
 import useCreditStore from '../../store/creditStore';
@@ -10,14 +11,15 @@ import useCreditStore from '../../store/creditStore';
 const CreditDashboard = () => {
   const { theme } = useTheme();
   const { currentUser } = useAuth();
-  const { cards, fetchData, loading } = useCreditStore();
+  const { cards, fetchData, loading, deleteCard } = useCreditStore();
   const activeCards = cards.filter(card => !card.archived);
   
   const [showAddCard, setShowAddCard] = useState(false);
-  const [showCardsList, setShowCardsList] = useState(false);
+  const [showCardsList, setShowCardsList] = useState(true);
   const [editingCard, setEditingCard] = useState(null);
   const [showAddTransaction, setShowAddTransaction] = useState(false);
   const [showAddPayment, setShowAddPayment] = useState(false);
+  const [showStatements, setShowStatements] = useState(false);
   
   useEffect(() => {
     if (currentUser) {
@@ -35,20 +37,28 @@ const CreditDashboard = () => {
           </h1>
         </div>
         
-        <button
-          onClick={() => setShowAddCard(true)}
-          className="btn-fintech-primary w-12 h-12 p-0"
-          title="Thêm thẻ mới"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={() => setShowCardsList(!showCardsList)}
+            className="btn-fintech-secondary"
+          >
+            {showCardsList ? 'Ẩn danh sách' : 'Danh sách thẻ'}
+          </button>
+          <button
+            onClick={() => setShowAddCard(true)}
+            className="btn-fintech-primary w-12 h-12 p-0"
+            title="Thêm thẻ mới"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+          </button>
+        </div>
       </div>
       
       {/* Add/Edit Card Modal */}
       {showAddCard && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-start sm:items-center justify-center z-50 p-4 fade-in overflow-y-auto" onClick={() => {
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-start sm:items-center justify-center z-50 p-4 fade-in overflow-y-auto !mt-0" onClick={() => {
           setShowAddCard(false);
           setEditingCard(null);
         }}>
@@ -75,17 +85,18 @@ const CreditDashboard = () => {
             </div>
             
             <div className="px-6 py-6">
-              <CardForm 
-                card={editingCard}
-                onSubmit={() => {
-                  setShowAddCard(false);
-                  setEditingCard(null);
-                }}
-                onCancel={() => {
-                  setShowAddCard(false);
-                  setEditingCard(null);
-                }}
-              />
+          <CardForm
+            card={editingCard}
+            defaultCategoryType="expense"
+            onSubmit={() => {
+              setShowAddCard(false);
+              setEditingCard(null);
+            }}
+            onCancel={() => {
+              setShowAddCard(false);
+              setEditingCard(null);
+            }}
+          />
             </div>
           </div>
         </div>
@@ -93,7 +104,7 @@ const CreditDashboard = () => {
 
       {/* Add Transaction Modal */}
       {showAddTransaction && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-start sm:items-center justify-center z-50 p-4 fade-in overflow-y-auto" onClick={() => setShowAddTransaction(false)}>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-start sm:items-center justify-center z-50 p-4 fade-in overflow-y-auto !mt-0" onClick={() => setShowAddTransaction(false)}>
           <div 
             className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto slide-in-up"
             onClick={(e) => e.stopPropagation()}
@@ -125,7 +136,7 @@ const CreditDashboard = () => {
 
       {/* Add Payment Modal */}
       {showAddPayment && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-start sm:items-center justify-center z-50 p-4 fade-in overflow-y-auto" onClick={() => setShowAddPayment(false)}>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-start sm:items-center justify-center z-50 p-4 fade-in overflow-y-auto !mt-0" onClick={() => setShowAddPayment(false)}>
           <div 
             className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto slide-in-up"
             onClick={(e) => e.stopPropagation()}
@@ -157,9 +168,9 @@ const CreditDashboard = () => {
 
       {/* Overview */}
       <CreditOverviewCard />
-      
+
       {/* Cards List */}
-      {activeCards.length > 0 && (
+      {activeCards.length > 0 && showCardsList && (
         <div className="fintech-card slide-in-up p-6">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-xl font-bold text-gray-900 dark:text-white">
@@ -202,27 +213,30 @@ const CreditDashboard = () => {
                   </div>
                 </div>
                 
-                {/* Card Actions - Show on hover */}
-                <div className="absolute inset-0 bg-black/80 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+                {/* Card Actions - Always visible */}
+                <div className="absolute top-4 right-4 flex gap-2 z-20">
                   <button
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       setEditingCard(card);
                       setShowAddCard(true);
-                      setShowCardsList(false);
                     }}
-                    className="bg-white text-black px-4 py-2 rounded-lg font-semibold hover:bg-gray-200 transition-colors"
+                    className="bg-white/90 text-black px-3 py-1.5 rounded-lg font-semibold hover:bg-white transition-colors text-sm shadow-lg"
+                    title="Chỉnh sửa thẻ"
                   >
-                    Chỉnh sửa
+                    ✏️
                   </button>
                   <button
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       if (window.confirm(`Xóa thẻ ${card.issuer} •••• ${card.last4}?`)) {
-                        useCreditStore.getState().deleteCard(card.id, currentUser.uid);
+                        deleteCard(card.id, currentUser.uid);
                       }
                     }}
-                    className="bg-red-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-600 transition-colors"
+                    className="bg-red-500/90 text-white px-3 py-1.5 rounded-lg font-semibold hover:bg-red-600 transition-colors text-sm shadow-lg"
+                    title="Xóa thẻ"
                   >
-                    Xóa
+                    🗑️
                   </button>
                 </div>
               </div>
@@ -264,7 +278,7 @@ const CreditDashboard = () => {
             </button>
             
             <button
-              onClick={() => {/* TODO: Show statements */}}
+              onClick={() => setShowStatements(true)}
               className="group p-6 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-700 hover:border-warning-500 dark:hover:border-warning-400 hover:bg-warning-50 dark:hover:bg-warning-900/10 transition-all"
             >
               <svg className="w-10 h-10 mx-auto mb-3 text-gray-400 group-hover:text-warning-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -292,6 +306,37 @@ const CreditDashboard = () => {
                 Chốt kỳ
               </p>
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Statement Modal */}
+      {showStatements && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-start sm:items-center justify-center z-50 p-4 fade-in overflow-y-auto !mt-0" onClick={() => setShowStatements(false)}>
+          <div 
+            className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto slide-in-up"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="sticky top-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-between z-10">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                Sao kê thẻ tín dụng
+              </h3>
+              <button
+                onClick={() => setShowStatements(false)}
+                className="btn-fintech-ghost w-10 h-10 p-0"
+                title="Đóng"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            <div className="px-6 py-6">
+              <StatementModal 
+                onClose={() => setShowStatements(false)}
+              />
+            </div>
           </div>
         </div>
       )}

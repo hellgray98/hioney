@@ -2,7 +2,8 @@ import { create } from 'zustand';
 import { 
   getCurrentBalance, 
   calculateUtilization, 
-  computeStatement 
+  computeStatement,
+  calculateMinimumPayment
 } from '../lib/creditMath';
 import { 
   creditCardRepo, 
@@ -229,6 +230,9 @@ const useCreditStore = create((set, get) => ({
     const availableCredit = card.creditLimit - currentBalance;
     const utilizationRate = calculateUtilization(currentBalance, card.creditLimit);
     
+    // Calculate minimum payment based on current balance and card settings
+    const minimumPaymentDue = calculateMinimumPayment(currentBalance, card.minPaymentPercent);
+    
     const lastPayment = recentPayments
       .sort((a, b) => b.paymentDate.getTime() - a.paymentDate.getTime())[0];
     
@@ -237,7 +241,7 @@ const useCreditStore = create((set, get) => ({
       currentBalance,
       availableCredit,
       utilizationRate,
-      minimumPaymentDue: lastStatement?.minimumPaymentDue || 0,
+      minimumPaymentDue,
       nextDueDate: lastStatement?.dueDate || null,
       lastStatementBalance: lastStatement?.statementBalance || 0,
       lastPaymentAmount: lastPayment?.amount || 0,

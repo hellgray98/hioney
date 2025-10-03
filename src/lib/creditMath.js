@@ -1,5 +1,7 @@
 /**
  * Calculate monthly interest based on APR
+ * Formula: Monthly Interest = Balance × (APR / 12)
+ * Example: 1,000,000 VNĐ × (19.99% / 12) = 1,000,000 × 0.01666 = 16,660 VNĐ
  */
 export function calculateMonthlyInterest(balance, apr) {
   const monthlyRate = apr / 12;
@@ -11,11 +13,9 @@ export function calculateMonthlyInterest(balance, apr) {
  */
 export function calculateMinimumPayment(
   balance,
-  minPaymentPercent,
-  minPaymentFloor
+  minPaymentPercent
 ) {
-  const percentagePayment = balance * minPaymentPercent;
-  return Math.max(percentagePayment, Math.min(minPaymentFloor, balance));
+  return balance * minPaymentPercent;
 }
 
 /**
@@ -112,12 +112,12 @@ export function computeStatement(
   let interest = 0;
   if (previousStatement) {
     const previousPayments = previousStatement.payments.reduce((sum, p) => sum + p.amount, 0);
-    if (previousPayments < previousStatement.statementBalance) {
-      // Interest applies if previous statement wasn't paid in full
-      interest = calculateMonthlyInterest(
-        previousStatement.statementBalance - previousPayments,
-        card.purchaseAPR
-      );
+    const unpaidBalance = previousStatement.statementBalance - previousPayments;
+    
+    if (unpaidBalance > 0) {
+      // Interest applies on unpaid balance from previous statement
+      // Monthly interest = Unpaid balance × (APR / 12)
+      interest = calculateMonthlyInterest(unpaidBalance, card.purchaseAPR);
     }
   }
   
@@ -147,8 +147,7 @@ export function computeStatement(
   // Calculate minimum payment
   const minimumPaymentDue = calculateMinimumPayment(
     statementBalance,
-    card.minPaymentPercent,
-    card.minPaymentFloor
+    card.minPaymentPercent
   );
   
   // Calculate due date

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import LoadingSpinner from './LoadingSpinner';
+import { validateEmail, getFirebaseErrorMessage, debounce } from '../utils/validation';
 
 const ForgotPassword = ({ onBack }) => {
   const { resetPassword } = useAuth();
@@ -7,12 +9,49 @@ const ForgotPassword = ({ onBack }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [touchedFields, setTouchedFields] = useState({});
+
+  // Debounced validation
+  const debouncedValidate = debounce((value) => {
+    const emailError = validateEmail(value);
+    setFieldErrors({ email: emailError });
+  }, 300);
+
+  const handleEmailChange = (e) => {
+    const value = e.target.value;
+    setEmail(value);
+    
+    // Clear general error when user starts typing
+    if (error) setError('');
+    
+    // Validate field if it's been touched
+    if (touchedFields.email) {
+      debouncedValidate(value);
+    }
+  };
+
+  const handleEmailBlur = (e) => {
+    const value = e.target.value;
+    setTouchedFields({ email: true });
+    
+    // Validate immediately on blur
+    const emailError = validateEmail(value);
+    setFieldErrors({ email: emailError });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!email) {
-      setError('Vui lòng nhập email');
+    // Mark field as touched
+    setTouchedFields({ email: true });
+    
+    // Validate email
+    const emailError = validateEmail(email);
+    setFieldErrors({ email: emailError });
+    
+    // If there are validation errors, don't submit
+    if (emailError) {
       return;
     }
 
@@ -23,7 +62,8 @@ const ForgotPassword = ({ onBack }) => {
       setSuccess(true);
     } catch (error) {
       console.error('Reset password error:', error);
-      setError(error.message || 'Có lỗi xảy ra. Vui lòng thử lại.');
+      const errorMessage = getFirebaseErrorMessage(error.code);
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -31,94 +71,174 @@ const ForgotPassword = ({ onBack }) => {
 
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-gradient-to-br from-gray-50 via-white to-gray-100">
-        {/* Subtle Background Pattern */}
-        <div className="absolute inset-0 overflow-hidden opacity-30">
-          <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-gray-200 to-transparent rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-br from-gray-300 to-transparent rounded-full blur-3xl"></div>
+      <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-slate-100">
+        {/* Animated Background Elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          {/* Floating geometric shapes */}
+          <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-green-500/10 to-teal-500/10 rounded-2xl rotate-12 animate-float-slow"></div>
+          <div className="absolute top-40 right-20 w-24 h-24 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-full animate-float-medium"></div>
+          <div className="absolute bottom-32 left-20 w-40 h-40 bg-gradient-to-br from-emerald-500/10 to-cyan-500/10 rounded-3xl -rotate-12 animate-float-fast"></div>
+          <div className="absolute bottom-20 right-10 w-28 h-28 bg-gradient-to-br from-green-500/10 to-emerald-500/10 rounded-xl rotate-45 animate-float-slow"></div>
+          
+          {/* Subtle grid pattern */}
+          <div className="absolute inset-0 opacity-[0.02]">
+            <div className="w-full h-full" style={{
+              backgroundImage: `radial-gradient(circle at 1px 1px, #64748b 1px, transparent 0)`,
+              backgroundSize: '20px 20px'
+            }}></div>
+          </div>
         </div>
 
         {/* Success Card */}
-        <div className="relative w-full max-w-md">
-          <div className="bg-black rounded-3xl shadow-2xl p-8 border border-gray-800 text-center">
+        <div className="relative w-full max-w-sm sm:max-w-md mx-4">
+          <div className="bg-white/80 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-2xl p-4 sm:p-6 lg:p-8 border border-white/20 animate-slide-up">
             {/* Success Icon */}
-            <div className="flex justify-center mb-6">
-              <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center">
-                <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="flex justify-center mb-4 sm:mb-6 animate-fade-in">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-800 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-xl animate-pulse-slow">
+                <svg className="w-8 h-8 sm:w-10 sm:h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
             </div>
 
-            {/* Title */}
-            <h1 className="text-2xl font-bold text-white mb-4">
-              Email đã được gửi!
-            </h1>
-            <p className="text-gray-400 mb-8">
-              Chúng tôi đã gửi link đặt lại mật khẩu đến email <span className="text-white font-semibold">{email}</span>. Vui lòng kiểm tra hộp thư của bạn.
-            </p>
+            {/* Success Message */}
+            <div className="text-center mb-6 sm:mb-8 animate-slide-down">
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
+                Email đã được gửi!
+              </h1>
+              <p className="text-xs sm:text-sm text-gray-600">
+                Vui lòng kiểm tra hộp thư của bạn
+              </p>
+            </div>
 
-            {/* Back to Login Button */}
+            {/* Instructions */}
+            <div className="mb-6 sm:mb-8 animate-fade-in-delay">
+              <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm text-gray-800">
+                <div className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-gray-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 12a9 9 0 0118 0z" />
+                  </svg>
+                  <div>
+                    <p className="font-semibold mb-1">Hướng dẫn:</p>
+                    <ul className="text-xs space-y-1">
+                      <li>• Kiểm tra hộp thư đến và thư mục spam</li>
+                      <li>• Click vào link trong email để đặt lại mật khẩu</li>
+                      <li>• Link sẽ hết hạn sau 1 giờ</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Back Button */}
             <button
               onClick={onBack}
-              className="w-full py-4 bg-white hover:bg-gray-100 text-black font-semibold rounded-xl shadow-lg transform hover:scale-[1.02] active:scale-[0.98] transition-all"
+              className="w-full py-2.5 sm:py-3 px-4 bg-gray-800 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-300 animate-slide-up-delay-4 text-sm sm:text-base"
             >
               Quay lại đăng nhập
             </button>
           </div>
         </div>
+
+        {/* Custom CSS for animations */}
+        <style jsx>{`
+          @keyframes float-slow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+          }
+          
+          @keyframes float-medium {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(-3deg); }
+          }
+          
+          @keyframes float-fast {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-25px) rotate(8deg); }
+          }
+          
+          @keyframes slide-up {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+          }
+          
+          @keyframes slide-down {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+          }
+          
+          @keyframes fade-in {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+          
+          @keyframes pulse-slow {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+          }
+          
+          .animate-float-slow { animation: float-slow 6s ease-in-out infinite; }
+          .animate-float-medium { animation: float-medium 4s ease-in-out infinite; }
+          .animate-float-fast { animation: float-fast 3s ease-in-out infinite; }
+          .animate-slide-up { animation: slide-up 0.6s ease-out; }
+          .animate-slide-down { animation: slide-down 0.5s ease-out; }
+          .animate-fade-in { animation: fade-in 0.8s ease-out; }
+          .animate-fade-in-delay { animation: fade-in 0.8s ease-out 0.2s both; }
+          .animate-slide-up-delay-4 { animation: slide-up 0.6s ease-out 0.4s both; }
+          .animate-pulse-slow { animation: pulse-slow 3s ease-in-out infinite; }
+        `}</style>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-gradient-to-br from-gray-50 via-white to-gray-100">
-      {/* Subtle Background Pattern */}
-      <div className="absolute inset-0 overflow-hidden opacity-30">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-gray-200 to-transparent rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-br from-gray-300 to-transparent rounded-full blur-3xl"></div>
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-slate-100">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        {/* Floating geometric shapes */}
+        <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-2xl rotate-12 animate-float-slow"></div>
+        <div className="absolute top-40 right-20 w-24 h-24 bg-gradient-to-br from-green-500/10 to-teal-500/10 rounded-full animate-float-medium"></div>
+        <div className="absolute bottom-32 left-20 w-40 h-40 bg-gradient-to-br from-orange-500/10 to-pink-500/10 rounded-3xl -rotate-12 animate-float-fast"></div>
+        <div className="absolute bottom-20 right-10 w-28 h-28 bg-gradient-to-br from-indigo-500/10 to-blue-500/10 rounded-xl rotate-45 animate-float-slow"></div>
+        
+        {/* Subtle grid pattern */}
+        <div className="absolute inset-0 opacity-[0.02]">
+          <div className="w-full h-full" style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, #64748b 1px, transparent 0)`,
+            backgroundSize: '20px 20px'
+          }}></div>
+        </div>
       </div>
 
       {/* Forgot Password Card */}
-      <div className="relative w-full max-w-md">
-        <div className="bg-black rounded-3xl shadow-2xl p-8 border border-gray-800">
-          {/* Back Button */}
-          <button
-            onClick={onBack}
-            className="mb-6 flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            <span className="font-medium">Quay lại</span>
-          </button>
-
-          {/* Logo */}
-          <div className="flex justify-center mb-8">
-            <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-lg">
-              <img 
-                src="/pwa-512x512.png" 
-                alt="Hioney" 
-                className="w-10 h-10 object-contain"
+      <div className="relative w-full max-w-sm sm:max-w-md mx-4">
+        <div className="bg-white/80 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-2xl p-4 sm:p-6 lg:p-8 border border-white/20 animate-slide-up">
+          {/* Logo with enhanced animation */}
+          <div className="flex justify-center mb-4 sm:mb-6 animate-fade-in">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-800 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-xl animate-pulse-slow">
+              <img
+                src="/pwa-512x512.png"
+                alt="Hioney"
+                className="w-8 h-8 sm:w-10 sm:h-10 filter invert"
               />
             </div>
           </div>
 
-          {/* Title */}
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-white mb-2">
+          {/* Title with animation */}
+          <div className="text-center mb-6 sm:mb-8 animate-slide-down">
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1 sm:mb-2">
               Quên mật khẩu?
             </h1>
-            <p className="text-gray-400">
-              Nhập email của bạn để nhận link đặt lại mật khẩu
+            <p className="text-xs sm:text-sm text-gray-600">
+              Nhập email để nhận link đặt lại mật khẩu
             </p>
           </div>
 
           {/* Error Message */}
           {error && (
-            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-sm animate-shake">
+            <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-xs sm:text-sm animate-shake">
               <div className="flex items-center gap-2">
-                <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <span>{error}</span>
@@ -127,44 +247,50 @@ const ForgotPassword = ({ onBack }) => {
           )}
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6 animate-fade-in-delay">
             {/* Email Field */}
-            <div className="group">
-              <label className="block text-sm font-semibold text-gray-300 mb-2">
+            <div className="group animate-slide-up-delay-1">
+              <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">
                 Email
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <svg className="w-5 h-5 text-gray-500 group-focus-within:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
-                  </svg>
-                </div>
                 <input
                   type="email"
                   value={email}
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                    if (error) setError('');
-                  }}
-                  className="w-full pl-12 pr-4 py-3.5 bg-gray-900 border-2 border-gray-800 rounded-xl text-white placeholder-gray-500 focus:border-white focus:bg-gray-800 transition-all outline-none"
-                  placeholder="your@email.com"
+                  onChange={handleEmailChange}
+                  onBlur={handleEmailBlur}
                   required
+                  className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white/80 border rounded-xl text-sm sm:text-base text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:border-transparent transition-all duration-300 hover:bg-white/90 ${
+                    fieldErrors.email && touchedFields.email
+                      ? 'border-red-500 focus:ring-red-500'
+                      : 'border-gray-200 focus:ring-blue-500'
+                  }`}
+                  placeholder="Nhập email của bạn"
                 />
+                <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                  <svg className={`w-4 h-4 sm:w-5 sm:h-5 ${
+                    fieldErrors.email && touchedFields.email ? 'text-red-500' : 'text-gray-400'
+                  }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+                  </svg>
+                </div>
               </div>
+              {fieldErrors.email && touchedFields.email && (
+                <p className="text-red-500 text-xs mt-1 animate-shake">
+                  {fieldErrors.email}
+                </p>
+              )}
             </div>
 
             {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-4 bg-white hover:bg-gray-100 text-black font-semibold rounded-xl shadow-lg transform hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              className="w-full py-2.5 sm:py-3 px-4 bg-gray-800 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed animate-slide-up-delay-2 text-sm sm:text-base"
             >
               {loading ? (
-                <div className="flex items-center justify-center gap-2">
-                  <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
+                <div className="flex items-center justify-center gap-3">
+                  <LoadingSpinner variant="modern" size="sm" />
                   <span>Đang gửi...</span>
                 </div>
               ) : (
@@ -173,20 +299,78 @@ const ForgotPassword = ({ onBack }) => {
             </button>
           </form>
 
-          {/* Info Text */}
-          <p className="mt-6 text-center text-sm text-gray-500">
-            Bạn sẽ nhận được email với hướng dẫn đặt lại mật khẩu trong vài phút. Nếu không thấy, vui lòng kiểm tra thư mục spam.
-          </p>
+          {/* Back to Login */}
+          <div className="mt-6 sm:mt-8 text-center animate-fade-in-delay-2">
+            <p className="text-xs sm:text-sm text-gray-600">
+              Nhớ mật khẩu?{' '}
+              <button
+                type="button"
+                onClick={onBack}
+                className="text-gray-900 hover:text-blue-700 font-semibold transition-colors"
+              >
+                Đăng nhập ngay
+              </button>
+            </p>
+          </div>
         </div>
-
-        {/* Footer Text */}
-        <p className="text-center mt-6 text-sm text-gray-600">
-          Cần trợ giúp?{' '}
-          <button className="text-gray-800 hover:text-black font-semibold">
-            Liên hệ hỗ trợ
-          </button>
-        </p>
       </div>
+
+      {/* Custom CSS for animations */}
+      <style jsx>{`
+        @keyframes float-slow {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-20px) rotate(5deg); }
+        }
+        
+        @keyframes float-medium {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-15px) rotate(-3deg); }
+        }
+        
+        @keyframes float-fast {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-25px) rotate(8deg); }
+        }
+        
+        @keyframes slide-up {
+          from { transform: translateY(30px); opacity: 0; }
+          to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes slide-down {
+          from { transform: translateY(-20px); opacity: 0; }
+          to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes fade-in {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          25% { transform: translateX(-5px); }
+          75% { transform: translateX(5px); }
+        }
+        
+        @keyframes pulse-slow {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.05); }
+        }
+        
+        .animate-float-slow { animation: float-slow 6s ease-in-out infinite; }
+        .animate-float-medium { animation: float-medium 4s ease-in-out infinite; }
+        .animate-float-fast { animation: float-fast 3s ease-in-out infinite; }
+        .animate-slide-up { animation: slide-up 0.6s ease-out; }
+        .animate-slide-down { animation: slide-down 0.5s ease-out; }
+        .animate-fade-in { animation: fade-in 0.8s ease-out; }
+        .animate-fade-in-delay { animation: fade-in 0.8s ease-out 0.2s both; }
+        .animate-fade-in-delay-2 { animation: fade-in 0.8s ease-out 0.4s both; }
+        .animate-slide-up-delay-1 { animation: slide-up 0.6s ease-out 0.1s both; }
+        .animate-slide-up-delay-2 { animation: slide-up 0.6s ease-out 0.2s both; }
+        .animate-shake { animation: shake 0.5s ease-in-out; }
+        .animate-pulse-slow { animation: pulse-slow 3s ease-in-out infinite; }
+      `}</style>
     </div>
   );
 };

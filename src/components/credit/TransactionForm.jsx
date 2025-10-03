@@ -9,13 +9,12 @@ const TransactionForm = ({ onSubmit, onCancel }) => {
   const { currentUser } = useAuth();
   const { cards, addTransaction } = useCreditStore();
   const activeCards = cards.filter(card => !card.archived);
-  
+
   const [formData, setFormData] = useState({
     cardId: activeCards[0]?.id || '',
     amount: '',
     description: '',
     category: '',
-    merchantName: '',
     transactionDate: new Date().toISOString().split('T')[0],
     postDate: new Date().toISOString().split('T')[0],
     isPending: false
@@ -135,42 +134,41 @@ const TransactionForm = ({ onSubmit, onCancel }) => {
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Category */}
+        {/* Category Selection */}
         <div>
           <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-            Danh mục
+            Danh mục chi tiêu
           </label>
-          <input
-            type="text"
-            value={formData.category}
-            onChange={(e) => setFormData({...formData, category: e.target.value})}
-            className={`w-full px-4 py-2.5 rounded-xl border-2 font-semibold text-sm transition-all duration-200 focus:ring-2 focus:ring-offset-2 ${
-              theme === 'dark'
-                ? 'bg-gray-800 border-gray-700 text-white placeholder-gray-400 hover:bg-gray-750 focus:border-gray-600 focus:ring-gray-500'
-                : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 hover:bg-gray-50 focus:border-gray-400 focus:ring-gray-300'
-            }`}
-            placeholder="Mua sắm, Ăn uống..."
-          />
+          <div className="relative">
+            <select
+              value={formData.category}
+              onChange={(e) => setFormData({...formData, category: e.target.value})}
+              className={`select-fintech appearance-none pr-10 pl-4 py-2.5 w-full rounded-xl border-2 font-semibold text-sm transition-all duration-200 cursor-pointer focus:ring-2 focus:ring-offset-2 ${
+                theme === 'dark'
+                  ? 'bg-gray-800 border-gray-700 text-white hover:bg-gray-750 focus:border-gray-600 focus:ring-gray-500'
+                  : 'bg-white border-gray-300 text-gray-900 hover:bg-gray-50 focus:border-gray-400 focus:ring-gray-300'
+              }`}
+            >
+              <option value="">Chọn danh mục</option>
+              <option value="food">🍜 Ăn uống</option>
+              <option value="transport">🚗 Di chuyển</option>
+              <option value="shopping">🛒 Mua sắm</option>
+              <option value="entertainment">🎬 Giải trí</option>
+              <option value="bills">💡 Hóa đơn</option>
+              <option value="health">🏥 Sức khỏe</option>
+              <option value="education">📚 Giáo dục</option>
+              <option value="other">📝 Khác</option>
+            </select>
+            <div className={`pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 ${
+              theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+            }`}>
+              <svg className="w-5 h-5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          </div>
         </div>
-        
-        {/* Merchant */}
-        <div>
-          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-            Cửa hàng
-          </label>
-          <input
-            type="text"
-            value={formData.merchantName}
-            onChange={(e) => setFormData({...formData, merchantName: e.target.value})}
-            className={`w-full px-4 py-2.5 rounded-xl border-2 font-semibold text-sm transition-all duration-200 focus:ring-2 focus:ring-offset-2 ${
-              theme === 'dark'
-                ? 'bg-gray-800 border-gray-700 text-white placeholder-gray-400 hover:bg-gray-750 focus:border-gray-600 focus:ring-gray-500'
-                : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 hover:bg-gray-50 focus:border-gray-400 focus:ring-gray-300'
-            }`}
-            placeholder="ABC Store"
-          />
-        </div>
-        
+
         {/* Transaction Date */}
         <div>
           <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
@@ -180,24 +178,6 @@ const TransactionForm = ({ onSubmit, onCancel }) => {
             type="date"
             value={formData.transactionDate}
             onChange={(e) => setFormData({...formData, transactionDate: e.target.value})}
-            required
-            className={`w-full px-4 py-2.5 rounded-xl border-2 font-semibold text-sm transition-all duration-200 focus:ring-2 focus:ring-offset-2 ${
-              theme === 'dark'
-                ? 'bg-gray-800 border-gray-700 text-white hover:bg-gray-750 focus:border-gray-600 focus:ring-gray-500'
-                : 'bg-white border-gray-300 text-gray-900 hover:bg-gray-50 focus:border-gray-400 focus:ring-gray-300'
-            }`}
-          />
-        </div>
-        
-        {/* Post Date */}
-        <div>
-          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-            Ngày ghi nhận
-          </label>
-          <input
-            type="date"
-            value={formData.postDate}
-            onChange={(e) => setFormData({...formData, postDate: e.target.value})}
             required
             className={`w-full px-4 py-2.5 rounded-xl border-2 font-semibold text-sm transition-all duration-200 focus:ring-2 focus:ring-offset-2 ${
               theme === 'dark'

@@ -49,12 +49,23 @@
 - 🏷️ **Categories**: Phân loại theo danh mục với icon và màu
 - 💰 **Currency Format**: Tự động format số tiền với dấu phẩy
 
+### 💳 **Quản lý thẻ tín dụng**
+- 💳 **Credit Cards**: Thêm, sửa, xóa thẻ tín dụng
+- 📊 **Real-time Balance**: Theo dõi số dư và hạn mức
+- 💸 **Transactions**: Ghi nhận chi tiêu thẻ tín dụng
+- 💰 **Payments**: Quản lý thanh toán thẻ
+- 📋 **Statements**: Sao kê hàng tháng tự động
+- 📈 **Utilization**: Tỷ lệ sử dụng hạn mức
+- 🎯 **Minimum Payment**: Tính toán thanh toán tối thiểu
+- 🔒 **Security**: Chỉ lưu 4 số cuối, không lưu thông tin nhạy cảm
+
 ### 📊 **Dashboard thông minh**
 - 💰 **Balance Card**: Hiển thị số dư với pulse animation
 - 📈 **Stats Cards**: Thu nhập, chi tiêu, lãi/lỗ
 - 📊 **Top Categories**: Danh mục chi tiêu nhiều nhất
 - 🎯 **Time Range**: Xem theo tuần/tháng/năm/tất cả
 - 🎨 **Hover Effects**: Cards có lift animation
+- 💳 **Credit Overview**: Tổng quan dư nợ thẻ tín dụng
 
 ### 🏷️ **Quản lý danh mục**
 - ➕ **Add Categories**: Tạo danh mục mới với icon và màu
@@ -84,6 +95,12 @@
 - 🎨 **TailwindCSS 3.4.17** - Utility-first CSS
 - 📊 **Recharts 3.2.1** - Thư viện biểu đồ React
 
+### **Backend & Database**
+- 🔥 **Firebase Firestore** - Real-time database
+- 🔐 **Firebase Auth** - Authentication system
+- ☁️ **Cloud Storage** - Scalable data storage
+- 🔒 **Security Rules** - Data access control
+
 ### **PWA & Performance**
 - 📱 **PWA Support** - Progressive Web App
 - 🔄 **Service Worker** - Offline support
@@ -91,8 +108,9 @@
 - 🎨 **Custom CSS Animations** - Smooth transitions
 
 ### **State Management**
+- 🐻 **Zustand** - Lightweight state management
 - 🔄 **React Context** - Global state management
-- 💾 **LocalStorage** - Client-side data persistence
+- 💾 **Firebase Integration** - Real-time data sync
 - 🎯 **Custom Hooks** - Reusable logic
 
 ### **Development Tools**
@@ -189,20 +207,48 @@ npm run deploy:preview   # Deploy lên Vercel preview
 
 ## 💾 **Lưu trữ dữ liệu**
 
-### **LocalStorage**
-- 🏠 **Client-side**: Dữ liệu lưu trên trình duyệt
-- 🔄 **Auto-save**: Tự động lưu khi có thay đổi
-- 📥 **Export**: Xuất dữ liệu JSON để backup
-- 🔒 **Privacy**: Dữ liệu không được gửi lên server
-- 🛡️ **Data Integrity**: JSON validation
+### **Firebase Firestore**
+- ☁️ **Cloud Storage**: Dữ liệu lưu trên Firebase
+- 🔄 **Real-time Sync**: Đồng bộ dữ liệu real-time
+- 🔐 **User Isolation**: Mỗi user chỉ truy cập data của mình
+- 🛡️ **Security Rules**: Bảo vệ dữ liệu với Firestore rules
+- 📱 **Offline Support**: Hoạt động offline với cache
 
 ### **Data Structure**
 ```javascript
-{
+// User Collections
+users/{userId}/userData/{dataId} {
   transactions: [],    // Danh sách giao dịch
   categories: [],      // Danh mục với icon và màu
   budgets: [],         // Ngân sách
   balance: 0          // Số dư tổng
+}
+
+// Credit Card Collections
+users/{userId}/creditCards/{cardId} {
+  holderName: string,
+  issuer: string,
+  network: string,
+  last4: string,      // Chỉ lưu 4 số cuối
+  creditLimit: number,
+  statementDay: number,
+  dueDay: number,
+  purchaseAPR: number
+}
+
+users/{userId}/creditTransactions/{txId} {
+  cardId: string,
+  amount: number,
+  description: string,
+  category: string,
+  transactionDate: Date
+}
+
+users/{userId}/creditPayments/{paymentId} {
+  cardId: string,
+  amount: number,
+  paymentMethod: string,
+  paymentDate: Date
 }
 ```
 
@@ -302,13 +348,21 @@ vercel --prod
 - [x] 🎯 **Responsive Grid** - Mobile-optimized layouts
 - [x] 💰 **Currency Format** - Auto-format với dấu phẩy
 
-### **Version 3.0** (Future 🚀)
-- [ ] ☁️ **Cloud Sync** - Firebase integration
+### **Version 3.0** (Completed ✅)
+- [x] ☁️ **Cloud Sync** - Firebase integration
+- [x] 🔐 **Authentication** - Firebase Auth
+- [x] 💳 **Credit Cards** - Quản lý thẻ tín dụng
+- [x] 📊 **Real-time Data** - Firestore integration
+- [x] 🔒 **Security Rules** - Data protection
+- [x] 📋 **Statements** - Sao kê tự động
+
+### **Version 4.0** (Future 🚀)
 - [ ] 🔔 **Push Notifications** - Budget alerts
 - [ ] 📊 **Advanced Charts** - More chart types
 - [ ] 🎯 **Goals Tracking** - Financial goals
 - [ ] 📱 **Mobile App** - React Native version
 - [ ] 🤖 **AI Insights** - Smart recommendations
+- [ ] 📈 **Analytics** - Spending patterns
 
 ---
 

@@ -2,27 +2,19 @@ import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
-// Firebase configuration
-// Replace with your actual Firebase project configuration
+// Firebase configuration from environment variables
 const firebaseConfig = {
-  apiKey: "AIzaSyD6WogJjmb6OiJivzmH4U-0Xl8xY5dJBPM",
-  authDomain: "hioney-finance.firebaseapp.com",
-  projectId: "hioney-finance",
-  storageBucket: "hioney-finance.firebasestorage.app",
-  messagingSenderId: "694188619660",
-  appId: "1:694188619660:web:a029e9365c31424f9208a9",
-  measurementId: "G-F4RGQ14PY7"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
-// Example (replace with your actual config):
-// const firebaseConfig = {
-//   apiKey: "AIzaSyC1234567890abcdefghijklmnop",
-//   authDomain: "hioney-finance.firebaseapp.com", 
-//   projectId: "hioney-finance",
-//   storageBucket: "hioney-finance.appspot.com",
-//   messagingSenderId: "123456789012",
-//   appId: "1:123456789012:web:abcdef123456"
-// };
+// Environment variables are loaded from .env.local file
+// Make sure to create .env.local with your Firebase configuration
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);

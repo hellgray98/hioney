@@ -97,45 +97,6 @@ const LoadingScreen = ({
         </div>
       </div>
 
-      {/* Custom CSS for animations */}
-      <style jsx>{`
-        @keyframes float-slow {
-          0%, 100% { transform: translateY(0px) rotate(12deg); }
-          50% { transform: translateY(-20px) rotate(15deg); }
-        }
-        @keyframes float-medium {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-15px); }
-        }
-        @keyframes float-fast {
-          0%, 100% { transform: translateY(0px) rotate(-12deg); }
-          50% { transform: translateY(-10px) rotate(-15deg); }
-        }
-        @keyframes slide-up {
-          from { opacity: 0; transform: translate3d(0, 20px, 0); }
-          to { opacity: 1; transform: translate3d(0, 0, 0); }
-        }
-        @keyframes fade-in {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        @keyframes slide-down {
-          from { opacity: 0; transform: translate3d(0, -10px, 0); }
-          to { opacity: 1; transform: translate3d(0, 0, 0); }
-        }
-        @keyframes pulse-slow {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.05); }
-        }
-        .animate-slide-up { animation: slide-up 0.6s ease-out forwards; }
-        .animate-fade-in { animation: fade-in 0.5s ease-out forwards; }
-        .animate-slide-down { animation: slide-down 0.5s ease-out forwards; }
-        .animate-pulse-slow { animation: pulse-slow 3s infinite ease-in-out; }
-        .animate-float-slow { animation: float-slow 15s infinite ease-in-out; }
-        .animate-float-medium { animation: float-medium 12s infinite ease-in-out; }
-        .animate-float-fast { animation: float-fast 10s infinite ease-in-out; }
-        .animate-fade-in-delay { animation: fade-in 0.5s ease-out forwards 0.3s; animation-fill-mode: backwards; }
-      `}</style>
     </div>
   );
 };

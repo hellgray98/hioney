@@ -1,19 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
 import { useData } from '../contexts/FirebaseDataContext';
-import { formatCurrencyInput, parseCurrencyInput } from '../utils/formatCurrency';
+import { formatCurrencyInput, parseCurrencyInput, handleCurrencyInputChange, handleCurrencyKeyDown } from '../utils/formatCurrency';
 
-const QuickAdd = ({ onClose }) => {
+const QuickAdd = ({ onClose, initialType = 'expense' }) => {
   const { theme } = useTheme();
   const { data, addTransaction } = useData();
   const [formData, setFormData] = useState({
-    type: 'expense',
+    type: initialType,
     amount: '',
     categoryId: '',
     note: '',
     date: new Date().toISOString().slice(0, 10), // Format: YYYY-MM-DD
     time: new Date().toTimeString().slice(0, 5) // Format: HH:MM
   });
+
+  // Update type when initialType prop changes
+  useEffect(() => {
+    setFormData(prev => ({
+      ...prev,
+      type: initialType,
+      categoryId: '' // Reset category when type changes
+    }));
+  }, [initialType]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -112,10 +121,8 @@ const QuickAdd = ({ onClose }) => {
                 <input
                   type="text"
                   value={formData.amount}
-                  onChange={(e) => {
-                    const formatted = formatCurrencyInput(e.target.value);
-                    setFormData({...formData, amount: formatted});
-                  }}
+                  onChange={(e) => handleCurrencyInputChange(e, (value) => setFormData({...formData, amount: value}))}
+                  onKeyDown={handleCurrencyKeyDown}
                   placeholder="Nhập số tiền (VD: 1.000.000)"
                   className={`pl-4 py-2.5 pr-12 w-full rounded-xl border-2 font-semibold text-base sm:text-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 ${
                     theme === 'dark'
@@ -230,16 +237,16 @@ const QuickAdd = ({ onClose }) => {
         <div className="p-4 sm:p-6 border-t border-gray-200 dark:border-gray-800 flex-shrink-0">
           <div className="flex flex-col sm:flex-row gap-3">
             <button
-              onClick={onClose}
-              className="btn-fintech-secondary flex-1 order-2 sm:order-1"
-            >
-              Hủy
-            </button>
-            <button
               onClick={handleSubmit}
-              className="btn-fintech-primary flex-1 order-1 sm:order-2"
+              className="btn-fintech-primary flex-1"
             >
               Thêm giao dịch
+            </button>
+            <button
+              onClick={onClose}
+              className="btn-fintech-secondary flex-1"
+            >
+              Hủy
             </button>
           </div>
         </div>

@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
 import { useData } from '../contexts/FirebaseDataContext';
-import { formatCurrencyInput, parseCurrencyInput, formatCurrencyDisplay } from '../utils/formatCurrency';
+import { formatCurrencyInput, parseCurrencyInput, formatCurrencyDisplay, handleCurrencyInputChange, handleCurrencyKeyDown } from '../utils/formatCurrency';
 
 const Transactions = () => {
   const { theme } = useTheme();
@@ -291,10 +291,8 @@ const Transactions = () => {
                           <input
                             type="text"
                             value={editForm.amount}
-                            onChange={(e) => {
-                              const formatted = formatCurrencyInput(e.target.value);
-                              setEditForm({...editForm, amount: formatted});
-                            }}
+                            onChange={(e) => handleCurrencyInputChange(e, (value) => setEditForm({...editForm, amount: value}))}
+                            onKeyDown={handleCurrencyKeyDown}
                             placeholder="VD: 1.000.000"
                             className={`pl-4 py-2.5 w-full rounded-xl border-2 font-semibold text-sm transition-all duration-200 focus:ring-2 focus:ring-offset-2 ${
                               theme === 'dark'
@@ -394,7 +392,7 @@ const Transactions = () => {
                       <div className="flex space-x-3 pt-2">
                         <button
                           onClick={handleSaveEdit}
-                          className="btn-fintech-success flex-1"
+                          className="btn-fintech-primary flex-1"
                         >
                           Lưu thay đổi
                         </button>
@@ -407,86 +405,95 @@ const Transactions = () => {
                       </div>
                     </div>
                   ) : (
-                    // Display Mode - Redesigned for better responsive
-                    <div className="space-y-3">
-                      {/* Top Row: Category Info + Amount */}
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="flex items-center space-x-3 flex-1 min-w-0">
-                          <div 
-                            className="w-12 h-12 rounded-xl flex items-center justify-center text-white flex-shrink-0 shadow-fintech"
-                            style={{ backgroundColor: category?.color || '#6b7280' }}
-                          >
-                            <span className="text-lg">{category?.icon || '📝'}</span>
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <h4 className="font-bold text-gray-900 dark:text-white truncate">{category?.name || 'Không xác định'}</h4>
+                    // Display Mode - Mobile-friendly layout
+                    <div className="relative">
+                      {/* Main Content Layout */}
+                      <div className="flex items-start gap-3 pr-16 sm:pr-20">
+                        {/* Category Icon */}
+                        <div 
+                          className="w-10 h-10 rounded-xl flex items-center justify-center text-white flex-shrink-0 shadow-fintech"
+                          style={{ backgroundColor: category?.color || '#6b7280' }}
+                        >
+                          <span className="text-lg">{category?.icon || '📝'}</span>
+                        </div>
+                        
+                        {/* Transaction Details - Takes up remaining space */}
+                        <div className="flex-1 min-w-0">
+                          {/* Title Row */}
+                          <div className="mb-2">
+                            <h4 className="font-bold text-gray-900 dark:text-white truncate leading-tight">
+                              {category?.name || 'Không xác định'}
+                            </h4>
                             {transaction.note && (
                               <p className="text-sm text-gray-600 dark:text-gray-400 truncate mt-0.5">{transaction.note}</p>
                             )}
                           </div>
-                        </div>
-                        
-                        {/* Amount - Always visible and properly sized */}
-                        <div className={`text-right flex-shrink-0 ${
-                          transaction.type === 'income' ? 'text-success-500' : 'text-danger-500'
-                        }`}>
-                          <div className="font-extrabold text-lg leading-tight">
-                            {transaction.type === 'income' ? '+' : '-'}{formatCurrency(transaction.amount)}
+                          
+                          {/* Amount Row */}
+                          <div className="mb-2">
+                            <div className={`font-extrabold text-lg leading-tight ${
+                              transaction.type === 'income' ? 'text-success-500' : 'text-danger-500'
+                            }`}>
+                              {transaction.type === 'income' ? '+' : '-'}{formatCurrency(transaction.amount)}
+                            </div>
+                          </div>
+                          
+                          {/* Date Row */}
+                          <div className="mb-2">
+                            <span className="inline-flex items-center px-2 py-1 rounded-lg text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                              <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                              </svg>
+                              {formatDate(transaction.createdAt)}
+                            </span>
+                          </div>
+                          
+                          {/* Type Status Row */}
+                          <div>
+                            <span className={`inline-flex items-center px-2 py-1 rounded-lg text-xs font-semibold ${
+                              transaction.type === 'income' 
+                                ? 'text-success-700 bg-success-100 dark:text-success-400 dark:bg-success-900/20'
+                                : 'text-danger-700 bg-danger-100 dark:text-danger-400 dark:bg-danger-900/20'
+                            }`}>
+                              {transaction.type === 'income' ? (
+                                <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                </svg>
+                              ) : (
+                                <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                                </svg>
+                              )}
+                              {transaction.type === 'income' ? 'Thu nhập' : 'Chi tiêu'}
+                            </span>
                           </div>
                         </div>
-                      </div>
-
-                      {/* Bottom Row: Date/Time Tags + Action Buttons */}
-                      <div className="flex items-center justify-between gap-3">
-                        <div className="flex items-center gap-2 flex-1 min-w-0">
-                          <span className="inline-flex items-center px-2 py-1 rounded-lg text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 flex-shrink-0">
-                            <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                            {formatDate(transaction.createdAt)}
-                          </span>
-                          <span className={`inline-flex items-center px-2 py-1 rounded-lg text-xs font-semibold flex-shrink-0 ${
-                            transaction.type === 'income' 
-                              ? 'text-success-700 bg-success-100 dark:text-success-400 dark:bg-success-900/20'
-                              : 'text-danger-700 bg-danger-100 dark:text-danger-400 dark:bg-danger-900/20'
-                          }`}>
-                            {transaction.type === 'income' ? (
-                              <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                              </svg>
-                            ) : (
-                              <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                              </svg>
-                            )}
-                            {transaction.type === 'income' ? 'Thu nhập' : 'Chi tiêu'}
-                          </span>
-                        </div>
                         
-                        <div className="flex space-x-2 flex-shrink-0">
+                        {/* Action Buttons - Responsive positioning */}
+                        <div className="absolute top-2 right-2 sm:top-3 sm:right-3 flex gap-1 sm:gap-2">
                           <button
                             onClick={() => handleEdit(transaction)}
-                            className={`p-2 rounded-lg transition-all duration-200 ${
+                            className={`w-6 h-6 sm:w-8 sm:h-8 rounded-md sm:rounded-lg transition-all duration-200 flex items-center justify-center ${
                               theme === 'dark'
                                 ? 'text-warning-400 hover:bg-warning-900/20 hover:text-warning-300'
                                 : 'text-warning-600 hover:bg-warning-100 hover:text-warning-700'
                             }`}
                             title="Chỉnh sửa"
                           >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                             </svg>
                           </button>
                           <button
                             onClick={() => handleDelete(transaction.id)}
-                            className={`p-2 rounded-lg transition-all duration-200 ${
+                            className={`w-6 h-6 sm:w-8 sm:h-8 rounded-md sm:rounded-lg transition-all duration-200 flex items-center justify-center ${
                               theme === 'dark'
                                 ? 'text-danger-400 hover:bg-danger-900/20 hover:text-danger-300'
                                 : 'text-danger-600 hover:bg-danger-100 hover:text-danger-700'
                             }`}
                             title="Xóa"
                           >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                             </svg>
                           </button>

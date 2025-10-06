@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useAuth } from '../../contexts/AuthContext';
 import useCreditStore from '../../store/creditStore';
+import { formatCurrencyInput, parseCurrencyInput, handleCurrencyInputChange, handleCurrencyKeyDown, handleNumericKeyDown } from '../../utils/formatCurrency';
 import { validateCardSettings } from '../../lib/creditMath';
 
 const CARD_NETWORKS = [
@@ -38,6 +39,10 @@ const CardForm = ({ card, defaultCategoryType = 'expense', onSubmit, onCancel })
     iconUrl: card?.iconUrl || ''
   });
   
+  const [creditLimitDisplay, setCreditLimitDisplay] = useState(
+    card?.creditLimit ? formatCurrencyInput(card.creditLimit.toString()) : ''
+  );
+  
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(false);
   
@@ -49,6 +54,15 @@ const CardForm = ({ card, defaultCategoryType = 'expense', onSubmit, onCancel })
     });
     setErrors(validationErrors);
   }, [formData]);
+  
+  // Sync creditLimitDisplay when card changes
+  useEffect(() => {
+    if (card?.creditLimit) {
+      setCreditLimitDisplay(formatCurrencyInput(card.creditLimit.toString()));
+    } else {
+      setCreditLimitDisplay('');
+    }
+  }, [card]);
   
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -243,11 +257,15 @@ const CardForm = ({ card, defaultCategoryType = 'expense', onSubmit, onCancel })
             <input
               type="text"
               name="creditLimit"
-              value={formData.creditLimit ? formData.creditLimit.toLocaleString('vi-VN') : ''}
+              value={creditLimitDisplay}
               onChange={(e) => {
-                const value = e.target.value.replace(/[^\d]/g, '');
-                setFormData(prev => ({ ...prev, creditLimit: parseInt(value) || 0 }));
+                handleCurrencyInputChange(e, (value) => {
+                  setCreditLimitDisplay(value);
+                  const numericValue = parseCurrencyInput(value);
+                  setFormData(prev => ({ ...prev, creditLimit: numericValue }));
+                });
               }}
+              onKeyDown={handleCurrencyKeyDown}
               required
               className={`w-full px-4 py-2.5 rounded-xl border-2 font-medium text-sm transition-all duration-200 focus:ring-2 focus:ring-offset-2 ${
                 theme === 'dark'
@@ -276,6 +294,7 @@ const CardForm = ({ card, defaultCategoryType = 'expense', onSubmit, onCancel })
               name="statementDay"
               value={formData.statementDay}
               onChange={handleChange}
+              onKeyDown={handleNumericKeyDown}
               required
               min={1}
               max={28}
@@ -296,6 +315,7 @@ const CardForm = ({ card, defaultCategoryType = 'expense', onSubmit, onCancel })
               name="dueDay"
               value={formData.dueDay}
               onChange={handleChange}
+              onKeyDown={handleNumericKeyDown}
               required
               min={1}
               max={28}
@@ -317,6 +337,7 @@ const CardForm = ({ card, defaultCategoryType = 'expense', onSubmit, onCancel })
               name="purchaseAPR"
               value={formData.purchaseAPR}
               onChange={handleChange}
+              onKeyDown={handleNumericKeyDown}
               required
               min={0}
               max={100}
@@ -348,6 +369,7 @@ const CardForm = ({ card, defaultCategoryType = 'expense', onSubmit, onCancel })
               name="minPaymentPercent"
               value={formData.minPaymentPercent}
               onChange={handleChange}
+              onKeyDown={handleNumericKeyDown}
               required
               min={0}
               max={100}
@@ -369,16 +391,6 @@ const CardForm = ({ card, defaultCategoryType = 'expense', onSubmit, onCancel })
       {/* Buttons */}
       <div className="flex justify-center gap-3 pt-6 border-t border-gray-200 dark:border-gray-700">
         <button
-          type="button"
-          onClick={onCancel}
-          className="btn-fintech-secondary w-12 h-12 p-0"
-          title="Hủy"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-        <button
           type="submit"
           disabled={loading || errors.filter(e => !e.includes('Cảnh báo')).length > 0}
           className="btn-fintech-primary w-12 h-12 p-0 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -394,6 +406,16 @@ const CardForm = ({ card, defaultCategoryType = 'expense', onSubmit, onCancel })
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
           )}
+        </button>
+        <button
+          type="button"
+          onClick={onCancel}
+          className="btn-fintech-secondary w-12 h-12 p-0"
+          title="Hủy"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
         </button>
       </div>
     </form>

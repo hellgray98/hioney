@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
 import { useData } from '../contexts/FirebaseDataContext';
-import { formatCurrencyInput, parseCurrencyInput, formatCurrencyDisplay } from '../utils/formatCurrency';
+import { formatCurrencyInput, parseCurrencyInput, formatCurrencyDisplay, handleCurrencyInputChange, handleCurrencyKeyDown } from '../utils/formatCurrency';
 
 const Budgets = () => {
   const { theme } = useTheme();
@@ -221,10 +221,8 @@ const Budgets = () => {
                 <input
                   type="text"
                   value={formData.amount}
-                  onChange={(e) => {
-                    const formatted = formatCurrencyInput(e.target.value);
-                    setFormData({...formData, amount: formatted});
-                  }}
+                    onChange={(e) => handleCurrencyInputChange(e, (value) => setFormData({...formData, amount: value}))}
+                    onKeyDown={handleCurrencyKeyDown}
                   placeholder="Nhập số tiền (VD: 1.000.000)"
                   className={`pl-4 py-2.5 w-full rounded-xl border-2 font-semibold text-sm transition-all duration-200 focus:ring-2 focus:ring-offset-2 ${
                     theme === 'dark'

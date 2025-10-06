@@ -161,6 +161,13 @@ export const AuthProvider = ({ children }) => {
       return null;
     } catch (error) {
       console.error('Error getting user profile:', error);
+      
+      // Handle specific Firebase connection errors
+      if (error.code === 'unavailable' || error.message.includes('ERR_BLOCKED_BY_CLIENT')) {
+        console.warn('Firebase connection blocked. This might be due to ad blocker or network restrictions.');
+        // You could show a user-friendly message here
+      }
+      
       return null;
     }
   };

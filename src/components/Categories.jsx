@@ -90,12 +90,12 @@ const Categories = () => {
         </div>
         <button
           onClick={() => setShowAddForm(true)}
-          className="btn-fintech-primary flex items-center space-x-2"
+          className="btn-fintech-primary w-12 h-12 p-0 flex items-center justify-center"
+          title="Thêm danh mục"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
           </svg>
-          <span>Thêm danh mục</span>
         </button>
       </div>
 

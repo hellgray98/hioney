@@ -7,6 +7,7 @@ import MainApp from './components/MainApp';
 import AuthWrapper from './components/AuthWrapper';
 import PWAInstallPrompt from './components/PWAInstallPrompt';
 import LoadingScreen from './components/LoadingScreen';
+import ConnectionStatus from './components/ConnectionStatus';
 import './index.css';
 
 // Protected App Component
@@ -26,6 +27,7 @@ const ProtectedApp = React.memo(() => {
     <DataProvider>
       <MainApp />
       <PWAInstallPrompt />
+      <ConnectionStatus />
     </DataProvider>
   ) : (
     <AuthWrapper />

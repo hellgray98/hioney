@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useAuth } from '../../contexts/AuthContext';
 import useCreditStore from '../../store/creditStore';
-import { formatCurrencyInput, parseCurrencyInput } from '../../utils/formatCurrency';
+import { formatCurrencyInput, parseCurrencyInput, handleCurrencyInputChange, handleCurrencyKeyDown } from '../../utils/formatCurrency';
 
 const PaymentForm = ({ onSubmit, onCancel }) => {
   const { theme } = useTheme();
@@ -96,10 +96,8 @@ const PaymentForm = ({ onSubmit, onCancel }) => {
           <input
             type="text"
             value={formData.amount}
-            onChange={(e) => {
-              const formatted = formatCurrencyInput(e.target.value);
-              setFormData({...formData, amount: formatted});
-            }}
+              onChange={(e) => handleCurrencyInputChange(e, (value) => setFormData({...formData, amount: value}))}
+              onKeyDown={handleCurrencyKeyDown}
             required
             className={`w-full px-4 py-2.5 rounded-xl border-2 font-semibold text-sm transition-all duration-200 focus:ring-2 focus:ring-offset-2 ${
               theme === 'dark'
@@ -182,19 +180,9 @@ const PaymentForm = ({ onSubmit, onCancel }) => {
       {/* Buttons */}
       <div className="flex justify-center gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
         <button
-          type="button"
-          onClick={onCancel}
-          className="btn-fintech-secondary w-12 h-12 p-0"
-          title="Hủy"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-        <button
           type="submit"
           disabled={loading}
-          className="btn-fintech-success w-12 h-12 p-0 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="btn-fintech-primary w-12 h-12 p-0 disabled:opacity-50 disabled:cursor-not-allowed"
           title={loading ? 'Đang lưu...' : 'Thêm thanh toán'}
         >
           {loading ? (
@@ -207,6 +195,16 @@ const PaymentForm = ({ onSubmit, onCancel }) => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
           )}
+        </button>
+        <button
+          type="button"
+          onClick={onCancel}
+          className="btn-fintech-secondary w-12 h-12 p-0"
+          title="Hủy"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
         </button>
       </div>
     </form>

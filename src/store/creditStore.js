@@ -97,33 +97,35 @@ const useCreditStore = create((set, get) => ({
     }
   },
   
-  updateTransaction: async (id, updates) => {
+  updateTransaction: async (id, updates, userId) => {
     set({ loading: true, error: null });
     try {
+      await creditTransactionRepo.update(userId, id, updates);
+      
       set(state => ({
         transactions: state.transactions.map(tx => 
-          tx.id === id ? { ...tx, ...updates } : tx
+          tx.id === id ? { ...tx, ...updates, updatedAt: new Date() } : tx
         ),
         loading: false
       }));
-      
-      // TODO: Update in Firebase
     } catch (error) {
       set({ error: error.message, loading: false });
+      throw error;
     }
   },
   
-  deleteTransaction: async (id) => {
+  deleteTransaction: async (id, userId) => {
     set({ loading: true, error: null });
     try {
+      await creditTransactionRepo.delete(userId, id);
+      
       set(state => ({
         transactions: state.transactions.filter(tx => tx.id !== id),
         loading: false
       }));
-      
-      // TODO: Delete from Firebase
     } catch (error) {
       set({ error: error.message, loading: false });
+      throw error;
     }
   },
   
@@ -143,33 +145,35 @@ const useCreditStore = create((set, get) => ({
     }
   },
   
-  updatePayment: async (id, updates) => {
+  updatePayment: async (id, updates, userId) => {
     set({ loading: true, error: null });
     try {
+      await creditPaymentRepo.update(userId, id, updates);
+      
       set(state => ({
         payments: state.payments.map(payment => 
-          payment.id === id ? { ...payment, ...updates } : payment
+          payment.id === id ? { ...payment, ...updates, updatedAt: new Date() } : payment
         ),
         loading: false
       }));
-      
-      // TODO: Update in Firebase
     } catch (error) {
       set({ error: error.message, loading: false });
+      throw error;
     }
   },
   
-  deletePayment: async (id) => {
+  deletePayment: async (id, userId) => {
     set({ loading: true, error: null });
     try {
+      await creditPaymentRepo.delete(userId, id);
+      
       set(state => ({
         payments: state.payments.filter(payment => payment.id !== id),
         loading: false
       }));
-      
-      // TODO: Delete from Firebase
     } catch (error) {
       set({ error: error.message, loading: false });
+      throw error;
     }
   },
   

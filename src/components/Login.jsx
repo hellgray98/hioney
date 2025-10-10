@@ -272,65 +272,6 @@ const Login = ({ onToggleMode, onShowForgot }) => {
           </div>
         </div>
       </div>
-
-      {/* Custom CSS for animations */}
-      <style jsx>{`
-        @keyframes float-slow {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-20px) rotate(5deg); }
-        }
-        
-        @keyframes float-medium {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-15px) rotate(-3deg); }
-        }
-        
-        @keyframes float-fast {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-25px) rotate(8deg); }
-        }
-        
-        @keyframes slide-up {
-          from { transform: translate3d(0, 30px, 0); opacity: 0; }
-          to { transform: translate3d(0, 0, 0); opacity: 1; }
-        }
-        
-        @keyframes slide-down {
-          from { transform: translate3d(0, -20px, 0); opacity: 0; }
-          to { transform: translate3d(0, 0, 0); opacity: 1; }
-        }
-        
-        @keyframes fade-in {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        
-        @keyframes shake {
-          0%, 100% { transform: translateX(0); }
-          25% { transform: translateX(-5px); }
-          75% { transform: translateX(5px); }
-        }
-        
-        @keyframes pulse-slow {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.05); }
-        }
-        
-        .animate-float-slow { animation: float-slow 6s ease-in-out infinite; }
-        .animate-float-medium { animation: float-medium 4s ease-in-out infinite; }
-        .animate-float-fast { animation: float-fast 3s ease-in-out infinite; }
-        .animate-slide-up { animation: slide-up 0.6s ease-out; }
-        .animate-slide-down { animation: slide-down 0.5s ease-out; }
-        .animate-fade-in { animation: fade-in 0.8s ease-out; }
-        .animate-fade-in-delay { animation: fade-in 0.4s ease-out 0.1s both; }
-        .animate-fade-in-delay-2 { animation: fade-in 0.4s ease-out 0.2s both; }
-        .animate-slide-up-delay-1 { animation: slide-up 0.3s ease-out 0.05s both; }
-        .animate-slide-up-delay-2 { animation: slide-up 0.3s ease-out 0.1s both; }
-        .animate-slide-up-delay-3 { animation: slide-up 0.3s ease-out 0.15s both; }
-        .animate-slide-up-delay-4 { animation: slide-up 0.3s ease-out 0.2s both; }
-        .animate-shake { animation: shake 0.5s ease-in-out; }
-        .animate-pulse-slow { animation: pulse-slow 3s ease-in-out infinite; }
-      `}</style>
     </div>
   );
 };

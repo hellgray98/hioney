@@ -13,7 +13,7 @@ import { formatCurrency } from '../../utils/formatCurrency';
 const CreditDashboard = () => {
   const { theme } = useTheme();
   const { currentUser } = useAuth();
-  const { cards, fetchData, loading, deleteCard, getCardSummary } = useCreditStore();
+  const { cards, transactions, payments, fetchData, loading, deleteCard, getCardSummary } = useCreditStore();
   const activeCards = cards.filter(card => !card.archived);
 
   const [showAddCard, setShowAddCard] = useState(false);
@@ -22,12 +22,155 @@ const CreditDashboard = () => {
   const [showAddPayment, setShowAddPayment] = useState(false);
   const [showStatements, setShowStatements] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
+  const [activeTab, setActiveTab] = useState('all'); // 'all', 'transactions', 'payments'
 
   useEffect(() => {
     if (currentUser) {
       fetchData(currentUser.uid);
     }
   }, [currentUser]);
+
+  // Get recent activities (transactions + payments) grouped by card
+  const getRecentActivitiesByCard = () => {
+    const activitiesByCard = {};
+    const limit = 6;
+    
+    // Add transactions (type: 'transaction')
+    transactions.forEach(tx => {
+      const card = cards.find(c => c.id === tx.cardId);
+      if (card && !card.archived) {
+        if (!activitiesByCard[tx.cardId]) {
+          activitiesByCard[tx.cardId] = [];
+        }
+        activitiesByCard[tx.cardId].push({
+          ...tx,
+          type: 'transaction',
+          date: new Date(tx.transactionDate)
+        });
+      }
+    });
+    
+    // Add payments (type: 'payment')
+    payments.forEach(payment => {
+      const card = cards.find(c => c.id === payment.cardId);
+      if (card && !card.archived) {
+        if (!activitiesByCard[payment.cardId]) {
+          activitiesByCard[payment.cardId] = [];
+        }
+        activitiesByCard[payment.cardId].push({
+          ...payment,
+          type: 'payment',
+          date: new Date(payment.paymentDate)
+        });
+      }
+    });
+    
+    // Sort activities within each card by date
+    Object.keys(activitiesByCard).forEach(cardId => {
+      activitiesByCard[cardId].sort((a, b) => b.date - a.date);
+    });
+    
+    // Get up to 2 most recent activities per card, total limit 6
+    const result = [];
+    const cardIds = Object.keys(activitiesByCard);
+    
+    for (const cardId of cardIds) {
+      if (result.length >= limit) break;
+      const activities = activitiesByCard[cardId].slice(0, 2);
+      result.push(...activities.slice(0, limit - result.length));
+    }
+    
+    return result;
+  };
+  
+  const recentActivities = getRecentActivitiesByCard();
+
+  // Get recent payments grouped by card
+  const getRecentPaymentsByCard = () => {
+    const paymentsByCard = {};
+    const limit = 5;
+    
+    // Group payments by card
+    payments.forEach(payment => {
+      const card = cards.find(c => c.id === payment.cardId);
+      if (card && !card.archived) {
+        if (!paymentsByCard[payment.cardId]) {
+          paymentsByCard[payment.cardId] = [];
+        }
+        paymentsByCard[payment.cardId].push({
+          ...payment,
+          date: new Date(payment.paymentDate)
+        });
+      }
+    });
+    
+    // Sort payments within each card by date
+    Object.keys(paymentsByCard).forEach(cardId => {
+      paymentsByCard[cardId].sort((a, b) => b.date - a.date);
+    });
+    
+    // Get up to 2 most recent payments per card, total limit 5
+    const result = [];
+    const cardIds = Object.keys(paymentsByCard);
+    
+    for (const cardId of cardIds) {
+      if (result.length >= limit) break;
+      const pmts = paymentsByCard[cardId].slice(0, 2);
+      result.push(...pmts.slice(0, limit - result.length));
+    }
+    
+    return result;
+  };
+  
+  const recentPayments = getRecentPaymentsByCard();
+
+  const getPaymentMethodIcon = (method) => {
+    const icons = {
+      bank_transfer: '🏦',
+      debit_card: '💳',
+      cash: '💵',
+      other: '📝'
+    };
+    return icons[method] || '💰';
+  };
+
+  const getPaymentMethodName = (method) => {
+    const names = {
+      bank_transfer: 'Chuyển khoản',
+      debit_card: 'Thẻ ghi nợ',
+      cash: 'Tiền mặt',
+      other: 'Khác'
+    };
+    return names[method] || 'Khác';
+  };
+
+  const getCategoryIcon = (category) => {
+    const icons = {
+      food: '🍜',
+      transport: '🚗',
+      shopping: '🛒',
+      entertainment: '🎬',
+      bills: '💡',
+      health: '🏥',
+      education: '📚',
+      other: '📝'
+    };
+    return icons[category] || '💳';
+  };
+
+  const getCategoryName = (category) => {
+    const names = {
+      food: 'Ăn uống',
+      transport: 'Di chuyển',
+      shopping: 'Mua sắm',
+      entertainment: 'Giải trí',
+      bills: 'Hóa đơn',
+      health: 'Sức khỏe',
+      education: 'Giáo dục',
+      other: 'Khác'
+    };
+    return names[category] || 'Khác';
+  };
   
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -157,6 +300,270 @@ const CreditDashboard = () => {
 
         {/* Overview Section */}
         <CreditOverviewCard />
+
+        {/* Recent Activities Section with Tabs */}
+        {(recentActivities.length > 0 || recentPayments.length > 0) && (
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+            {/* Header with Tabs */}
+            <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 dark:border-gray-700">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+                <div className="min-w-0">
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white truncate">
+                    Hoạt động gần đây
+                  </h3>
+                </div>
+                
+                {/* Action Buttons */}
+                <div className="flex gap-2 flex-shrink-0 sm:order-3">
+                  <button
+                    onClick={() => setShowAddTransaction(true)}
+                    className="btn-fintech-danger w-8 h-8 sm:w-9 sm:h-9 p-0 flex items-center justify-center"
+                    title="Thêm chi tiêu"
+                  >
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M20 12H4" />
+                    </svg>
+                  </button>
+                  <button
+                    onClick={() => setShowAddPayment(true)}
+                    className="btn-fintech-success w-8 h-8 sm:w-9 sm:h-9 p-0 flex items-center justify-center"
+                    title="Thêm thanh toán"
+                  >
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                  </button>
+                </div>
+                
+                {/* Tabs */}
+                <div className="flex gap-1 sm:gap-2 p-1 bg-gray-100 dark:bg-gray-900 rounded-lg sm:order-2 w-full sm:w-auto">
+                  <button
+                    onClick={() => setActiveTab('all')}
+                    className={`flex-1 sm:flex-initial px-3 sm:px-4 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm font-semibold transition-all duration-200 ${
+                      activeTab === 'all'
+                        ? 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm'
+                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                    }`}
+                  >
+                    Tất cả
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('transactions')}
+                    className={`flex-1 sm:flex-initial px-3 sm:px-4 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm font-semibold transition-all duration-200 ${
+                      activeTab === 'transactions'
+                        ? 'bg-white dark:bg-gray-800 text-red-600 dark:text-red-400 shadow-sm'
+                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                    }`}
+                  >
+                    Chi tiêu
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('payments')}
+                    className={`flex-1 sm:flex-initial px-3 sm:px-4 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm font-semibold transition-all duration-200 ${
+                      activeTab === 'payments'
+                        ? 'bg-white dark:bg-gray-800 text-green-600 dark:text-green-400 shadow-sm'
+                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                    }`}
+                  >
+                    Thanh toán
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <div className="p-4 sm:p-6">
+              <div className="space-y-4 sm:space-y-6">
+                {(() => {
+                  // Filter data based on active tab
+                  let displayData = [];
+                  if (activeTab === 'all') {
+                    // Combine both transactions and payments, then sort by date
+                    const allData = [
+                      ...transactions.filter(tx => {
+                        const card = cards.find(c => c.id === tx.cardId);
+                        return card && !card.archived;
+                      }).map(tx => ({
+                        ...tx,
+                        type: 'transaction',
+                        date: new Date(tx.transactionDate)
+                      })),
+                      ...payments.filter(p => {
+                        const card = cards.find(c => c.id === p.cardId);
+                        return card && !card.archived;
+                      }).map(p => ({
+                        ...p,
+                        type: 'payment',
+                        date: new Date(p.paymentDate)
+                      }))
+                    ];
+                    // Sort by date - show ALL
+                    displayData = allData.sort((a, b) => b.date - a.date);
+                  } else if (activeTab === 'transactions') {
+                    // Show ALL transactions
+                    displayData = transactions.filter(tx => {
+                      const card = cards.find(c => c.id === tx.cardId);
+                      return card && !card.archived;
+                    }).map(tx => ({
+                      ...tx,
+                      type: 'transaction',
+                      date: new Date(tx.transactionDate)
+                    })).sort((a, b) => b.date - a.date);
+                  } else if (activeTab === 'payments') {
+                    // Show ALL payments
+                    displayData = payments.filter(p => {
+                      const card = cards.find(c => c.id === p.cardId);
+                      return card && !card.archived;
+                    }).map(p => ({
+                      ...p,
+                      type: 'payment',
+                      date: new Date(p.paymentDate)
+                    })).sort((a, b) => b.date - a.date);
+                  }
+                  
+                  // Group by card
+                  const groupedData = {};
+                  displayData.forEach(item => {
+                    if (!groupedData[item.cardId]) {
+                      groupedData[item.cardId] = [];
+                    }
+                    groupedData[item.cardId].push(item);
+                  });
+                  
+                  // Sort activities within each card by date (newest first)
+                  Object.keys(groupedData).forEach(cardId => {
+                    groupedData[cardId].sort((a, b) => b.date - a.date);
+                  });
+                  
+                  if (Object.keys(groupedData).length === 0) {
+                    return (
+                      <div className="text-center py-8">
+                        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                          <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                          </svg>
+                        </div>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                          {activeTab === 'all' && 'Chưa có hoạt động nào'}
+                          {activeTab === 'transactions' && 'Chưa có giao dịch nào'}
+                          {activeTab === 'payments' && 'Chưa có thanh toán nào'}
+                        </p>
+                      </div>
+                    );
+                  }
+                  
+                  return Object.entries(groupedData).map(([cardId, activities], groupIndex) => {
+                    const card = cards.find(c => c.id === cardId);
+                    if (!card) return null;
+                    
+                    return (
+                      <div key={cardId} className="space-y-2 sm:space-y-3">
+                        {/* Card Header */}
+                        <div className="flex items-center gap-2 sm:gap-3 pb-2 border-b border-gray-200 dark:border-gray-700">
+                          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-gradient-to-br from-gray-700 to-gray-900 dark:from-gray-600 dark:to-gray-800 flex items-center justify-center flex-shrink-0">
+                            <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
+                            </svg>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="text-sm sm:text-base font-bold text-gray-900 dark:text-white truncate">
+                              {card.issuer}
+                            </h4>
+                            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate">
+                              •••• {card.last4}
+                            </p>
+                          </div>
+                          <span className="text-xs font-medium text-gray-500 dark:text-gray-400 flex-shrink-0">
+                            {activities.length}
+                          </span>
+                        </div>
+                        
+                        {/* Activities for this card - Scrollable if > 3 items */}
+                        <div 
+                          className={`space-y-1.5 sm:space-y-2 ${
+                            activities.length > 3 
+                              ? 'max-h-[240px] overflow-y-auto pr-1 bg-gray-100/50 dark:bg-gray-900/50 p-2 rounded-lg scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-700 scrollbar-track-transparent' 
+                              : ''
+                          }`}
+                        >
+                          {activities.map((activity, index) => {
+                            const isPayment = activity.type === 'payment';
+                            const isTransaction = activity.type === 'transaction';
+                            
+                            return (
+                              <div
+                                key={activity.id}
+                                className={`group relative rounded-lg sm:rounded-xl border transition-all duration-200 slide-in-up ${
+                                  isPayment 
+                                    ? 'bg-green-50 dark:bg-green-900/10 border-green-200 dark:border-green-800/50 hover:border-green-300 dark:hover:border-green-700'
+                                    : 'bg-red-50 dark:bg-red-900/10 border-red-200 dark:border-red-800/50 hover:border-red-300 dark:hover:border-red-700'
+                                } hover:shadow-sm`}
+                                style={{ animationDelay: `${(groupIndex * activities.length + index) * 0.03}s` }}
+                              >
+                                <div className="p-2.5 sm:p-3">
+                                  <div className="flex items-center gap-2 sm:gap-3">
+                                    {/* Icon */}
+                                    <div className={`flex-shrink-0 w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center ${
+                                      isPayment
+                                        ? 'bg-green-100 dark:bg-green-900/30'
+                                        : 'bg-red-100 dark:bg-red-900/30'
+                                    }`}>
+                                      {isPayment ? (
+                                        <span className="text-lg sm:text-xl">💰</span>
+                                      ) : (
+                                        <span className="text-lg sm:text-xl">{getCategoryIcon(activity.category)}</span>
+                                      )}
+                                    </div>
+                                    
+                                    {/* Details */}
+                                    <div className="flex-1 min-w-0">
+                                      <div className="flex items-center gap-1.5 sm:gap-2 mb-0.5">
+                                        <h5 className="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white truncate">
+                                          {isPayment ? (activity.note || 'Thanh toán thẻ') : activity.description}
+                                        </h5>
+                                        {isTransaction && activity.isPending && (
+                                          <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400 flex-shrink-0">
+                                            Chờ
+                                          </span>
+                                        )}
+                                      </div>
+                                      <div className="flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400">
+                                        <span className="truncate">
+                                          {isPayment ? 'Thanh toán' : getCategoryName(activity.category)}
+                                        </span>
+                                        <span className="flex-shrink-0">•</span>
+                                        <span className="flex-shrink-0">
+                                          {activity.date.toLocaleDateString('vi-VN', {
+                                            day: '2-digit',
+                                            month: '2-digit'
+                                          })}
+                                        </span>
+                                      </div>
+                                    </div>
+                                    
+                                    {/* Amount */}
+                                    <div className="flex-shrink-0 text-right">
+                                      <p className={`text-sm sm:text-base font-bold ${
+                                        isPayment 
+                                          ? 'text-green-600 dark:text-green-400'
+                                          : 'text-red-600 dark:text-red-400'
+                                      }`}>
+                                        {isPayment ? '+' : '-'}{formatCurrency(activity.amount)}
+                                      </p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  });
+                })()}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Cards List */}
         {activeCards.length > 0 && (

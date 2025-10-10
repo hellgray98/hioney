@@ -4,7 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import useCreditStore from '../../store/creditStore';
 import { formatCurrencyInput, parseCurrencyInput, handleCurrencyInputChange, handleCurrencyKeyDown } from '../../utils/formatCurrency';
 
-const PaymentForm = ({ onSubmit, onCancel }) => {
+const PaymentForm = ({ onClose, onSubmit }) => {
   const { theme } = useTheme();
   const { currentUser } = useAuth();
   const { cards, addPayment } = useCreditStore();
@@ -39,6 +39,7 @@ const PaymentForm = ({ onSubmit, onCancel }) => {
       }, currentUser.uid);
       
       onSubmit?.();
+      onClose?.(); // Close modal after successful submission
     } catch (error) {
       setError(error.message);
     } finally {
@@ -198,7 +199,7 @@ const PaymentForm = ({ onSubmit, onCancel }) => {
         </button>
         <button
           type="button"
-          onClick={onCancel}
+          onClick={onClose}
           className="btn-fintech-secondary w-12 h-12 p-0"
           title="Hủy"
         >

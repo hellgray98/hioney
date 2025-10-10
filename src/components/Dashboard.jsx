@@ -119,250 +119,318 @@ const Dashboard = ({ onNavigate }) => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8 fade-in">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 slide-in-down">
-        <div>
-          <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white">Tổng quan</h1>
-        </div>
-        <div className="relative inline-block">
+    <div className={`min-h-screen ${theme === 'dark' ? 'bg-black' : 'bg-gray-50'}`}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        {/* Header - Minimal */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Tổng quan</h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+              {timeRange === 'week' ? 'Tuần này' : timeRange === 'month' ? 'Tháng này' : timeRange === 'year' ? 'Năm này' : 'Tất cả'}
+            </p>
+          </div>
           <select
             value={timeRange}
             onChange={(e) => setTimeRange(e.target.value)}
-            className={`select-fintech appearance-none pr-10 pl-4 py-2.5 min-w-[140px] rounded-xl border-2 font-semibold text-sm transition-all duration-200 cursor-pointer focus:ring-2 focus:ring-offset-2 ${
+            className={`appearance-none pl-3 pr-9 py-2 rounded-xl font-medium text-sm transition-all cursor-pointer ${
               theme === 'dark'
-                ? 'bg-gray-800 border-gray-700 text-white hover:bg-gray-750 focus:border-gray-600 focus:ring-gray-500'
-                : 'bg-white border-gray-300 text-gray-900 hover:bg-gray-50 focus:border-gray-400 focus:ring-gray-300'
+                ? 'bg-gray-900 text-white border border-gray-800'
+                : 'bg-white text-gray-900 border border-gray-200'
             }`}
           >
-            <option value="week">📅 Tuần này</option>
-            <option value="month">📊 Tháng này</option>
-            <option value="year">📈 Năm này</option>
-            <option value="all">🔄 Tất cả</option>
+            <option value="week">Tuần</option>
+            <option value="month">Tháng</option>
+            <option value="year">Năm</option>
+            <option value="all">Tất cả</option>
           </select>
-          <div className={`pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 ${
-            theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
-          }`}>
-            <svg className="w-5 h-5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </div>
         </div>
-      </div>
 
-      {/* Balance Card - Enhanced Fintech Style */}
-      <div className={`fintech-card-elevated p-8 transition-colors hover-lift scale-in ${
-        theme === 'dark' ? 'bg-gradient-to-br from-gray-800 to-gray-900' : 'bg-gradient-to-br from-white to-gray-50'
-      }`}>
-        <div className="text-center">
-          <p className="text-sm font-semibold mb-3 text-gray-600 dark:text-gray-400 uppercase tracking-wider">Số dư hiện tại</p>
-          <div className={`text-4xl sm:text-5xl lg:text-6xl font-extrabold break-all pulse-amount ${
-            data.balance >= 0 ? 'text-success-500' : 'text-danger-500'
-          }`}>
-            {formatCurrency(data.balance)}
-          </div>
-          <div className="mt-4 flex items-center justify-center space-x-2">
-            <div className={`w-2 h-2 rounded-full ${data.balance >= 0 ? 'bg-success-500' : 'bg-danger-500'} animate-pulse`}></div>
-            <span className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-              {data.balance >= 0 ? 'Tích cực' : 'Cần cải thiện'}
-            </span>
-          </div>
-        </div>
-      </div>
-        
-      {/* Stats Cards - Simplified Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className={`fintech-card p-6 hover-lift stagger-item ${
-          theme === 'dark' ? 'bg-gray-800' : 'bg-white'
+        {/* Balance Card - Hero Section */}
+        <div className={`relative overflow-hidden rounded-2xl sm:rounded-3xl p-5 sm:p-8 ${
+          theme === 'dark' 
+            ? 'bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 border border-gray-800' 
+            : 'bg-gradient-to-br from-white via-white to-gray-50 border border-gray-100'
         }`}>
-          <div className="flex items-center justify-between">
-            <div className="flex-1 min-w-0">
-              <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Thu nhập</p>
-              <p className="text-2xl sm:text-3xl font-extrabold text-success-500 break-all">
-                {formatCurrency(stats.income)}
-              </p>
-              <div className="flex items-center mt-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-success-500 mr-2"></div>
-                <span className="text-xs font-medium text-gray-600 dark:text-gray-400">Khoản thu</span>
+          <div className="relative z-10">
+            <p className="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Tổng số dư</p>
+            <div className={`text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 break-words ${
+              data.balance >= 0 ? 'text-gray-900 dark:text-white' : 'text-red-600 dark:text-red-400'
+            }`}>
+              {formatCurrency(data.balance)}
+            </div>
+            
+            {/* Income/Expense Row */}
+            <div className="grid grid-cols-2 gap-3 sm:gap-4">
+              <div className={`rounded-xl sm:rounded-2xl p-3 sm:p-4 ${
+                theme === 'dark' ? 'bg-green-500/10' : 'bg-green-50'
+              }`}>
+                <div className="flex items-center gap-1.5 sm:gap-2 mb-2">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-green-500 flex items-center justify-center flex-shrink-0">
+                    <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                    </svg>
+                  </div>
+                  <span className="text-xs font-medium text-gray-600 dark:text-gray-400 truncate">Thu nhập</span>
+                </div>
+                <p className="text-base sm:text-lg lg:text-xl font-bold text-green-600 dark:text-green-400 break-words">
+                  {formatCurrency(stats.income)}
+                </p>
               </div>
-            </div>
-            <div className="w-14 h-14 bg-success-100 dark:bg-success-900/20 rounded-2xl flex items-center justify-center flex-shrink-0 ml-4">
-              <span className="text-2xl">💰</span>
-            </div>
-          </div>
-        </div>
-
-        <div className={`fintech-card p-6 hover-lift stagger-item ${
-          theme === 'dark' ? 'bg-gray-800' : 'bg-white'
-        }`}>
-          <div className="flex items-center justify-between">
-            <div className="flex-1 min-w-0">
-              <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Chi tiêu</p>
-              <p className="text-2xl sm:text-3xl font-extrabold text-danger-500 break-all">
-                {formatCurrency(stats.expense)}
-              </p>
-              <div className="flex items-center mt-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-danger-500 mr-2"></div>
-                <span className="text-xs font-medium text-gray-600 dark:text-gray-400">Khoản chi</span>
+              
+              <div className={`rounded-xl sm:rounded-2xl p-3 sm:p-4 ${
+                theme === 'dark' ? 'bg-red-500/10' : 'bg-red-50'
+              }`}>
+                <div className="flex items-center gap-1.5 sm:gap-2 mb-2">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-red-500 flex items-center justify-center flex-shrink-0">
+                    <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                    </svg>
+                  </div>
+                  <span className="text-xs font-medium text-gray-600 dark:text-gray-400 truncate">Chi tiêu</span>
+                </div>
+                <p className="text-base sm:text-lg lg:text-xl font-bold text-red-600 dark:text-red-400 break-words">
+                  {formatCurrency(stats.expense)}
+                </p>
               </div>
-            </div>
-            <div className="w-14 h-14 bg-danger-100 dark:bg-danger-900/20 rounded-2xl flex items-center justify-center flex-shrink-0 ml-4">
-              <span className="text-2xl">💸</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Content Grid - 2 Columns on Desktop */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Expense Categories Pie Chart */}
-        <div className={`fintech-card p-6 transition-colors ${
-          theme === 'dark' ? 'bg-gray-800' : 'bg-white'
-        }`}>
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white">Phân tích chi tiêu</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Thống kê theo danh mục</p>
-            </div>
-            <div className="w-8 h-8 bg-danger-100 dark:bg-danger-900/20 rounded-lg flex items-center justify-center">
-              <span className="text-sm">📈</span>
             </div>
           </div>
           
-          {stats.pieChartData.length > 0 ? (
-            <div className="space-y-4">
-              {/* Chart Container */}
-              <div className="h-64 sm:h-72">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={stats.pieChartData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={40}
-                      outerRadius={80}
-                      paddingAngle={2}
-                      dataKey="value"
-                    >
-                      {stats.pieChartData.map((entry, index) => (
-                        <Cell 
-                          key={`cell-${index}`} 
-                          fill={entry.color || `hsl(${index * 45}, 70%, 60%)`}
-                          stroke={theme === 'dark' ? '#374151' : '#ffffff'}
-                          strokeWidth={2}
-                        />
-                      ))}
-                    </Pie>
-                    <Tooltip content={<CustomTooltip />} />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-              
-              {/* Legend */}
-              <div className="space-y-2 max-h-48 overflow-y-auto">
-                {stats.pieChartData.slice(0, 6).map((item, index) => (
-                  <div key={index} className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700 last:border-b-0">
-                    <div className="flex items-center space-x-3 flex-1 min-w-0">
-                      <div 
-                        className="w-3 h-3 rounded-full flex-shrink-0"
-                        style={{ backgroundColor: item.color }}
-                      ></div>
-                      <div className="flex items-center space-x-2 min-w-0">
-                        <span className="text-xs">{item.icon}</span>
-                        <span className="text-xs font-medium text-gray-900 dark:text-white truncate">
-                          {item.name}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="text-right flex-shrink-0">
-                      <div className="text-xs font-bold text-danger-500">
-                        {formatCurrency(item.value)}
-                      </div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">
-                        {stats.expense > 0 ? ((item.value / stats.expense) * 100).toFixed(1) : 0}%
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              
-              {/* Total Summary */}
-              <div className={`mt-4 p-3 rounded-xl ${
-                theme === 'dark' ? 'bg-gray-700' : 'bg-gray-50'
-              }`}>
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">
-                    Tổng chi tiêu
-                  </span>
-                  <span className="text-sm font-bold text-danger-500">
-                    {formatCurrency(stats.expense)}
-                  </span>
+          {/* Background decoration */}
+          <div className={`absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-20 ${
+            data.balance >= 0 ? 'bg-green-500' : 'bg-red-500'
+          }`} style={{ transform: 'translate(50%, -50%)' }} />
+        </div>
+
+        {/* Content Grid - 2 Columns on Desktop */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+          {/* Expense Categories */}
+          <div className={`rounded-2xl sm:rounded-3xl overflow-hidden ${
+            theme === 'dark' ? 'bg-gray-900 border border-gray-800' : 'bg-white border border-gray-100'
+          }`}>
+            <div className="p-4 sm:p-5 lg:p-6 border-b border-gray-100 dark:border-gray-800">
+              <div className="flex items-center justify-between">
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white truncate">Chi tiêu</h3>
+                  <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-0.5 truncate">Phân tích theo danh mục</p>
                 </div>
               </div>
             </div>
-          ) : (
-            <div className="text-center py-12">
-              <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">📊</span>
-              </div>
-              <p className="text-gray-500 dark:text-gray-400 text-sm">
-                Chưa có dữ liệu chi tiêu
-              </p>
-            </div>
-          )}
-        </div>
-
-        {/* Recent Transactions */}
-        <div className={`fintech-card p-6 transition-colors ${
-          theme === 'dark' ? 'bg-gray-800' : 'bg-white'
-        }`}>
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white">Giao dịch gần đây</h3>
-            <div className="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
-              <span className="text-sm">💳</span>
+          
+            <div className="p-4 sm:p-5 lg:p-6">
+              {stats.pieChartData.length > 0 ? (
+                <>
+                  {/* Pie Chart */}
+                  <div className="h-56 sm:h-64 mb-5">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={stats.pieChartData}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius="55%"
+                          outerRadius="85%"
+                          paddingAngle={2}
+                          dataKey="value"
+                        >
+                          {stats.pieChartData.map((entry, index) => (
+                            <Cell 
+                              key={`cell-${index}`} 
+                              fill={entry.color || `hsl(${index * 45}, 70%, 60%)`}
+                              stroke={theme === 'dark' ? '#000000' : '#ffffff'}
+                              strokeWidth={2}
+                            />
+                          ))}
+                        </Pie>
+                        <Tooltip content={<CustomTooltip />} />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                  
+                  {/* Categories List */}
+                  <div 
+                    className={`space-y-2 ${
+                      stats.pieChartData.length > 4
+                        ? 'max-h-[320px] sm:max-h-[420px] overflow-y-auto bg-gray-50/50 dark:bg-black/50 p-2 sm:p-2.5 rounded-xl sm:rounded-2xl scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-700 scrollbar-track-transparent'
+                        : ''
+                    }`}
+                  >
+                    {stats.pieChartData.map((item, index) => (
+                      <div 
+                        key={index} 
+                        className={`group rounded-xl sm:rounded-2xl p-3 transition-all duration-200 active:scale-[0.98] ${
+                          theme === 'dark'
+                            ? 'bg-gray-800 hover:bg-gray-800/80'
+                            : 'bg-gray-50 hover:bg-gray-100'
+                        }`}
+                      >
+                        {/* Top row: Icon + Name + Amount */}
+                        <div className="flex items-center gap-2.5 mb-2">
+                          <div 
+                            className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shadow-sm flex-shrink-0"
+                            style={{ backgroundColor: item.color }}
+                          >
+                            <span className="text-xl sm:text-2xl">{item.icon}</span>
+                          </div>
+                          
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white truncate">
+                              {item.name}
+                            </p>
+                          </div>
+                          
+                          <div className="text-right flex-shrink-0 ml-2">
+                            <p className="text-sm sm:text-base font-bold text-gray-900 dark:text-white">
+                              {formatCurrency(item.value)}
+                            </p>
+                          </div>
+                        </div>
+                        
+                        {/* Bottom row: Progress bar + Percentage */}
+                        <div className="flex items-center gap-2 ml-[42px] sm:ml-[48px]">
+                          <div className="flex-1 h-1.5 sm:h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                            <div 
+                              className="h-full rounded-full transition-all duration-500"
+                              style={{ 
+                                width: `${stats.expense > 0 ? (item.value / stats.expense) * 100 : 0}%`,
+                                backgroundColor: item.color
+                              }}
+                            />
+                          </div>
+                          <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 w-11 text-right flex-shrink-0">
+                            {stats.expense > 0 ? ((item.value / stats.expense) * 100).toFixed(0) : 0}%
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <div className="text-center py-12">
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gray-100 dark:bg-gray-800 rounded-2xl flex items-center justify-center mx-auto mb-3">
+                    <span className="text-xl sm:text-2xl">📊</span>
+                  </div>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Chưa có dữ liệu
+                  </p>
+                </div>
+              )}
+              
+              {/* Total */}
+              {stats.expense > 0 && (
+                <div className={`mt-4 p-3 sm:p-4 rounded-xl sm:rounded-2xl ${
+                  theme === 'dark' ? 'bg-red-500/10' : 'bg-red-50'
+                }`}>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">
+                      Tổng chi tiêu
+                    </span>
+                    <span className="text-base sm:text-lg font-bold text-red-600 dark:text-red-400 break-words">
+                      {formatCurrency(stats.expense)}
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
-          {data.transactions.slice(0, 5).length > 0 ? (
-            <div className="space-y-4">
-              {data.transactions.slice(0, 5).map(transaction => {
-                const category = data.categories.find(c => c.id === transaction.categoryId);
+
+          {/* Recent Transactions */}
+          <div className={`rounded-2xl sm:rounded-3xl overflow-hidden ${
+            theme === 'dark' ? 'bg-gray-900 border border-gray-800' : 'bg-white border border-gray-100'
+          }`}>
+            <div className="p-4 sm:p-5 lg:p-6 border-b border-gray-100 dark:border-gray-800">
+              <div className="flex items-center justify-between">
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white truncate">Hoạt động</h3>
+                  <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-0.5 truncate">
+                    {data.transactions.length} giao dịch
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="p-4 sm:p-5 lg:p-6">
+            {(() => {
+              // Sort transactions by date (newest first)
+              const sortedTransactions = [...data.transactions].sort((a, b) => 
+                new Date(b.createdAt) - new Date(a.createdAt)
+              );
+              
+              if (sortedTransactions.length === 0) {
                 return (
-                  <div key={transaction.id} className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3 flex-1 min-w-0">
-                      <div 
-                        className="w-10 h-10 rounded-xl flex items-center justify-center text-white flex-shrink-0 shadow-fintech"
-                        style={{ backgroundColor: category?.color || '#6b7280' }}
-                      >
-                        {category?.icon || '📝'}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-sm text-gray-900 dark:text-white truncate">{category?.name || 'Không xác định'}</p>
-                        {transaction.note && (
-                          <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{transaction.note}</p>
-                        )}
-                        <p className="text-xs text-gray-400 dark:text-gray-500">{new Date(transaction.createdAt).toLocaleDateString('vi-VN')}</p>
-                      </div>
+                  <div className="text-center py-12">
+                    <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-2xl flex items-center justify-center mx-auto mb-3">
+                      <span className="text-2xl">💳</span>
                     </div>
-                    <div className={`text-right font-bold text-sm break-all ml-2 ${
-                      transaction.type === 'income' ? 'text-success-500' : 'text-danger-500'
-                    }`}>
-                      {transaction.type === 'income' ? '+' : '-'}{formatCurrency(transaction.amount)}
-                    </div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      Chưa có giao dịch
+                    </p>
                   </div>
                 );
-              })}
-            </div>
-          ) : (
-            <div className="text-center py-8">
-              <div className="text-4xl mb-3">💳</div>
-              <p className="text-gray-500 dark:text-gray-400 font-medium">Chưa có giao dịch nào</p>
-            </div>
-          )}
+              }
+              
+              return (
+                <div 
+                  className={`space-y-1.5 sm:space-y-2 ${
+                    sortedTransactions.length > 5 
+                      ? 'max-h-[400px] sm:max-h-[755px] overflow-y-auto bg-gray-50/50 dark:bg-black/50 p-2 sm:p-2.5 rounded-xl sm:rounded-2xl scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-700 scrollbar-track-transparent' 
+                      : ''
+                  }`}
+                >
+                  {sortedTransactions.map((transaction) => {
+                    const category = data.categories.find(c => c.id === transaction.categoryId);
+                    const isIncome = transaction.type === 'income';
+                    
+                    return (
+                      <div 
+                        key={transaction.id} 
+                        className={`group rounded-xl sm:rounded-2xl p-3 sm:p-4 transition-all duration-200 active:scale-[0.98] ${
+                          theme === 'dark'
+                            ? 'bg-gray-800 hover:bg-gray-800/80'
+                            : 'bg-gray-50 hover:bg-gray-100'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2.5 sm:gap-3">
+                          <div 
+                            className="w-10 h-10 sm:w-11 sm:h-11 lg:w-12 lg:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-sm flex-shrink-0"
+                            style={{ backgroundColor: category?.color || '#6b7280' }}
+                          >
+                            <span className="text-xl sm:text-2xl">{category?.icon || '📝'}</span>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white truncate">
+                              {category?.name || 'Không xác định'}
+                            </p>
+                            {transaction.note && (
+                              <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 truncate">{transaction.note}</p>
+                            )}
+                            <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+                              {new Date(transaction.createdAt).toLocaleDateString('vi-VN', {
+                                day: '2-digit',
+                                month: '2-digit'
+                              })}
+                            </p>
+                          </div>
+                          <div className="text-right flex-shrink-0 min-w-[70px] sm:min-w-[85px]">
+                            <p className={`text-base sm:text-lg font-bold break-words ${
+                              isIncome ? 'text-green-600 dark:text-green-400' : 'text-gray-900 dark:text-white'
+                            }`}>
+                              {isIncome ? '+' : ''}{formatCurrency(transaction.amount)}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })()}
+          </div>
         </div>
-      </div>
+        </div>
 
-      {/* Credit Card Summary Widget */}
-      <CreditSummaryWidget onViewDetails={() => onNavigate?.('credit')} />
+        {/* Credit Card Summary Widget */}
+        <CreditSummaryWidget onViewDetails={() => onNavigate?.('credit')} />
+      </div>
     </div>
   );
 };

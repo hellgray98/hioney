@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import LoadingSpinner from './LoadingSpinner';
+import ValidationMessage from './ValidationMessage';
 import { validateEmail, validateStrongPassword, validateName, validateConfirmPassword, getFirebaseErrorMessage, debounce } from '../utils/validation';
 
 const Signup = ({ onToggleMode }) => {
@@ -201,8 +202,9 @@ const Signup = ({ onToggleMode }) => {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
+                  onBlur={handleBlur}
                   required
-                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white/80 border border-gray-200 rounded-xl text-sm sm:text-base text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 hover:bg-white/90"
+                  className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white/80 border ${fieldErrors.name && touchedFields.name ? 'border-red-500' : 'border-gray-200'} rounded-xl text-sm sm:text-base text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 hover:bg-white/90`}
                   placeholder="Nhập họ và tên"
                 />
                 <div className="absolute inset-y-0 right-0 flex items-center pr-3">
@@ -211,6 +213,7 @@ const Signup = ({ onToggleMode }) => {
                   </svg>
                 </div>
               </div>
+              <ValidationMessage error={fieldErrors.name} touched={touchedFields.name} />
             </div>
 
             {/* Email Field */}
@@ -224,8 +227,9 @@ const Signup = ({ onToggleMode }) => {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
+                  onBlur={handleBlur}
                   required
-                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white/80 border border-gray-200 rounded-xl text-sm sm:text-base text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 hover:bg-white/90"
+                  className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white/80 border ${fieldErrors.email && touchedFields.email ? 'border-red-500' : 'border-gray-200'} rounded-xl text-sm sm:text-base text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 hover:bg-white/90`}
                   placeholder="Nhập email của bạn"
                 />
                 <div className="absolute inset-y-0 right-0 flex items-center pr-3">
@@ -234,6 +238,7 @@ const Signup = ({ onToggleMode }) => {
                   </svg>
                 </div>
               </div>
+              <ValidationMessage error={fieldErrors.email} touched={touchedFields.email} />
             </div>
 
             {/* Password Field */}
@@ -247,8 +252,9 @@ const Signup = ({ onToggleMode }) => {
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
+                  onBlur={handleBlur}
                   required
-                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white/80 border border-gray-200 rounded-xl text-sm sm:text-base text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 hover:bg-white/90"
+                  className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white/80 border ${fieldErrors.password && touchedFields.password ? 'border-red-500' : 'border-gray-200'} rounded-xl text-sm sm:text-base text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 hover:bg-white/90`}
                   placeholder="Nhập mật khẩu"
                 />
                 <button
@@ -285,6 +291,7 @@ const Signup = ({ onToggleMode }) => {
                   </div>
                 </div>
               )}
+              <ValidationMessage error={fieldErrors.password} touched={touchedFields.password} />
             </div>
 
             {/* Confirm Password Field */}
@@ -298,8 +305,9 @@ const Signup = ({ onToggleMode }) => {
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleChange}
+                  onBlur={handleBlur}
                   required
-                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white/80 border border-gray-200 rounded-xl text-sm sm:text-base text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 hover:bg-white/90"
+                  className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white/80 border ${fieldErrors.confirmPassword && touchedFields.confirmPassword ? 'border-red-500' : 'border-gray-200'} rounded-xl text-sm sm:text-base text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 hover:bg-white/90`}
                   placeholder="Nhập lại mật khẩu"
                 />
                 <button
@@ -319,6 +327,7 @@ const Signup = ({ onToggleMode }) => {
                   )}
                 </button>
               </div>
+              <ValidationMessage error={fieldErrors.confirmPassword} touched={touchedFields.confirmPassword} />
             </div>
 
             {/* Submit Button */}
@@ -353,66 +362,6 @@ const Signup = ({ onToggleMode }) => {
           </div>
         </div>
       </div>
-
-      {/* Custom CSS for animations */}
-      <style jsx>{`
-        @keyframes float-slow {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-20px) rotate(5deg); }
-        }
-        
-        @keyframes float-medium {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-15px) rotate(-3deg); }
-        }
-        
-        @keyframes float-fast {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-25px) rotate(8deg); }
-        }
-        
-        @keyframes slide-up {
-          from { transform: translateY(30px); opacity: 0; }
-          to { transform: translateY(0); opacity: 1; }
-        }
-        
-        @keyframes slide-down {
-          from { transform: translateY(-20px); opacity: 0; }
-          to { transform: translateY(0); opacity: 1; }
-        }
-        
-        @keyframes fade-in {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        
-        @keyframes shake {
-          0%, 100% { transform: translateX(0); }
-          25% { transform: translateX(-5px); }
-          75% { transform: translateX(5px); }
-        }
-        
-        @keyframes pulse-slow {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.05); }
-        }
-        
-        .animate-float-slow { animation: float-slow 6s ease-in-out infinite; }
-        .animate-float-medium { animation: float-medium 4s ease-in-out infinite; }
-        .animate-float-fast { animation: float-fast 3s ease-in-out infinite; }
-        .animate-slide-up { animation: slide-up 0.6s ease-out; }
-        .animate-slide-down { animation: slide-down 0.5s ease-out; }
-        .animate-fade-in { animation: fade-in 0.8s ease-out; }
-        .animate-fade-in-delay { animation: fade-in 0.8s ease-out 0.2s both; }
-        .animate-fade-in-delay-2 { animation: fade-in 0.8s ease-out 0.4s both; }
-        .animate-slide-up-delay-1 { animation: slide-up 0.6s ease-out 0.1s both; }
-        .animate-slide-up-delay-2 { animation: slide-up 0.6s ease-out 0.2s both; }
-        .animate-slide-up-delay-3 { animation: slide-up 0.6s ease-out 0.3s both; }
-        .animate-slide-up-delay-4 { animation: slide-up 0.6s ease-out 0.4s both; }
-        .animate-slide-up-delay-5 { animation: slide-up 0.6s ease-out 0.5s both; }
-        .animate-shake { animation: shake 0.5s ease-in-out; }
-        .animate-pulse-slow { animation: pulse-slow 3s ease-in-out infinite; }
-      `}</style>
     </div>
   );
 };

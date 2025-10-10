@@ -101,6 +101,34 @@
   .dark ::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.2);
   }
+
+  /* Thin scrollbar utilities */
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-thumb-gray-300::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 3px;
+  }
+
+  .scrollbar-thumb-gray-300::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+  }
+
+  .dark .scrollbar-thumb-gray-700::-webkit-scrollbar-thumb {
+    background: #374151;
+    border-radius: 3px;
+  }
+
+  .dark .scrollbar-thumb-gray-700::-webkit-scrollbar-thumb:hover {
+    background: #4b5563;
+  }
+
+  .scrollbar-track-transparent::-webkit-scrollbar-track {
+    background: transparent;
+  }
   
   /* Hide scrollbar for mobile tab bar */
   .scrollbar-hide {
@@ -527,6 +555,13 @@
 .animate-float-medium { animation: float-medium 12s infinite ease-in-out; }
 .animate-float-fast { animation: float-fast 10s infinite ease-in-out; }
 .animate-fade-in-delay { animation: fadeIn 0.5s ease-out forwards 0.3s; animation-fill-mode: backwards; }
+.animate-fade-in-delay-2 { animation: fadeIn 0.8s ease-out 0.4s both; }
+.animate-slide-up-delay-1 { animation: slideInUp 0.6s ease-out 0.1s both; }
+.animate-slide-up-delay-2 { animation: slideInUp 0.6s ease-out 0.2s both; }
+.animate-slide-up-delay-3 { animation: slideInUp 0.6s ease-out 0.3s both; }
+.animate-slide-up-delay-4 { animation: slideInUp 0.6s ease-out 0.4s both; }
+.animate-slide-up-delay-5 { animation: slideInUp 0.6s ease-out 0.5s both; }
+.animate-shake { animation: errorShake 0.5s ease-in-out; }
 
 /* iOS Date/Time Input Fixes */
 /* Fix for iOS date and time inputs overflow issues */

@@ -82,128 +82,143 @@ const Header = ({ activeTab, setActiveTab, onQuickAdd, onMobileMenuToggle }) => 
         </div>
       </header>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Menu Overlay - Bottom Sheet Fintech Style */}
       {showMobileMenu && (
-        <div className="fixed inset-0 z-50">
+        <div className="fixed inset-0 z-50 lg:hidden">
           {/* Backdrop */}
           <div 
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm animate-fade-in"
             onClick={() => {
               setShowMobileMenu(false);
               onMobileMenuToggle?.(false);
             }}
           />
           
-          {/* Menu Panel - Fintech Style */}
-          <div className={`fixed top-0 right-0 w-80 h-full transition-all duration-300 shadow-fintech-xl backdrop-blur-md overflow-y-auto slide-in-right ${
-            theme === 'dark' ? 'bg-gray-900/95 border-l border-gray-800' : 'bg-white/95 border-l border-gray-200'
-          }`}>
-            <div className="pt-6 px-6 pb-6">
-              {/* Header with Close Button */}
-              <div className="flex items-center justify-between mb-8">
-                <h2 className={`text-lg font-bold ${
-                  theme === 'dark' ? 'text-white' : 'text-gray-900'
-                }`}>Menu</h2>
+          {/* Bottom Sheet Panel */}
+          <div className={`fixed bottom-0 left-0 right-0 transition-all duration-300 animate-slide-up shadow-2xl ${
+            theme === 'dark' ? 'bg-gray-900' : 'bg-white'
+          }`} style={{ maxHeight: '85vh', borderTopLeftRadius: '24px', borderTopRightRadius: '24px' }}>
+            {/* Handle Bar */}
+            <div className="flex justify-center pt-3 pb-2">
+              <div className={`w-12 h-1.5 rounded-full ${
+                theme === 'dark' ? 'bg-gray-700' : 'bg-gray-300'
+              }`} />
+            </div>
+
+            {/* Header */}
+            <div className="px-6 pt-2 pb-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white">Menu</h2>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Chọn trang điều hướng</p>
+                </div>
                 <button
                   onClick={() => {
                     setShowMobileMenu(false);
                     onMobileMenuToggle?.(false);
                   }}
-                  className={`p-2.5 rounded-xl transition-all duration-200 ${
-                    theme === 'dark' 
-                      ? 'text-gray-400 hover:bg-gray-800 hover:text-white' 
-                      : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'
+                  className={`p-2 rounded-full transition-all ${
+                    theme === 'dark'
+                      ? 'bg-gray-800 text-gray-400 active:bg-gray-700'
+                      : 'bg-gray-100 text-gray-600 active:bg-gray-200'
                   }`}
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </button>
               </div>
+            </div>
 
-              {/* User Profile Section */}
-              <div className="mb-8">
-                <button
-                  onClick={() => {
-                    setActiveTab('account');
-                    setShowMobileMenu(false);
-                    onMobileMenuToggle?.(false);
-                  }}
-                  className={`w-full flex items-center space-x-4 px-5 py-4 rounded-2xl text-left transition-all duration-200 group ${
+            {/* User Profile - Minimal Card */}
+            <div className="px-6 pb-4">
+              <button
+                onClick={() => {
+                  setActiveTab('account');
+                  setShowMobileMenu(false);
+                  onMobileMenuToggle?.(false);
+                }}
+                className={`w-full rounded-2xl p-4 transition-all active:scale-[0.98] ${
+                  activeTab === 'account'
+                    ? theme === 'dark'
+                      ? 'bg-blue-600 shadow-lg shadow-blue-600/30'
+                      : 'bg-gray-900 shadow-lg'
+                    : theme === 'dark'
+                      ? 'bg-gray-800 active:bg-gray-700'
+                      : 'bg-gray-50 active:bg-gray-100'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg flex-shrink-0 ${
                     activeTab === 'account'
-                      ? theme === 'dark'
-                        ? 'bg-white text-gray-900 shadow-fintech-lg'
-                        : 'bg-gray-900 text-white shadow-fintech-lg'
-                      : theme === 'dark'
-                        ? 'text-gray-300 hover:bg-gray-800/60 hover:text-white'
-                        : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
-                  }`}
-                >
-                  <div className="w-14 h-14 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center text-white text-lg font-bold flex-shrink-0">
+                      ? 'bg-white/20 text-white'
+                      : 'bg-gradient-to-br from-blue-500 to-purple-500 text-white'
+                  }`}>
                     {currentUser?.displayName?.charAt(0)?.toUpperCase() || 'U'}
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className={`font-semibold text-base truncate ${
-                      activeTab === 'account' 
-                        ? theme === 'dark' ? 'text-gray-900' : 'text-white'
-                        : theme === 'dark' ? 'text-white' : 'text-gray-900'
+                  <div className="flex-1 min-w-0 text-left">
+                    <div className={`font-semibold text-sm truncate ${
+                      activeTab === 'account' ? 'text-white' : theme === 'dark' ? 'text-white' : 'text-gray-900'
                     }`}>
                       {currentUser?.displayName || 'User'}
                     </div>
-                    <div className={`text-sm truncate ${
-                      activeTab === 'account' 
-                        ? theme === 'dark' ? 'text-gray-600' : 'text-gray-300'
-                        : theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+                    <div className={`text-xs truncate ${
+                      activeTab === 'account' ? 'text-white/70' : 'text-gray-500 dark:text-gray-400'
                     }`}>
-                      {currentUser?.email || 'user@example.com'}
+                      Tài khoản của tôi
                     </div>
                   </div>
-                </button>
-              </div>
+                </div>
+              </button>
+            </div>
 
-              {/* Navigation Menu */}
-              <div>
-                <nav className="space-y-1">
-                  {tabs.map(tab => (
-                    <button
-                      key={tab.id}
-                      onClick={() => {
-                        setActiveTab(tab.id);
-                        setShowMobileMenu(false);
-                        onMobileMenuToggle?.(false);
-                      }}
-                      className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-left transition-all duration-200 group ${
+            {/* Navigation Grid - 3 columns */}
+            <div className="px-6 pb-8 overflow-y-auto" style={{ maxHeight: 'calc(85vh - 220px)' }}>
+              <div className="grid grid-cols-3 gap-3">
+                {tabs.map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => {
+                      setActiveTab(tab.id);
+                      setShowMobileMenu(false);
+                      onMobileMenuToggle?.(false);
+                    }}
+                    className={`group relative rounded-2xl p-4 transition-all duration-200 active:scale-95 ${
+                      activeTab === tab.id
+                        ? theme === 'dark'
+                          ? 'bg-blue-600 shadow-lg shadow-blue-600/30'
+                          : 'bg-gray-900 shadow-lg'
+                        : theme === 'dark'
+                          ? 'bg-gray-800 active:bg-gray-700'
+                          : 'bg-gray-50 active:bg-gray-100'
+                    }`}
+                  >
+                    <div className="flex flex-col items-center gap-2">
+                      {/* Icon */}
+                      <div className={`w-14 h-14 rounded-xl flex items-center justify-center transition-transform duration-200 group-active:scale-90 ${
                         activeTab === tab.id
-                          ? theme === 'dark'
-                            ? 'bg-white text-gray-900 shadow-fintech-md'
-                            : 'bg-gray-900 text-white shadow-fintech-md'
-                          : theme === 'dark'
-                            ? 'text-gray-300 hover:bg-gray-800/60 hover:text-white'
-                            : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
-                      }`}
-                    >
-                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-200 ${
-                        activeTab === tab.id
-                          ? theme === 'dark'
-                            ? 'bg-gray-100 text-gray-900'
-                            : 'bg-white/20 text-white'
-                          : theme === 'dark'
-                            ? 'bg-gray-800 text-gray-300 group-hover:bg-gray-700'
-                            : 'bg-gray-100 text-gray-600 group-hover:bg-gray-200'
+                          ? 'bg-white/10'
+                          : ''
                       }`}>
-                        <span className="text-lg">{tab.icon}</span>
+                        <span className="text-3xl">{tab.icon}</span>
                       </div>
-                      <div className="flex-1">
-                        <div className={`font-medium text-sm ${
-                          activeTab === tab.id 
-                            ? theme === 'dark' ? 'text-gray-900' : 'text-white'
-                            : theme === 'dark' ? 'text-white' : 'text-gray-900'
-                        }`}>{tab.name}</div>
-                      </div>
-
-                    </button>
-                  ))}
-                </nav>
+                      
+                      {/* Label */}
+                      <span className={`text-xs font-semibold text-center truncate w-full ${
+                        activeTab === tab.id 
+                          ? 'text-white'
+                          : theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+                      }`}>
+                        {tab.shortName}
+                      </span>
+                    </div>
+                    
+                    {/* Active Indicator */}
+                    {activeTab === tab.id && (
+                      <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-6 h-1 bg-white/80 rounded-full" />
+                    )}
+                  </button>
+                ))}
               </div>
             </div>
           </div>

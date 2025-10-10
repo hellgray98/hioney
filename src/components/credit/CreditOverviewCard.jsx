@@ -54,7 +54,9 @@ const CreditOverviewCard = () => {
       {/* Overall Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Total Balance */}
-        <div className="fintech-card-elevated group hover:scale-105 transition-transform p-6">
+        <div className={`rounded-2xl p-5 sm:p-6 transition-all hover:scale-105 ${
+          theme === 'dark' ? 'bg-gray-900 border border-gray-800' : 'bg-white border border-gray-100'
+        }`}>
           <div className="flex items-center justify-between mb-3">
             <div className="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center">
               <svg className="w-6 h-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -74,7 +76,9 @@ const CreditOverviewCard = () => {
         </div>
         
         {/* Available Credit */}
-        <div className="fintech-card-elevated group hover:scale-105 transition-transform p-6">
+        <div className={`rounded-2xl p-5 sm:p-6 transition-all hover:scale-105 ${
+          theme === 'dark' ? 'bg-gray-900 border border-gray-800' : 'bg-white border border-gray-100'
+        }`}>
           <div className="flex items-center justify-between mb-3">
             <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center">
               <svg className="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -94,7 +98,9 @@ const CreditOverviewCard = () => {
         </div>
         
         {/* Utilization */}
-        <div className="fintech-card-elevated group hover:scale-105 transition-transform p-6">
+        <div className={`rounded-2xl p-5 sm:p-6 transition-all hover:scale-105 ${
+          theme === 'dark' ? 'bg-gray-900 border border-gray-800' : 'bg-white border border-gray-100'
+        }`}>
           <div className="flex items-center justify-between mb-3">
             <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
               <svg className="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

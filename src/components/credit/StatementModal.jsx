@@ -57,7 +57,9 @@ const StatementModal = ({ onClose }) => {
 
         <div className="px-6 py-6 space-y-6">
           {/* Generate Statement Form */}
-          <div className="fintech-card p-6">
+          <div className={`rounded-2xl p-5 sm:p-6 ${
+            theme === 'dark' ? 'bg-gray-900 border border-gray-800' : 'bg-white border border-gray-100'
+          }`}>
             <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
               Tạo sao kê mới
             </h4>
@@ -133,7 +135,9 @@ const StatementModal = ({ onClose }) => {
 
           {/* Latest Statement */}
           {latestStatement && (
-            <div className="fintech-card p-6">
+            <div className={`rounded-2xl p-5 sm:p-6 ${
+              theme === 'dark' ? 'bg-gray-900 border border-gray-800' : 'bg-white border border-gray-100'
+            }`}>
               <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
                 Sao kê gần nhất
               </h4>
@@ -216,7 +220,9 @@ const StatementModal = ({ onClose }) => {
 
           {/* Recent Statements */}
           {cardStatements.length > 1 && (
-            <div className="fintech-card p-6">
+            <div className={`rounded-2xl p-5 sm:p-6 ${
+              theme === 'dark' ? 'bg-gray-900 border border-gray-800' : 'bg-white border border-gray-100'
+            }`}>
               <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
                 Sao kê gần đây
               </h4>

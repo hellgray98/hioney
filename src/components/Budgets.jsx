@@ -135,23 +135,25 @@ const Budgets = () => {
   );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8 fade-in">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 slide-in-down">
-        <div>
-          <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white">Ngân sách</h1>
+    <div className={`min-h-screen ${theme === 'dark' ? 'bg-black' : 'bg-gray-50'}`}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Ngân sách</h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{data.budgets.length} ngân sách</p>
+          </div>
+          <button
+            onClick={() => setShowAddForm(true)}
+            disabled={availableCategories.length === 0}
+            className="btn-fintech-primary w-12 h-12 p-0 disabled:opacity-50 disabled:cursor-not-allowed"
+            title="Thêm ngân sách"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+          </button>
         </div>
-        <button
-          onClick={() => setShowAddForm(true)}
-          disabled={availableCategories.length === 0}
-          className="btn-fintech-primary w-12 h-12 p-0 disabled:opacity-50 disabled:cursor-not-allowed"
-          title="Thêm ngân sách"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
-        </button>
-      </div>
 
       {availableCategories.length === 0 && !showAddForm && (
         <div className="fintech-card text-center slide-in-up">
@@ -166,7 +168,9 @@ const Budgets = () => {
 
       {/* Add/Edit Form */}
       {showAddForm && (
-        <div className="fintech-card-elevated p-6 transition-colors slide-in-up">
+        <div className={`rounded-2xl sm:rounded-3xl p-5 sm:p-6 ${
+          theme === 'dark' ? 'bg-gray-900 border border-gray-800' : 'bg-white border border-gray-100'
+        }`}>
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
               {editingId ? 'Sửa ngân sách' : 'Thêm ngân sách mới'}
@@ -357,6 +361,7 @@ const Budgets = () => {
           <p className="text-sm text-gray-400">Tạo ngân sách đầu tiên để quản lý chi tiêu!</p>
         </div>
       )}
+      </div>
     </div>
   );
 };

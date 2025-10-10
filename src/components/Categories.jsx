@@ -81,28 +81,29 @@ const Categories = () => {
   const incomeCategories = data.categories.filter(c => c.type === 'income' || c.type === 'both');
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8 fade-in">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 slide-in-down">
-        <div>
-          <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white">Danh mục</h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1 font-medium">Quản lý danh mục thu chi</p>
+    <div className={`min-h-screen ${theme === 'dark' ? 'bg-black' : 'bg-gray-50'}`}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Danh mục</h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{data.categories.length} danh mục</p>
+          </div>
+          <button
+            onClick={() => setShowAddForm(true)}
+            className="btn-fintech-primary w-12 h-12 p-0 flex items-center justify-center"
+            title="Thêm danh mục"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+          </button>
         </div>
-        <button
-          onClick={() => setShowAddForm(true)}
-          className="btn-fintech-primary w-12 h-12 p-0 flex items-center justify-center"
-          title="Thêm danh mục"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-          </svg>
-        </button>
-      </div>
 
-      {/* Add/Edit Form */}
-      {showAddForm && (
-        <div className={`fintech-card-elevated p-6 transition-colors slide-in-up ${
-          theme === 'dark' ? 'bg-gray-900 border border-gray-800' : 'bg-white border border-gray-200'
+        {/* Add/Edit Form */}
+        {showAddForm && (
+        <div className={`rounded-2xl sm:rounded-3xl p-5 sm:p-6 ${
+          theme === 'dark' ? 'bg-gray-900 border border-gray-800' : 'bg-white border border-gray-100'
         }`}>
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -259,15 +260,16 @@ const Categories = () => {
             </div>
           </form>
         </div>
-      )}
+        )}
 
-      {/* Categories List */}
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-        {/* Expense Categories */}
-        <div className={`fintech-card p-6 transition-colors hover-lift stagger-item ${
-          theme === 'dark' ? 'bg-gray-800' : 'bg-white'
-        }`}>
-          <div className="flex items-center justify-between mb-6">
+        {/* Categories List */}
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+          {/* Expense Categories */}
+          <div className={`rounded-2xl sm:rounded-3xl overflow-hidden ${
+            theme === 'dark' ? 'bg-gray-900 border border-gray-800' : 'bg-white border border-gray-100'
+          }`}>
+            <div className="p-5 sm:p-6">
+              <div className="flex items-center justify-between mb-6">
             <div>
               <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center">
                 <span className="mr-3 text-2xl">💸</span>
@@ -335,16 +337,18 @@ const Categories = () => {
                 <div className="text-4xl mb-3">💸</div>
                 <p className="text-gray-500 dark:text-gray-400 font-medium">Chưa có danh mục chi tiêu</p>
                 <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Thêm danh mục đầu tiên</p>
-              </div>
-            )}
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Income Categories */}
-        <div className={`fintech-card p-6 transition-colors hover-lift stagger-item ${
-          theme === 'dark' ? 'bg-gray-800' : 'bg-white'
-        }`}>
-          <div className="flex items-center justify-between mb-6">
+          {/* Income Categories */}
+          <div className={`rounded-2xl sm:rounded-3xl overflow-hidden ${
+            theme === 'dark' ? 'bg-gray-900 border border-gray-800' : 'bg-white border border-gray-100'
+          }`}>
+            <div className="p-5 sm:p-6">
+              <div className="flex items-center justify-between mb-6">
             <div>
               <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center">
                 <span className="mr-3 text-2xl">💰</span>
@@ -412,9 +416,11 @@ const Categories = () => {
                 <div className="text-4xl mb-3">💰</div>
                 <p className="text-gray-500 dark:text-gray-400 font-medium">Chưa có danh mục thu nhập</p>
                 <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Thêm danh mục đầu tiên</p>
-              </div>
-            )}
+                </div>
+              )}
+            </div>
           </div>
+        </div>
         </div>
       </div>
     </div>

@@ -73,8 +73,8 @@ const Dashboard = ({ onNavigate }) => {
     if (active && payload && payload.length) {
       const data = payload[0];
       return (
-        <div className={`fintech-card p-3 shadow-fintech-lg border-0 ${
-          theme === 'dark' ? 'bg-gray-800' : 'bg-white'
+        <div className={`rounded-xl p-3 shadow-lg ${
+          theme === 'dark' ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-100'
         }`}>
           <div className="flex items-center space-x-2">
             <div 

@@ -135,24 +135,29 @@ const Account = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8 fade-in">
-      {/* Header */}
-      <div className="slide-in-down">
-        <div className="flex items-center space-x-4 mb-2">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center text-white text-2xl font-bold shadow-fintech-lg">
-            {currentUser?.displayName?.charAt(0)?.toUpperCase() || 'U'}
-          </div>
-          <div>
-            <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white">
-              {currentUser?.displayName || 'Tài khoản'}
-            </h1>
+    <div className={`min-h-screen ${theme === 'dark' ? 'bg-black' : 'bg-gray-50'}`}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        {/* Header */}
+        <div>
+          <div className="flex items-center gap-4 mb-4">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center text-white text-xl sm:text-2xl font-bold shadow-lg">
+              {currentUser?.displayName?.charAt(0)?.toUpperCase() || 'U'}
+            </div>
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
+                {currentUser?.displayName || 'Tài khoản'}
+              </h1>
+              <p className="text-sm text-gray-500 dark:text-gray-400">{currentUser?.email}</p>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Messages */}
       {error && (
-        <div className="fintech-card p-4 bg-danger-50 dark:bg-danger-900/20 border border-danger-200 dark:border-danger-800">
+        <div className={`rounded-2xl p-4 ${
+          theme === 'dark' ? 'bg-red-500/10 border border-red-800' : 'bg-red-50 border border-red-200'
+        }`}>
           <div className="flex items-center">
             <svg className="w-5 h-5 text-danger-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -165,7 +170,9 @@ const Account = () => {
       )}
 
       {success && (
-        <div className="fintech-card p-4 bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-800">
+        <div className={`rounded-2xl p-4 ${
+          theme === 'dark' ? 'bg-green-500/10 border border-green-800' : 'bg-green-50 border border-green-200'
+        }`}>
           <div className="flex items-center">
             <svg className="w-5 h-5 text-success-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -180,8 +187,8 @@ const Account = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Profile Information */}
         <div className="lg:col-span-2">
-          <div className={`fintech-card-elevated p-8 ${
-            theme === 'dark' ? 'bg-gray-800' : 'bg-white'
+          <div className={`rounded-2xl sm:rounded-3xl p-6 sm:p-8 ${
+            theme === 'dark' ? 'bg-gray-900 border border-gray-800' : 'bg-white border border-gray-100'
           }`}>
             <div className="flex items-center justify-between mb-6">
               <div>
@@ -387,8 +394,8 @@ const Account = () => {
         {/* Sidebar */}
         <div className="space-y-6">
           {/* Account Stats */}
-          <div className={`fintech-card p-6 ${
-            theme === 'dark' ? 'bg-gray-800' : 'bg-white'
+          <div className={`rounded-2xl sm:rounded-3xl p-5 sm:p-6 ${
+            theme === 'dark' ? 'bg-gray-900 border border-gray-800' : 'bg-white border border-gray-100'
           }`}>
             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
               Thống kê tài khoản
@@ -422,8 +429,8 @@ const Account = () => {
           </div>
 
           {/* Quick Actions */}
-          <div className={`fintech-card p-6 ${
-            theme === 'dark' ? 'bg-gray-800' : 'bg-white'
+          <div className={`rounded-2xl sm:rounded-3xl p-5 sm:p-6 ${
+            theme === 'dark' ? 'bg-gray-900 border border-gray-800' : 'bg-white border border-gray-100'
           }`}>
             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
               Thao tác nhanh
@@ -453,8 +460,8 @@ const Account = () => {
           </div>
 
           {/* Security */}
-          <div className={`fintech-card p-6 ${
-            theme === 'dark' ? 'bg-gray-800' : 'bg-white'
+          <div className={`rounded-2xl sm:rounded-3xl p-5 sm:p-6 ${
+            theme === 'dark' ? 'bg-gray-900 border border-gray-800' : 'bg-white border border-gray-100'
           }`}>
             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
               Bảo mật

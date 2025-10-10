@@ -167,11 +167,11 @@ const ForgotPassword = ({ onBack }) => {
         <div className="bg-white/80 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-2xl p-4 sm:p-6 lg:p-8 border border-white/20 animate-slide-up">
           {/* Logo with enhanced animation */}
           <div className="flex justify-center mb-4 sm:mb-6 animate-fade-in">
-            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-800 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-xl animate-pulse-slow">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-[15px] flex items-center justify-center">
               <img
                 src="/android-chrome-192x192.png"
                 alt="Hioney"
-                className="w-8 h-8 sm:w-10 sm:h-10 filter invert"
+                className="w-full h-full object-contain"
               />
             </div>
           </div>

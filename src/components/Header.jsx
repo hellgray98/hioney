@@ -32,7 +32,7 @@ const Header = ({ activeTab, setActiveTab, onQuickAdd, onMobileMenuToggle }) => 
               onClick={() => setActiveTab('dashboard')}
               className="flex items-center space-x-3 hover:opacity-80 transition-opacity duration-200"
             >
-              <div className="w-10 h-10 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-[15px] flex items-center justify-center">
                 <img 
                   src="/android-chrome-192x192.png" 
                   alt="Hioney Logo" 

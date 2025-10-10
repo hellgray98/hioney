@@ -51,11 +51,11 @@ const LoadingScreen = ({
         <div className="bg-white/80 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-2xl p-8 border border-white/20 animate-slide-up">
           {/* Logo */}
           <div className="flex justify-center mb-6 animate-fade-in">
-            <div className="w-16 h-16 bg-gray-800 rounded-2xl flex items-center justify-center shadow-xl animate-pulse-slow">
+            <div className="w-16 h-16 rounded-[15px] flex items-center justify-center">
               <img
                 src="/android-chrome-512x512.png"
                 alt="Hioney"
-                className="w-10 h-10 filter invert"
+                className="w-full h-full object-contain"
               />
             </div>
           </div>

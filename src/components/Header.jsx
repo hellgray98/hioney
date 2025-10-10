@@ -32,8 +32,12 @@ const Header = ({ activeTab, setActiveTab, onQuickAdd, onMobileMenuToggle }) => 
               onClick={() => setActiveTab('dashboard')}
               className="flex items-center space-x-3 hover:opacity-80 transition-opacity duration-200"
             >
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gray-900 to-gray-700 dark:from-white dark:to-gray-200 flex items-center justify-center shadow-fintech">
-                <span className="text-white dark:text-gray-900 font-extrabold text-lg">H</span>
+              <div className="w-10 h-10 flex items-center justify-center">
+                <img 
+                  src="/android-chrome-192x192.png" 
+                  alt="Hioney Logo" 
+                  className="w-full h-full object-contain"
+                />
               </div>
               <div>
                 <h1 className={`text-left text-xl font-extrabold ${

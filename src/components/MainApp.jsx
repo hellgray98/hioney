@@ -103,8 +103,12 @@ const MainApp = () => {
                   onClick={() => handleSetActiveTab('dashboard')}
                   className="flex items-center space-x-3 hover:opacity-80 transition-opacity duration-200"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gray-900 to-gray-700 dark:from-white dark:to-gray-200 flex items-center justify-center shadow-fintech">
-                    <span className="text-white dark:text-gray-900 font-extrabold text-lg">H</span>
+                  <div className="w-10 h-10 rounded-[3px] flex items-center justify-center">
+                    <img 
+                      src="/android-chrome-192x192.png" 
+                      alt="Hioney Logo" 
+                      className="w-full h-full object-contain"
+                    />
                   </div>
                   <div>
                     <h1 className="text-left text-xl font-extrabold text-gray-900 dark:text-white">Hioney</h1>
@@ -128,9 +132,13 @@ const MainApp = () => {
               <div className="flex flex-col items-center space-y-3">
                 <button
                   onClick={() => handleSetActiveTab('dashboard')}
-                  className="w-8 h-8 rounded-lg bg-gradient-to-br from-gray-900 to-gray-700 dark:from-white dark:to-gray-200 flex items-center justify-center shadow-fintech hover:opacity-80 transition-opacity"
+                  className="w-8 h-8 rounded-[3px] flex items-center justify-center hover:opacity-80 transition-opacity"
                 >
-                  <span className="text-white dark:text-gray-900 font-extrabold text-sm">H</span>
+                  <img 
+                    src="/android-chrome-192x192.png" 
+                    alt="Hioney Logo" 
+                    className="w-full h-full object-contain"
+                  />
                 </button>
                 <button
                   onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}

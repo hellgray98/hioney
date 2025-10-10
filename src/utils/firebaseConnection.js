@@ -76,7 +76,7 @@ export const showConnectionStatus = (status) => {
     if ('Notification' in window && Notification.permission === 'granted') {
       new Notification('Connection Issue', {
         body: status.error,
-        icon: '/favicon.svg'
+        icon: '/favicon-32x32.png'
       });
     }
   }

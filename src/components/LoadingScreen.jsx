@@ -53,7 +53,7 @@ const LoadingScreen = ({
           <div className="flex justify-center mb-6 animate-fade-in">
             <div className="w-16 h-16 bg-gray-800 rounded-2xl flex items-center justify-center shadow-xl animate-pulse-slow">
               <img
-                src="/pwa-512x512.png"
+                src="/android-chrome-512x512.png"
                 alt="Hioney"
                 className="w-10 h-10 filter invert"
               />
